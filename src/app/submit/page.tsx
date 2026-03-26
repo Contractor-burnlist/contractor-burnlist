@@ -10,6 +10,7 @@ const categoryOptions = [
   'Chronic late pay',
   'Fraudulent chargeback',
   'Hostile / threatening',
+  'Rude / unprofessional',
   'Scope creep',
   'False damage claims',
   'Bait & switch pricing',
