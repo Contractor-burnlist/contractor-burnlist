@@ -70,12 +70,12 @@ export default function HomePage() {
               <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 h-0 w-0 border-l-8 border-r-8 border-t-[12px] border-l-transparent border-r-transparent border-t-white" />
             </div>
             <Image
-              src="/mascot.png"
+              src="/mascot-removebg-preview.png"
               alt="Contractor Burnlist mascot"
               width={280}
               height={280}
               className="object-contain"
-              style={{ height: '280px', width: 'auto', mixBlendMode: 'screen' }}
+              style={{ height: '280px', width: 'auto' }}
               priority
             />
           </div>
