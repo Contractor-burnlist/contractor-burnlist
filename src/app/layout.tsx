@@ -6,11 +6,17 @@ import Navbar from "@/components/layout/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Contractor Burnlist - Know Who You're Working For",
-  description: "A contractor-verified registry of problem customers. Search before you start.",
+  title: "Contractor Burnlist — Vet Your Customers Before You Start",
+  description: "Avoid the headaches. Vet your customers before the first nail goes in. The contractor community's registry for flagging problem clients.",
   icons: {
     icon: { rel: 'icon', url: '/logo-icon.png', type: 'image/png' },
     apple: { url: '/logo-icon.png', type: 'image/png' },
+  },
+  openGraph: {
+    title: "Contractor Burnlist — Vet Your Customers Before You Start",
+    description: "Avoid the headaches. Vet your customers before the first nail goes in.",
+    url: "https://contractorburnlist.com",
+    type: "website",
   },
 };
 
