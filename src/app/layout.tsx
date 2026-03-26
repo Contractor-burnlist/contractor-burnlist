@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Contractor Burnlist - Know Who You're Working For",
   description: "A contractor-verified registry of problem customers. Search before you start.",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/logo-icon.png",
   },
 };
 
