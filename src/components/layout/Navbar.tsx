@@ -57,6 +57,12 @@ export default function Navbar() {
               Submit Entry
             </Link>
             <Link
+              href="/submit-worker"
+              className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
+            >
+              Report Worker
+            </Link>
+            <Link
               href="/dashboard"
               className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
             >
@@ -114,6 +120,7 @@ export default function Navbar() {
           <div className="flex flex-col gap-4">
             <Link href="/search" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Search Registry</Link>
             <Link href="/submit" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Submit Entry</Link>
+            <Link href="/submit-worker" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Report Worker</Link>
             <Link href="/dashboard" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Dashboard</Link>
             {user ? (
               <>
