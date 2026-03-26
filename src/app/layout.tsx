@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${inter.className} min-h-full bg-[#0a0a0a] text-white antialiased`}>
+      <body className={`${inter.className} min-h-full bg-white text-[#111111] antialiased`}>
         <Navbar />
         <main className="pt-16">{children}</main>
       </body>

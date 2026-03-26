@@ -29,9 +29,9 @@ const mockProfile = {
 
 const riskColors: Record<string, string> = {
   high: 'text-[#DC2626] bg-[#DC2626]/10 border-[#DC2626]/30',
-  medium: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30',
-  low: 'text-green-400 bg-green-400/10 border-green-400/30',
-  unknown: 'text-[#a0a0a0] bg-[#a0a0a0]/10 border-[#a0a0a0]/30',
+  medium: 'text-yellow-600 bg-yellow-50 border-yellow-300',
+  low: 'text-green-600 bg-green-50 border-green-300',
+  unknown: 'text-[#6b7280] bg-gray-50 border-gray-300',
 }
 
 export default function ProfilePage() {
@@ -39,16 +39,16 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-      <Link href="/search" className="mb-8 inline-flex items-center gap-2 text-sm text-[#a0a0a0] hover:text-white">
+      <Link href="/search" className="mb-8 inline-flex items-center gap-2 text-sm text-[#6b7280] hover:text-[#111111]">
         ← Back to Search
       </Link>
 
       {/* Header */}
-      <div className="mb-8 rounded-lg border border-[#2a2a2a] bg-[#111111] p-6">
+      <div className="mb-8 rounded-lg border border-[#e5e7eb] bg-white p-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-black text-white">{profile.display_name}</h1>
-            <p className="mt-1 text-sm text-[#a0a0a0]">
+            <h1 className="text-2xl font-black text-[#111111]">{profile.display_name}</h1>
+            <p className="mt-1 text-sm text-[#6b7280]">
               {profile.city}, {profile.state}
             </p>
           </div>
@@ -60,12 +60,12 @@ export default function ProfilePage() {
         </div>
         <div className="mt-4 flex gap-6">
           <div>
-            <div className="text-xs text-[#a0a0a0]">Total Flags</div>
-            <div className="text-2xl font-black text-white">{profile.flag_count}</div>
+            <div className="text-xs text-[#6b7280]">Total Flags</div>
+            <div className="text-2xl font-black text-[#111111]">{profile.flag_count}</div>
           </div>
           <div>
-            <div className="text-xs text-[#a0a0a0]">Total Owed</div>
-            <div className="text-2xl font-black text-white">
+            <div className="text-xs text-[#6b7280]">Total Owed</div>
+            <div className="text-2xl font-black text-[#111111]">
               ${profile.entries.reduce((sum, e) => sum + e.amount_owed, 0).toLocaleString()}
             </div>
           </div>
@@ -73,29 +73,29 @@ export default function ProfilePage() {
       </div>
 
       {/* Entries */}
-      <h2 className="mb-4 text-lg font-bold text-white">Reported Incidents</h2>
+      <h2 className="mb-4 text-lg font-bold text-[#111111]">Reported Incidents</h2>
       <div className="space-y-4">
         {profile.entries.map((entry) => (
-          <div key={entry.id} className="rounded-lg border border-[#2a2a2a] bg-[#111111] p-5">
+          <div key={entry.id} className="rounded-lg border border-[#e5e7eb] bg-white p-5">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex gap-2">
                 {entry.category_tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded border border-[#2a2a2a] px-2 py-0.5 text-xs text-[#a0a0a0]"
+                    className="rounded border border-[#e5e7eb] px-2 py-0.5 text-xs text-[#6b7280]"
                   >
                     {tag}
                   </span>
                 ))}
                 {entry.is_verified_submission && (
-                  <span className="rounded border border-green-400/30 bg-green-400/10 px-2 py-0.5 text-xs text-green-400">
+                  <span className="rounded border border-green-300 bg-green-50 px-2 py-0.5 text-xs text-green-600">
                     Verified
                   </span>
                 )}
               </div>
-              <span className="text-xs text-[#555]">{entry.incident_date}</span>
+              <span className="text-xs text-[#9ca3af]">{entry.incident_date}</span>
             </div>
-            <p className="mb-3 text-sm leading-relaxed text-[#a0a0a0]">{entry.description}</p>
+            <p className="mb-3 text-sm leading-relaxed text-[#6b7280]">{entry.description}</p>
             {entry.amount_owed > 0 && (
               <div className="text-sm font-semibold text-[#DC2626]">
                 Amount owed: ${entry.amount_owed.toLocaleString()}

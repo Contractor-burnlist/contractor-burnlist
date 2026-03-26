@@ -50,95 +50,95 @@ export default function SubmitPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10">
-        <h1 className="mb-2 text-3xl font-black text-white">Submit an Entry</h1>
-        <p className="text-[#a0a0a0]">
+        <h1 className="mb-2 text-3xl font-black text-[#111111]">Submit an Entry</h1>
+        <p className="text-[#6b7280]">
           Report a problem customer. All submissions are reviewed before publication.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Customer Info */}
-        <div className="rounded-lg border border-[#2a2a2a] bg-[#111111] p-6">
-          <h2 className="mb-4 font-bold text-white">Customer Information</h2>
+        <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
+          <h2 className="mb-4 font-bold text-[#111111]">Customer Information</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-xs text-[#a0a0a0]">Full Name *</label>
+              <label className="mb-1.5 block text-xs text-[#6b7280]">Full Name *</label>
               <input
                 name="full_name"
                 value={form.full_name}
                 onChange={handleChange}
                 required
-                className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-[#DC2626]"
+                className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-xs text-[#a0a0a0]">Address</label>
+              <label className="mb-1.5 block text-xs text-[#6b7280]">Address</label>
               <input
                 name="address"
                 value={form.address}
                 onChange={handleChange}
-                className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-[#DC2626]"
+                className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs text-[#a0a0a0]">City</label>
+              <label className="mb-1.5 block text-xs text-[#6b7280]">City</label>
               <input
                 name="city"
                 value={form.city}
                 onChange={handleChange}
-                className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-[#DC2626]"
+                className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-1.5 block text-xs text-[#a0a0a0]">State</label>
+                <label className="mb-1.5 block text-xs text-[#6b7280]">State</label>
                 <input
                   name="state"
                   value={form.state}
                   onChange={handleChange}
                   maxLength={2}
-                  className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-[#DC2626]"
+                  className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs text-[#a0a0a0]">ZIP</label>
+                <label className="mb-1.5 block text-xs text-[#6b7280]">ZIP</label>
                 <input
                   name="zip"
                   value={form.zip}
                   onChange={handleChange}
-                  className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-[#DC2626]"
+                  className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
                 />
               </div>
             </div>
             <div>
-              <label className="mb-1.5 block text-xs text-[#a0a0a0]">Phone</label>
+              <label className="mb-1.5 block text-xs text-[#6b7280]">Phone</label>
               <input
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
                 type="tel"
-                className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-[#DC2626]"
+                className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs text-[#a0a0a0]">Email</label>
+              <label className="mb-1.5 block text-xs text-[#6b7280]">Email</label>
               <input
                 name="email"
                 value={form.email}
                 onChange={handleChange}
                 type="email"
-                className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-[#DC2626]"
+                className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
               />
             </div>
           </div>
         </div>
 
         {/* Incident Details */}
-        <div className="rounded-lg border border-[#2a2a2a] bg-[#111111] p-6">
-          <h2 className="mb-4 font-bold text-white">Incident Details</h2>
+        <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
+          <h2 className="mb-4 font-bold text-[#111111]">Incident Details</h2>
           <div className="space-y-4">
             <div>
-              <label className="mb-2 block text-xs text-[#a0a0a0]">Categories</label>
+              <label className="mb-2 block text-xs text-[#6b7280]">Categories</label>
               <div className="flex flex-wrap gap-2">
                 {categoryOptions.map((cat) => (
                   <button
@@ -148,7 +148,7 @@ export default function SubmitPage() {
                     className={`rounded border px-3 py-1.5 text-xs transition-colors ${
                       form.categories.includes(cat)
                         ? 'border-[#DC2626] bg-[#DC2626]/10 text-[#DC2626]'
-                        : 'border-[#2a2a2a] text-[#a0a0a0] hover:border-[#3a3a3a]'
+                        : 'border-[#e5e7eb] text-[#6b7280] hover:border-[#d1d5db]'
                     }`}
                   >
                     {cat}
@@ -157,7 +157,7 @@ export default function SubmitPage() {
               </div>
             </div>
             <div>
-              <label className="mb-1.5 block text-xs text-[#a0a0a0]">Description *</label>
+              <label className="mb-1.5 block text-xs text-[#6b7280]">Description *</label>
               <textarea
                 name="description"
                 value={form.description}
@@ -165,12 +165,12 @@ export default function SubmitPage() {
                 required
                 rows={4}
                 placeholder="Describe what happened in detail..."
-                className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none focus:border-[#DC2626]"
+                className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] placeholder-[#9ca3af] outline-none focus:border-[#DC2626]"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="mb-1.5 block text-xs text-[#a0a0a0]">Amount Owed ($)</label>
+                <label className="mb-1.5 block text-xs text-[#6b7280]">Amount Owed ($)</label>
                 <input
                   name="amount_owed"
                   value={form.amount_owed}
@@ -178,17 +178,17 @@ export default function SubmitPage() {
                   type="number"
                   min="0"
                   step="0.01"
-                  className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-[#DC2626]"
+                  className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs text-[#a0a0a0]">Incident Date</label>
+                <label className="mb-1.5 block text-xs text-[#6b7280]">Incident Date</label>
                 <input
                   name="incident_date"
                   value={form.incident_date}
                   onChange={handleChange}
                   type="date"
-                  className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white outline-none focus:border-[#DC2626]"
+                  className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
                 />
               </div>
             </div>
@@ -201,7 +201,7 @@ export default function SubmitPage() {
         >
           Submit Entry
         </button>
-        <p className="text-center text-xs text-[#555]">
+        <p className="text-center text-xs text-[#9ca3af]">
           By submitting you confirm this report is truthful and based on your direct experience.
         </p>
       </form>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
@@ -46,28 +47,26 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-[#DC2626]">
-              <span className="text-xs font-black text-white">CB</span>
-            </div>
+            <Image src="/logo-icon.png" alt="Contractor Burnlist" width={32} height={32} style={{ height: '32px', width: 'auto', mixBlendMode: 'multiply' }} />
           </Link>
-          <h1 className="mt-4 text-2xl font-black text-white">Sign in to Contractor Burnlist</h1>
-          <p className="mt-2 text-sm text-[#a0a0a0]">Verified contractors only</p>
+          <h1 className="mt-4 text-2xl font-black text-[#111111]">Sign in to Contractor Burnlist</h1>
+          <p className="mt-2 text-sm text-[#6b7280]">Verified contractors only</p>
         </div>
 
-        <div className="rounded-lg border border-[#2a2a2a] bg-[#111111] p-6">
+        <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
           {sent ? (
             <div className="text-center">
               <div className="mb-3 text-3xl">📬</div>
-              <p className="font-semibold text-white">Check your email</p>
-              <p className="mt-2 text-sm text-[#a0a0a0]">
-                We sent a magic link to <span className="text-white">{email}</span>
+              <p className="font-semibold text-[#111111]">Check your email</p>
+              <p className="mt-2 text-sm text-[#6b7280]">
+                We sent a magic link to <span className="text-[#111111]">{email}</span>
               </p>
             </div>
           ) : (
             <>
               <button
                 onClick={handleGoogle}
-                className="mb-4 flex w-full items-center justify-center gap-3 rounded border border-[#2a2a2a] bg-[#0a0a0a] py-3 text-sm font-medium text-white transition-colors hover:border-[#3a3a3a]"
+                className="mb-4 flex w-full items-center justify-center gap-3 rounded border border-[#e5e7eb] bg-[#f9fafb] py-3 text-sm font-medium text-[#111111] transition-colors hover:border-[#d1d5db]"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -79,21 +78,21 @@ export default function LoginPage() {
               </button>
 
               <div className="mb-4 flex items-center gap-3">
-                <div className="h-px flex-1 bg-[#2a2a2a]" />
-                <span className="text-xs text-[#555]">or</span>
-                <div className="h-px flex-1 bg-[#2a2a2a]" />
+                <div className="h-px flex-1 bg-[#e5e7eb]" />
+                <span className="text-xs text-[#9ca3af]">or</span>
+                <div className="h-px flex-1 bg-[#e5e7eb]" />
               </div>
 
               <form onSubmit={handleMagicLink} className="space-y-4">
                 <div>
-                  <label className="mb-1.5 block text-xs text-[#a0a0a0]">Email address</label>
+                  <label className="mb-1.5 block text-xs text-[#6b7280]">Email address</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="you@example.com"
-                    className="w-full rounded border border-[#2a2a2a] bg-[#0a0a0a] px-3 py-2.5 text-sm text-white placeholder-[#555] outline-none focus:border-[#DC2626]"
+                    className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] placeholder-[#9ca3af] outline-none focus:border-[#DC2626]"
                   />
                 </div>
                 {error && <p className="text-xs text-[#DC2626]">{error}</p>}
