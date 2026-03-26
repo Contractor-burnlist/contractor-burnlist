@@ -65,7 +65,7 @@ export default function HomePage() {
           <div className="hidden lg:flex flex-col items-center flex-shrink-0">
             {/* Speech bubble */}
             <div className="relative mb-3 rounded-2xl border-2 border-white/20 bg-white px-4 py-2.5 text-center shadow-lg">
-              <span className="text-sm font-bold text-[#0a0a0a] whitespace-nowrap">Check before you wrench!</span>
+              <span className="text-sm font-bold text-[#0a0a0a] whitespace-nowrap">Phew! Disaster avoided.</span>
               {/* Bubble tail */}
               <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 h-0 w-0 border-l-8 border-r-8 border-t-[12px] border-l-transparent border-r-transparent border-t-white" />
             </div>
