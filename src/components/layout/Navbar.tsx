@@ -11,13 +11,21 @@ export default function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-[#DC2626]">
-              <span className="text-xs font-black text-white">CB</span>
+          <Link href="/" className="flex items-center gap-3">
+            <svg width="36" height="36" viewBox="0 0 88 88" aria-hidden="true">
+              <circle cx="44" cy="44" r="40" fill="#DC2626"/>
+              <rect x="26" y="20" width="36" height="48" rx="3" fill="white"/>
+              <line x1="32" y1="30" x2="56" y2="30" stroke="#DC2626" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="32" y1="38" x2="56" y2="38" stroke="#DC2626" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="32" y1="46" x2="56" y2="46" stroke="#DC2626" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="32" y1="54" x2="46" y2="54" stroke="#DC2626" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="10" y1="10" x2="78" y2="78" stroke="#DC2626" strokeWidth="7" strokeLinecap="round"/>
+            </svg>
+            <div className="flex flex-col leading-none" style={{ fontFamily: "'Arial Black', 'Arial', sans-serif" }}>
+              <span className="text-sm font-black text-white tracking-wide">CONTRACTOR</span>
+              <div className="my-0.5 h-px w-full bg-[#DC2626]" />
+              <span className="text-sm font-black text-[#DC2626] tracking-wide">BURNLIST</span>
             </div>
-            <span className="text-lg font-bold text-white">
-              Contractor <span className="text-[#DC2626]">Burnlist</span>
-            </span>
           </Link>
 
           {/* Center Nav */}
