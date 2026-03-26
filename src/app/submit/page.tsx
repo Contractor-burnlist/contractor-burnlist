@@ -6,16 +6,15 @@ import { createClient } from '@/lib/supabase/client'
 
 const categoryOptions = [
   'Non-payment',
-  'Partial payment',
-  'Chronic late pay',
-  'Fraudulent chargeback',
-  'Hostile / threatening',
-  'Rude / unprofessional',
-  'Scope creep',
-  'False damage claims',
-  'Bait & switch pricing',
-  'Refused access',
-  'Repeat cancellations',
+  'Fraudulent chargeback / disputed work',
+  'Threatened bad reviews as leverage',
+  'False damage / insurance claim',
+  'Hostile / threatening / abusive',
+  'Scope / contract dispute',
+  'Stopped payment / bounced check',
+  'False licensing board complaint',
+  'Refused access / locked out',
+  'Pattern of bad behavior',
 ]
 
 const US_STATES = [
