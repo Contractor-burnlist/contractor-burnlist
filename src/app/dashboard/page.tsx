@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import ManageBillingButton from './ManageBillingButton'
+import SuccessBanner from './SuccessBanner'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -27,6 +28,8 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+      <SuccessBanner />
+
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-[#111111]">Dashboard</h1>

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 const plans = [
@@ -9,11 +8,12 @@ const plans = [
     name: 'Shield',
     price: 19,
     priceId: process.env.NEXT_PUBLIC_SHIELD_PRICE_ID || '',
+    tagline: 'Your first line of defense',
     features: [
       'Search the registry',
       'View initials + city on results',
       'Submit up to 3 entries/month',
-      'Email alerts',
+      'Email alerts on new matches',
     ],
     recommended: false,
     cta: 'Get Shield Access',
@@ -22,11 +22,13 @@ const plans = [
     name: 'Fortress',
     price: 39,
     priceId: process.env.NEXT_PUBLIC_FORTRESS_PRICE_ID || '',
+    tagline: 'Total protection for your business',
     features: [
       'Everything in Shield',
-      'Full address + phone visible',
+      'Full address + phone number visible',
       'Unlimited submissions',
       'Priority support',
+      'Worker registry access',
       'Integration ready (coming soon)',
     ],
     recommended: true,
@@ -88,6 +90,7 @@ export default function PricingPage() {
               </div>
             )}
             <h2 className="mb-1 text-xl font-black text-[#111111]">{plan.name}</h2>
+            <p className="mb-4 text-sm text-[#6b7280]">{plan.tagline}</p>
             <div className="mb-6">
               <span className="text-4xl font-black text-[#111111]">${plan.price}</span>
               <span className="text-[#6b7280]">/month</span>

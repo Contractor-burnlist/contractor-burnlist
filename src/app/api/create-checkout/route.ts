@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     payment_method_types: ['card'],
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${origin}/dashboard?success=true`,
-    cancel_url: `${origin}/dashboard`,
+    cancel_url: `${origin}/pricing`,
     customer_email: user.email!,
     metadata: {
       userId: user.id,
