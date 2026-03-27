@@ -34,7 +34,7 @@ function LoginContent() {
         <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
           {hasError && (
             <div className="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-[#DC2626]">
-              Sign in failed. Please try again.
+              Authentication error. Please try again or contact support if the issue persists.
             </div>
           )}
 
