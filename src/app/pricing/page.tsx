@@ -61,6 +61,8 @@ export default function PricingPage() {
     if (data.url) {
       window.location.href = data.url
     } else {
+      console.error('[pricing] Checkout failed:', data.error)
+      alert(data.error || 'Failed to start checkout. Please try again.')
       setLoading(null)
     }
   }
