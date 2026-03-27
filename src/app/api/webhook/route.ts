@@ -27,14 +27,32 @@ export async function POST(request: Request) {
     const customerId = session.customer as string
     const subscriptionId = session.subscription as string
 
+    console.log('[webhook] checkout.session.completed')
+    console.log('[webhook] session.metadata:', JSON.stringify(session.metadata))
+    console.log('[webhook] userId:', userId)
+    console.log('[webhook] customerId:', customerId)
+    console.log('[webhook] subscriptionId:', subscriptionId)
+
+    if (!userId) {
+      console.error('[webhook] NO userId in metadata — cannot update tables')
+    }
+    if (!subscriptionId) {
+      console.error('[webhook] NO subscriptionId — cannot retrieve subscription')
+    }
+
     if (userId && subscriptionId) {
       const subscription = await stripe.subscriptions.retrieve(subscriptionId)
       const priceId = subscription.items.data[0]?.price?.id || ''
       const tier = priceId === process.env.NEXT_PUBLIC_FORTRESS_PRICE_ID ? 'fortress' : 'shield'
       const periodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
 
+      console.log('[webhook] priceId:', priceId)
+      console.log('[webhook] FORTRESS env:', process.env.NEXT_PUBLIC_FORTRESS_PRICE_ID)
+      console.log('[webhook] tier:', tier)
+      console.log('[webhook] periodEnd:', periodEnd)
+
       // Upsert subscriptions table
-      await supabase.from('subscriptions').upsert({
+      const { error: subError } = await supabase.from('subscriptions').upsert({
         user_id: userId,
         stripe_subscription_id: subscription.id,
         stripe_price_id: priceId,
@@ -43,12 +61,24 @@ export async function POST(request: Request) {
         current_period_end: periodEnd,
       }, { onConflict: 'user_id' })
 
+      if (subError) {
+        console.error('[webhook] subscriptions upsert error:', JSON.stringify(subError))
+      } else {
+        console.log('[webhook] subscriptions upsert SUCCESS')
+      }
+
       // Update profiles table
-      await supabase.from('profiles').update({
+      const { error: profError } = await supabase.from('profiles').update({
         subscription_status: 'active',
         subscription_tier: tier,
         stripe_customer_id: customerId,
       }).eq('id', userId)
+
+      if (profError) {
+        console.error('[webhook] profiles update error:', JSON.stringify(profError))
+      } else {
+        console.log('[webhook] profiles update SUCCESS')
+      }
     }
   }
 
