@@ -4,7 +4,8 @@ import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   console.log('[create-checkout] Starting checkout session creation')
-  console.log('[create-checkout] STRIPE_SECRET_KEY exists:', !!process.env.STRIPE_SECRET_KEY)
+  console.log('STRIPE_SECRET_KEY exists:', !!process.env.STRIPE_SECRET_KEY)
+  console.log('STRIPE_SECRET_KEY prefix:', process.env.STRIPE_SECRET_KEY?.slice(0, 7))
 
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
   }
 
   const { priceId } = body
-  console.log('[create-checkout] Price ID:', priceId)
+  console.log('Price ID received:', priceId)
 
   if (!priceId) {
     console.log('[create-checkout] No priceId provided — returning 400')
@@ -55,9 +56,9 @@ export async function POST(request: Request) {
     console.log('[create-checkout] Session created:', session.id, session.url)
     return NextResponse.json({ url: session.url })
   } catch (err: any) {
-    console.error('[create-checkout] Stripe error:', err.type, err.message, err.raw?.message)
+    console.error('[create-checkout] Stripe error full:', JSON.stringify(err, Object.getOwnPropertyNames(err)))
     return NextResponse.json(
-      { error: err.message || 'Failed to create checkout session' },
+      { error: err.message, type: err.type, code: err.code, raw: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
       { status: 500 }
     )
   }

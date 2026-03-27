@@ -57,8 +57,8 @@ export default function PricingPage() {
     if (data.url) {
       window.location.href = data.url
     } else {
-      console.error('[pricing] Checkout failed:', data.error)
-      alert(data.error || 'Failed to start checkout. Please try again.')
+      console.error('[pricing] Checkout failed:', JSON.stringify(data))
+      alert(data.error || data.message || JSON.stringify(data))
       setLoading(null)
     }
   }
