@@ -43,10 +43,10 @@ export default function PricingPage() {
     setLoading(priceId)
 
     const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { session } } = await supabase.auth.getSession()
 
-    if (!user) {
-      window.location.href = '/auth/login'
+    if (!session) {
+      window.location.href = '/auth/login?next=/pricing'
       return
     }
 

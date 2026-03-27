@@ -9,13 +9,15 @@ import { createClient } from '@/lib/supabase/client'
 function LoginContent() {
   const searchParams = useSearchParams()
   const hasError = searchParams.get('error') === 'true'
+  const next = searchParams.get('next') || '/dashboard'
 
   async function handleGoogle() {
     const supabase = createClient()
+    const origin = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/auth/callback`,
+        redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     })
   }
