@@ -116,7 +116,7 @@ export default function SearchPage() {
                 <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg bg-white/80">
                   <p className="mb-3 text-sm font-semibold text-[#111111]">Subscribe to view full details</p>
                   <Link
-                    href="/auth/login"
+                    href="/pricing"
                     className="rounded bg-[#DC2626] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
                   >
                     Get Access

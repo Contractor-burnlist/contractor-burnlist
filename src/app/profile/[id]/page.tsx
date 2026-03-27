@@ -149,7 +149,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
                 </svg>
                 <p className="text-sm font-semibold text-[#111111]">Subscribe to view contact details</p>
                 <Link
-                  href="/auth/login"
+                  href="/pricing"
                   className="mt-2 rounded bg-[#DC2626] px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700"
                 >
                   Get Access

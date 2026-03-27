@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import ManageBillingButton from './ManageBillingButton'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -35,7 +36,7 @@ export default async function DashboardPage() {
           href="/submit"
           className="rounded bg-[#DC2626] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
         >
-          + Submit Entry
+          + Submit Report
         </Link>
       </div>
 
@@ -44,27 +45,38 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <div className="text-xs text-[#6b7280]">Subscription</div>
-            <div className="mt-0.5 font-semibold text-[#111111] capitalize">
-              {profile?.subscription_tier || 'None'}{' '}
-              <span className={isActive ? 'text-green-600' : 'text-[#DC2626]'}>
-                ({profile?.subscription_status || 'inactive'})
-              </span>
-            </div>
+            {isActive ? (
+              <div className="mt-1 flex items-center gap-2">
+                <span className="rounded-full bg-green-50 border border-green-300 px-3 py-0.5 text-xs font-semibold text-green-600">
+                  Active — {profile?.subscription_tier?.charAt(0).toUpperCase()}{profile?.subscription_tier?.slice(1)}
+                </span>
+              </div>
+            ) : (
+              <div className="mt-0.5 font-semibold text-[#111111]">
+                No active plan{' '}
+                <span className="text-[#DC2626]">(inactive)</span>
+              </div>
+            )}
           </div>
-          {!isActive && (
-            <Link
-              href="/auth/login"
-              className="rounded border border-[#DC2626] px-4 py-2 text-sm font-semibold text-[#DC2626] transition-colors hover:bg-[#DC2626] hover:text-white"
-            >
-              Upgrade Access
-            </Link>
-          )}
+          <div className="flex gap-2">
+            {isActive && profile?.stripe_customer_id && (
+              <ManageBillingButton />
+            )}
+            {!isActive && (
+              <Link
+                href="/pricing"
+                className="rounded border border-[#DC2626] px-4 py-2 text-sm font-semibold text-[#DC2626] transition-colors hover:bg-[#DC2626] hover:text-white"
+              >
+                Upgrade Access
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
       {/* My Entries */}
       <div>
-        <h2 className="mb-4 text-lg font-bold text-[#111111]">My Submitted Entries</h2>
+        <h2 className="mb-4 text-lg font-bold text-[#111111]">My Submitted Reports</h2>
         {entries && entries.length > 0 ? (
           <div className="space-y-3">
             {entries.map((entry: any) => (
@@ -97,12 +109,12 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div className="rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-8 py-12 text-center">
-            <p className="text-[#6b7280]">No entries submitted yet.</p>
+            <p className="text-[#6b7280]">No reports submitted yet.</p>
             <Link
               href="/submit"
               className="mt-4 inline-block text-sm font-semibold text-[#DC2626] hover:underline"
             >
-              Submit your first entry →
+              Submit your first report →
             </Link>
           </div>
         )}

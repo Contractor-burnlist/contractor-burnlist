@@ -85,7 +85,7 @@ export default function Navbar() {
                   Login
                 </Link>
                 <Link
-                  href="/auth/login"
+                  href="/pricing"
                   className="rounded bg-[#DC2626] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
                 >
                   Get Access
