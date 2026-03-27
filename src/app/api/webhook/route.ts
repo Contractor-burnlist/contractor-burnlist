@@ -19,32 +19,36 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
+  const supabase = await createServiceClient()
+
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as any
     const userId = session.metadata?.userId
     const customerId = session.customer as string
     const subscriptionId = session.subscription as string
 
-    if (userId) {
-      const supabase = await createServiceClient()
+    if (userId && subscriptionId) {
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+      const priceId = subscription.items.data[0]?.price?.id || ''
+      const tier = priceId === process.env.NEXT_PUBLIC_FORTRESS_PRICE_ID ? 'fortress' : 'shield'
+      const periodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
 
-      // Determine tier from the subscription
-      let tier = 'shield'
-      try {
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-        const amount = subscription.items.data[0]?.price?.unit_amount || 0
-        tier = amount >= 3900 ? 'fortress' : 'shield'
-      } catch {}
+      // Upsert subscriptions table
+      await supabase.from('subscriptions').upsert({
+        user_id: userId,
+        stripe_subscription_id: subscription.id,
+        stripe_price_id: priceId,
+        tier: tier,
+        status: 'active',
+        current_period_end: periodEnd,
+      }, { onConflict: 'user_id' })
 
-      // Update profile
-      await supabase
-        .from('profiles')
-        .update({
-          subscription_status: 'active',
-          subscription_tier: tier,
-          stripe_customer_id: customerId,
-        })
-        .eq('id', userId)
+      // Update profiles table
+      await supabase.from('profiles').update({
+        subscription_status: 'active',
+        subscription_tier: tier,
+        stripe_customer_id: customerId,
+      }).eq('id', userId)
     }
   }
 
@@ -52,35 +56,39 @@ export async function POST(request: Request) {
     const subscription = event.data.object as any
     const customerId = subscription.customer as string
 
-    const supabase = await createServiceClient()
+    // Update subscriptions via stripe_subscription_id
+    await supabase.from('subscriptions').update({
+      status: 'inactive',
+    }).eq('stripe_subscription_id', subscription.id)
 
-    await supabase
-      .from('profiles')
-      .update({
-        subscription_status: 'inactive',
-        subscription_tier: null,
-      })
-      .eq('stripe_customer_id', customerId)
+    // Update profiles
+    await supabase.from('profiles').update({
+      subscription_status: 'inactive',
+      subscription_tier: null,
+    }).eq('stripe_customer_id', customerId)
   }
 
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as any
     const customerId = subscription.customer as string
     const status = subscription.status === 'active' ? 'active' : 'inactive'
+    const priceId = subscription.items.data[0]?.price?.id || ''
+    const tier = priceId === process.env.NEXT_PUBLIC_FORTRESS_PRICE_ID ? 'fortress' : 'shield'
+    const periodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
 
-    let tier = 'shield'
-    const amount = subscription.items.data[0]?.price?.unit_amount || 0
-    tier = amount >= 3900 ? 'fortress' : 'shield'
+    // Update subscriptions table
+    await supabase.from('subscriptions').update({
+      stripe_price_id: priceId,
+      tier: tier,
+      status: status,
+      current_period_end: periodEnd,
+    }).eq('stripe_subscription_id', subscription.id)
 
-    const supabase = await createServiceClient()
-
-    await supabase
-      .from('profiles')
-      .update({
-        subscription_status: status,
-        subscription_tier: tier,
-      })
-      .eq('stripe_customer_id', customerId)
+    // Update profiles table
+    await supabase.from('profiles').update({
+      subscription_status: status,
+      subscription_tier: tier,
+    }).eq('stripe_customer_id', customerId)
   }
 
   return NextResponse.json({ received: true })
