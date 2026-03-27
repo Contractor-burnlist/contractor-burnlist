@@ -6,9 +6,9 @@ import { createClient } from '@/lib/supabase/client'
 
 const plans = [
   {
-    name: 'Basic',
+    name: 'Shield',
     price: 19,
-    priceId: process.env.NEXT_PUBLIC_STRIPE_BASIC_PRICE_ID || '',
+    priceId: process.env.NEXT_PUBLIC_SHIELD_PRICE_ID || '',
     features: [
       'Search the registry',
       'View initials + city on results',
@@ -16,21 +16,21 @@ const plans = [
       'Email alerts',
     ],
     recommended: false,
-    cta: 'Get Basic Access',
+    cta: 'Get Shield Access',
   },
   {
-    name: 'Pro',
+    name: 'Fortress',
     price: 39,
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || '',
+    priceId: process.env.NEXT_PUBLIC_FORTRESS_PRICE_ID || '',
     features: [
-      'Everything in Basic',
+      'Everything in Shield',
       'Full address + phone visible',
       'Unlimited submissions',
       'Priority support',
       'Integration ready (coming soon)',
     ],
     recommended: true,
-    cta: 'Get Pro Access',
+    cta: 'Get Fortress Access',
   },
 ]
 

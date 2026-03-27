@@ -29,11 +29,11 @@ export async function POST(request: Request) {
       const supabase = await createServiceClient()
 
       // Determine tier from the subscription
-      let tier = 'basic'
+      let tier = 'shield'
       try {
         const subscription = await stripe.subscriptions.retrieve(subscriptionId)
         const amount = subscription.items.data[0]?.price?.unit_amount || 0
-        tier = amount >= 3900 ? 'pro' : 'basic'
+        tier = amount >= 3900 ? 'fortress' : 'shield'
       } catch {}
 
       // Update profile
@@ -68,9 +68,9 @@ export async function POST(request: Request) {
     const customerId = subscription.customer as string
     const status = subscription.status === 'active' ? 'active' : 'inactive'
 
-    let tier = 'basic'
+    let tier = 'shield'
     const amount = subscription.items.data[0]?.price?.unit_amount || 0
-    tier = amount >= 3900 ? 'pro' : 'basic'
+    tier = amount >= 3900 ? 'fortress' : 'shield'
 
     const supabase = await createServiceClient()
 
