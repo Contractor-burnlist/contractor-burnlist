@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 
 const plans = [
   {
@@ -42,19 +41,16 @@ export default function PricingPage() {
   async function handleCheckout(priceId: string) {
     setLoading(priceId)
 
-    const supabase = createClient()
-    const { data: { session } } = await supabase.auth.getSession()
-
-    if (!session) {
-      window.location.href = '/auth/login?next=/pricing'
-      return
-    }
-
     const res = await fetch('/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ priceId }),
     })
+
+    if (res.status === 401) {
+      window.location.href = '/auth/login?next=/pricing'
+      return
+    }
 
     const data = await res.json()
 
