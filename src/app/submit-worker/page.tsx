@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 
 const categoryOptions = [
   'No-show / abandoned job',
@@ -181,7 +182,7 @@ export default function SubmitWorkerPage() {
       </div>
 
       {/* Privacy Guarantee */}
-      <div className="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-4">
+      <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
         <div className="flex gap-3">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="mt-0.5 shrink-0 text-blue-600">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
@@ -195,6 +196,10 @@ export default function SubmitWorkerPage() {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="mb-6">
+        <PlatformDisclaimer variant="compact" />
       </div>
 
       {error && (
@@ -283,7 +288,7 @@ export default function SubmitWorkerPage() {
           <label className="flex cursor-pointer items-start gap-3">
             <input type="checkbox" checked={certified} onChange={(e) => setCertified(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#d1d5db] accent-[#DC2626]" />
             <span className="text-sm leading-relaxed text-[#6b7280]">
-              I certify that this report is based on my firsthand experience and is truthful and accurate to the best of my knowledge. I understand that false reports may result in account termination.
+              I confirm that this report is truthful and based on my firsthand experience. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
               <span className="text-[#DC2626]"> *</span>
             </span>
           </label>

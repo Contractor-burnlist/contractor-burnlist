@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
+import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 
 const stats = [
   { label: 'Contractors Protected', value: '12,400+' },
@@ -152,16 +153,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Footer — dark */}
-      <footer className="border-t border-[#2a2a2a] bg-[#111111] px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="flex items-center gap-2">
-            <Image src="/logo-icon.png" alt="Contractor Burnlist" width={22} height={22} style={{ height: '22px', width: 'auto' }} />
-            <span className="text-sm font-bold text-white">Contractor Burnlist</span>
-          </div>
-          <p className="text-xs text-[#6b7280]">© {new Date().getFullYear()} Contractor Burnlist. All rights reserved.</p>
+      {/* Full Disclaimer */}
+      <section className="bg-white px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          <PlatformDisclaimer variant="full" />
         </div>
-      </footer>
+      </section>
     </div>
   )
 }

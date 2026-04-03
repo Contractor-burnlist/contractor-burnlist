@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 
 const plans = [
   {
@@ -124,9 +125,10 @@ export default function PricingPage() {
       </div>
 
       <div className="mx-auto mt-12 max-w-2xl text-center">
-        <p className="text-sm text-[#9ca3af]">
+        <p className="mb-6 text-sm text-[#9ca3af]">
           Cancel anytime. All plans include a 7-day money-back guarantee.
         </p>
+        <PlatformDisclaimer variant="compact" />
       </div>
     </div>
   )

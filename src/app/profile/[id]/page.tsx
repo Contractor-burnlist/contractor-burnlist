@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
+import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 
 const riskColors: Record<string, string> = {
   high: 'text-[#DC2626] bg-[#DC2626]/10 border-[#DC2626]/30',
@@ -248,6 +249,10 @@ async function renderCustomerProfile(
           Submit a Report
         </Link>
       </div>
+
+      <div className="mt-8">
+        <PlatformDisclaimer variant="full" />
+      </div>
     </div>
   )
 }
@@ -428,6 +433,10 @@ async function renderWorkerProfile(
         >
           Submit a Report
         </Link>
+      </div>
+
+      <div className="mt-8">
+        <PlatformDisclaimer variant="full" />
       </div>
     </div>
   )

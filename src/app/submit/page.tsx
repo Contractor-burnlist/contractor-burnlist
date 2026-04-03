@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 
 // Customer category tags
 const customerCategories = [
@@ -316,6 +317,10 @@ export default function SubmitPage() {
         </div>
       </div>
 
+      <div className="mb-6">
+        <PlatformDisclaimer variant="compact" />
+      </div>
+
       {/* Report Type Selection */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <button
@@ -450,7 +455,7 @@ export default function SubmitPage() {
             <label className="flex cursor-pointer items-start gap-3">
               <input type="checkbox" checked={certified} onChange={(e) => setCertified(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#d1d5db] accent-[#DC2626]" />
               <span className="text-sm leading-relaxed text-[#6b7280]">
-                I certify that this report is based on my firsthand experience and is truthful and accurate to the best of my knowledge. I understand that false reports may result in account termination.
+                I confirm that this report is truthful and based on my firsthand experience. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
                 <span className="text-[#DC2626]"> *</span>
               </span>
             </label>
@@ -530,7 +535,7 @@ export default function SubmitPage() {
             <label className="flex cursor-pointer items-start gap-3">
               <input type="checkbox" checked={certified} onChange={(e) => setCertified(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#d1d5db] accent-[#DC2626]" />
               <span className="text-sm leading-relaxed text-[#6b7280]">
-                I certify that this report is based on my firsthand experience and is truthful and accurate to the best of my knowledge. I understand that false reports may result in account termination.
+                I confirm that this report is truthful and based on my firsthand experience. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
                 <span className="text-[#DC2626]"> *</span>
               </span>
             </label>

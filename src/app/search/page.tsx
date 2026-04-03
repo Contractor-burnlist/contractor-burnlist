@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 
 const riskColors: Record<string, string> = {
   high: 'text-[#DC2626] bg-[#DC2626]/10 border-[#DC2626]/30',
@@ -153,6 +154,10 @@ export default function SearchPage() {
           {loading ? 'Searching...' : 'Search'}
         </button>
       </form>
+
+      <div className="mb-6">
+        <PlatformDisclaimer variant="compact" />
+      </div>
 
       {/* Filter toggles */}
       {searched && !loading && results.length > 0 && (
