@@ -9,15 +9,26 @@ import type { User } from '@supabase/supabase-js'
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
+  const [isVerified, setIsVerified] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
+      if (session?.user) {
+        supabase.from('profiles').select('is_verified').eq('id', session.user.id).single()
+          .then(({ data }) => setIsVerified(data?.is_verified === true))
+      }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
+      if (session?.user) {
+        supabase.from('profiles').select('is_verified').eq('id', session.user.id).single()
+          .then(({ data }) => setIsVerified(data?.is_verified === true))
+      } else {
+        setIsVerified(false)
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -70,7 +81,26 @@ export default function Navbar() {
           <div className="hidden items-center gap-3 md:flex">
             {user ? (
               <>
-                <span className="text-sm text-[#6b7280]">{user.email}</span>
+                {isVerified ? (
+                  <span className="flex items-center gap-1.5 text-sm text-[#6b7280]">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                      <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
+                      <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                      <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {user.email}
+                  </span>
+                ) : (
+                  <>
+                    <Link href="/verify" className="flex items-center gap-1 text-sm font-medium text-green-600 transition-colors hover:text-green-700">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                      </svg>
+                      Get Verified
+                    </Link>
+                    <span className="text-sm text-[#6b7280]">{user.email}</span>
+                  </>
+                )}
                 <button
                   onClick={handleSignOut}
                   className="rounded border border-[#e5e7eb] px-4 py-2 text-sm font-medium text-[#6b7280] transition-colors hover:border-[#d1d5db] hover:text-[#111111]"
@@ -119,7 +149,26 @@ export default function Navbar() {
             <Link href="/dashboard" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Dashboard</Link>
             {user ? (
               <>
-                <span className="text-sm text-[#6b7280]">{user.email}</span>
+                {isVerified ? (
+                  <span className="flex items-center gap-1.5 text-sm text-[#6b7280]">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                      <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
+                      <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                      <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {user.email}
+                  </span>
+                ) : (
+                  <>
+                    <Link href="/verify" className="flex items-center gap-1 text-sm font-medium text-green-600" onClick={() => setMobileOpen(false)}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                      </svg>
+                      Get Verified
+                    </Link>
+                    <span className="text-sm text-[#6b7280]">{user.email}</span>
+                  </>
+                )}
                 <button onClick={() => { handleSignOut(); setMobileOpen(false) }} className="text-left text-sm text-[#6b7280] hover:text-[#111111]">Sign Out</button>
               </>
             ) : (

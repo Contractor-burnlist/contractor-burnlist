@@ -104,7 +104,7 @@ async function renderCustomerProfile(
           <div>
             <div className="text-xs text-[#6b7280]">Reports</div>
             <div className="text-2xl font-black text-[#111111]">{customer.flag_count || entryList.length}</div>
-            <div className="text-xs text-[#9ca3af]">from verified contractors</div>
+            <div className="text-xs text-[#9ca3af]">from contractors</div>
           </div>
           <div>
             <div className="text-xs text-[#6b7280]">Total Owed</div>
@@ -190,7 +190,7 @@ async function renderCustomerProfile(
       {entryList.length > 0 ? (
         <div className="space-y-4">
           {entryList.map((entry) => (
-            <div key={entry.id} className="rounded-lg border border-[#e5e7eb] bg-white p-5">
+            <div key={entry.id} className={`rounded-lg border bg-white p-5 ${(entry.is_verified_submission || entry.submitter_verified) ? 'border-l-4 border-l-green-500 border-[#e5e7eb]' : 'border-[#e5e7eb]'}`}>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap gap-2">
                   {entry.category_tags?.map((tag: string) => (
@@ -201,9 +201,14 @@ async function renderCustomerProfile(
                       {tag}
                     </span>
                   ))}
-                  {entry.is_verified_submission && (
-                    <span className="rounded border border-green-300 bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-600">
-                      Verified
+                  {(entry.is_verified_submission || entry.submitter_verified) && (
+                    <span className="inline-flex items-center gap-1 rounded border border-green-300 bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-600">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
+                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Verified Report
                     </span>
                   )}
                 </div>
@@ -305,7 +310,7 @@ async function renderWorkerProfile(
           <div>
             <div className="text-xs text-[#6b7280]">Reports</div>
             <div className="text-2xl font-black text-[#111111]">{worker.flag_count || entryList.length}</div>
-            <div className="text-xs text-[#9ca3af]">from verified contractors</div>
+            <div className="text-xs text-[#9ca3af]">from contractors</div>
           </div>
           {firstReported && (
             <div>
@@ -375,7 +380,7 @@ async function renderWorkerProfile(
       {entryList.length > 0 ? (
         <div className="space-y-4">
           {entryList.map((entry) => (
-            <div key={entry.id} className="rounded-lg border border-[#e5e7eb] bg-white p-5">
+            <div key={entry.id} className={`rounded-lg border bg-white p-5 ${(entry.is_verified_submission || entry.submitter_verified) ? 'border-l-4 border-l-green-500 border-[#e5e7eb]' : 'border-[#e5e7eb]'}`}>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap gap-2">
                   {entry.category_tags?.map((tag: string) => (
@@ -386,9 +391,14 @@ async function renderWorkerProfile(
                       {tag}
                     </span>
                   ))}
-                  {entry.is_verified_submission && (
-                    <span className="rounded border border-green-300 bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-600">
-                      Verified
+                  {(entry.is_verified_submission || entry.submitter_verified) && (
+                    <span className="inline-flex items-center gap-1 rounded border border-green-300 bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-600">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
+                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Verified Report
                     </span>
                   )}
                 </div>

@@ -67,11 +67,14 @@ export async function POST(request: Request) {
         console.log('[webhook] subscriptions upsert SUCCESS')
       }
 
-      // Update profiles table
+      // Update profiles table + increment trust_score for subscription (cap at 5)
+      const { data: existingProfile } = await supabase.from('profiles').select('trust_score').eq('id', userId).single()
+      const currentScore = existingProfile?.trust_score ?? 1
       const { error: profError } = await supabase.from('profiles').update({
         subscription_status: 'active',
         subscription_tier: tier,
         stripe_customer_id: customerId,
+        trust_score: Math.min(currentScore + 1, 5),
       }).eq('id', userId)
 
       if (profError) {

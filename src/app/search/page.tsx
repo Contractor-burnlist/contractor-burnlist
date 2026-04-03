@@ -24,6 +24,7 @@ type SearchResult = {
   risk_level: string
   trade: string | null
   entry_count: number
+  has_verified_report: boolean
 }
 
 export default function SearchPage() {
@@ -49,13 +50,13 @@ export default function SearchPage() {
 
     let customersQuery = supabase
       .from('customers')
-      .select('id, display_name, city, state, flag_count, risk_level, entries(count)')
+      .select('id, display_name, city, state, flag_count, risk_level, entries(count, submitter_verified)')
       .order('flag_count', { ascending: false })
       .limit(50)
 
     let workersQuery = supabase
       .from('workers')
-      .select('id, display_name, city, state, flag_count, risk_level, trade_specialty, worker_entries(count)')
+      .select('id, display_name, city, state, flag_count, risk_level, trade_specialty, worker_entries(count, submitter_verified)')
       .order('flag_count', { ascending: false })
       .limit(50)
 
@@ -74,29 +75,37 @@ export default function SearchPage() {
     console.log('[search] customers:', customersRes.data?.length ?? 0, 'error:', customersRes.error)
     console.log('[search] workers:', workersRes.data?.length ?? 0, 'error:', workersRes.error)
 
-    const customerResults: SearchResult[] = (customersRes.data || []).map((c: Record<string, unknown>) => ({
-      id: c.id as string,
-      type: 'customer' as const,
-      display_name: c.display_name as string,
-      city: c.city as string,
-      state: c.state as string,
-      flag_count: c.flag_count as number,
-      risk_level: c.risk_level as string,
-      trade: null,
-      entry_count: Array.isArray(c.entries) ? (c.entries[0]?.count ?? 0) : 0,
-    }))
+    const customerResults: SearchResult[] = (customersRes.data || []).map((c: Record<string, unknown>) => {
+      const entries = c.entries as Record<string, unknown>[] | undefined
+      return {
+        id: c.id as string,
+        type: 'customer' as const,
+        display_name: c.display_name as string,
+        city: c.city as string,
+        state: c.state as string,
+        flag_count: c.flag_count as number,
+        risk_level: c.risk_level as string,
+        trade: null,
+        entry_count: Array.isArray(entries) ? (entries[0]?.count as number ?? 0) : 0,
+        has_verified_report: Array.isArray(entries) && entries.some((e) => e.submitter_verified === true),
+      }
+    })
 
-    const workerResults: SearchResult[] = (workersRes.data || []).map((w: Record<string, unknown>) => ({
-      id: w.id as string,
-      type: 'worker' as const,
-      display_name: w.display_name as string,
-      city: w.city as string,
-      state: w.state as string,
-      flag_count: w.flag_count as number,
-      risk_level: w.risk_level as string,
-      trade: (w.trade_specialty as string) || null,
-      entry_count: Array.isArray(w.worker_entries) ? (w.worker_entries[0]?.count ?? 0) : 0,
-    }))
+    const workerResults: SearchResult[] = (workersRes.data || []).map((w: Record<string, unknown>) => {
+      const wEntries = w.worker_entries as Record<string, unknown>[] | undefined
+      return {
+        id: w.id as string,
+        type: 'worker' as const,
+        display_name: w.display_name as string,
+        city: w.city as string,
+        state: w.state as string,
+        flag_count: w.flag_count as number,
+        risk_level: w.risk_level as string,
+        trade: (w.trade_specialty as string) || null,
+        entry_count: Array.isArray(wEntries) ? (wEntries[0]?.count as number ?? 0) : 0,
+        has_verified_report: Array.isArray(wEntries) && wEntries.some((e) => e.submitter_verified === true),
+      }
+    })
 
     const merged = [...customerResults, ...workerResults].sort(
       (a, b) => b.flag_count - a.flag_count
@@ -232,7 +241,18 @@ export default function SearchPage() {
                     {result.type === 'customer' ? 'Customer' : 'Worker'}
                   </span>
                   <div>
-                    <div className="font-semibold text-[#111111]">{result.display_name}</div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-[#111111]">{result.display_name}</span>
+                      {result.has_verified_report && (
+                        <span title="Reported by a verified contractor">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                            <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
+                            <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                            <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </span>
+                      )}
+                    </div>
                     <div className="mt-0.5 flex items-center gap-2 text-xs text-[#6b7280]">
                       <span>{result.city}, {result.state}</span>
                       {result.trade && (
