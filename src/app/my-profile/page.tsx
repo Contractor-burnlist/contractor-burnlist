@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { calculateTrustScore, type TrustProfile } from '@/lib/trust-score'
+import { getReputation } from '@/lib/reputation'
+import ReputationBadge from '@/components/ReputationBadge'
 
 const TRADE_OPTIONS = [
   'Plumbing', 'Electrical', 'HVAC', 'Painting', 'Cleaning',
@@ -28,6 +30,8 @@ type FullProfile = TrustProfile & {
   city?: string | null
   state?: string | null
   subscription_tier?: string | null
+  reputation_points?: number | null
+  comment_count?: number | null
 }
 
 export default function MyProfilePage() {
@@ -55,7 +59,7 @@ export default function MyProfilePage() {
       setEmail(user.email ?? '')
 
       const [{ data: prof }, { data: entries }, { data: workerEntries }] = await Promise.all([
-        supabase.from('profiles').select('business_name, business_phone, trade, is_verified, subscription_status, subscription_tier, created_at, city, state').eq('id', user.id).single(),
+        supabase.from('profiles').select('business_name, business_phone, trade, is_verified, subscription_status, subscription_tier, created_at, city, state, reputation_points, comment_count').eq('id', user.id).single(),
         supabase.from('entries').select('id').eq('submitted_by', user.id).limit(1),
         supabase.from('worker_entries').select('id').eq('submitted_by', user.id).limit(1),
       ])
@@ -196,6 +200,29 @@ export default function MyProfilePage() {
                   </Link>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Reputation Card */}
+          <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
+            <h3 className="mb-4 text-sm font-bold text-[#111111]">Reputation</h3>
+            <div className="mb-3 flex items-center gap-3">
+              <ReputationBadge points={profile?.reputation_points ?? 0} size="lg" />
+            </div>
+            <p className="text-sm text-[#6b7280]">{profile?.reputation_points ?? 0} reputation points</p>
+            {(() => {
+              const rep = getReputation(profile?.reputation_points ?? 0)
+              return rep.pointsToNextRank ? (
+                <>
+                  <div className="mt-2 h-2 w-full rounded-full bg-[#e5e7eb]">
+                    <div className="h-2 rounded-full bg-green-500" style={{ width: `${Math.min(100, ((profile?.reputation_points ?? 0) / ((profile?.reputation_points ?? 0) + (rep.pointsToNextRank ?? 1))) * 100)}%` }} />
+                  </div>
+                  <p className="mt-1 text-xs text-[#9ca3af]">{rep.pointsToNextRank} more points to {rep.nextRank}</p>
+                </>
+              ) : null
+            })()}
+            <div className="mt-3 text-xs text-[#9ca3af]">
+              {profile?.comment_count ?? 0} comments posted
             </div>
           </div>
 

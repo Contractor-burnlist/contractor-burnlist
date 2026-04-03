@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
+import CommentSection from '@/components/CommentSection'
 
 const riskColors: Record<string, string> = {
   high: 'text-[#DC2626] bg-[#DC2626]/10 border-[#DC2626]/30',
@@ -229,6 +230,7 @@ async function renderCustomerProfile(
                   Amount owed: ${Number(entry.amount_owed).toLocaleString()}
                 </div>
               )}
+              <CommentSection entryId={entry.id} />
             </div>
           ))}
         </div>
@@ -414,6 +416,7 @@ async function renderWorkerProfile(
                 </span>
               </div>
               <p className="text-sm leading-relaxed text-[#4b5563]">{entry.description}</p>
+              <CommentSection workerEntryId={entry.id} />
             </div>
           ))}
         </div>

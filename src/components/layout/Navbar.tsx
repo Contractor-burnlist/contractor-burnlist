@@ -5,27 +5,29 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
+import ReputationBadge from '@/components/ReputationBadge'
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [isVerified, setIsVerified] = useState(false)
+  const [repPoints, setRepPoints] = useState(0)
 
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        supabase.from('profiles').select('is_verified').eq('id', session.user.id).single()
-          .then(({ data }) => setIsVerified(data?.is_verified === true))
+        supabase.from('profiles').select('is_verified, reputation_points').eq('id', session.user.id).single()
+          .then(({ data }) => { setIsVerified(data?.is_verified === true); setRepPoints(data?.reputation_points ?? 0) })
       }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        supabase.from('profiles').select('is_verified').eq('id', session.user.id).single()
-          .then(({ data }) => setIsVerified(data?.is_verified === true))
+        supabase.from('profiles').select('is_verified, reputation_points').eq('id', session.user.id).single()
+          .then(({ data }) => { setIsVerified(data?.is_verified === true); setRepPoints(data?.reputation_points ?? 0) })
       } else {
         setIsVerified(false)
       }
@@ -107,6 +109,7 @@ export default function Navbar() {
                     <span className="text-sm text-[#6b7280]">{user.email}</span>
                   </>
                 )}
+                <ReputationBadge points={repPoints} />
                 <button
                   onClick={handleSignOut}
                   className="rounded border border-[#e5e7eb] px-4 py-2 text-sm font-medium text-[#6b7280] transition-colors hover:border-[#d1d5db] hover:text-[#111111]"

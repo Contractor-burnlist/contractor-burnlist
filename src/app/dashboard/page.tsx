@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { calculateTrustScore } from '@/lib/trust-score'
+import ReputationBadge from '@/components/ReputationBadge'
 import ManageBillingButton from './ManageBillingButton'
 import SuccessBanner from './SuccessBanner'
 
@@ -71,14 +72,17 @@ export default async function DashboardPage() {
               )}
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-xs text-[#6b7280]">Trust Score</div>
-            <div className="mt-0.5 flex gap-1">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <span key={i} className={`h-2 w-4 rounded-full ${i <= trust.score ? 'bg-green-500' : 'bg-[#e5e7eb]'}`} />
-              ))}
+          <div className="flex items-center gap-4">
+            <ReputationBadge points={profile?.reputation_points ?? 0} />
+            <div className="text-right">
+              <div className="text-xs text-[#6b7280]">Trust Score</div>
+              <div className="mt-0.5 flex gap-1">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <span key={i} className={`h-2 w-4 rounded-full ${i <= trust.score ? 'bg-green-500' : 'bg-[#e5e7eb]'}`} />
+                ))}
+              </div>
+              <div className="mt-0.5 text-xs text-[#9ca3af]">{trust.score}/5</div>
             </div>
-            <div className="mt-0.5 text-xs text-[#9ca3af]">{trust.score}/5</div>
           </div>
         </div>
       </Link>
