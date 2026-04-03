@@ -38,7 +38,6 @@ export default function SearchPage() {
     const supabase = createClient()
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsLoggedIn(!!session)
-      runSearch('', supabase)
     })
   }, [])
 
@@ -115,6 +114,7 @@ export default function SearchPage() {
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault()
+    if (!query.trim()) return
     runSearch(query.trim())
   }
 
@@ -271,8 +271,8 @@ export default function SearchPage() {
       {searched && !loading && results.length === 0 && (
         <div className="rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-8 py-12 text-center">
           <div className="mb-3 text-4xl">📭</div>
-          <p className="font-semibold text-[#111111]">No records found for that search.</p>
-          <p className="mt-2 text-sm text-[#6b7280]">No matching customers or workers in the registry.</p>
+          <p className="font-semibold text-[#111111]">No results found for &quot;{query}&quot;.</p>
+          <p className="mt-2 text-sm text-[#6b7280]">Try a different search term.</p>
         </div>
       )}
 
