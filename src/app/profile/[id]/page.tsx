@@ -65,7 +65,7 @@ async function renderCustomerProfile(
 
   const { data: entries } = await supabase
     .from('entries')
-    .select('*')
+    .select('id, customer_id, category_tags, description, amount_owed, incident_date, is_verified_submission, submitter_verified, created_at')
     .eq('customer_id', id)
     .order('created_at', { ascending: false })
 
@@ -269,7 +269,7 @@ async function renderWorkerProfile(
 
   const { data: entries } = await supabase
     .from('worker_entries')
-    .select('*')
+    .select('id, worker_id, category_tags, description, incident_date, is_verified_submission, submitter_verified, created_at')
     .eq('worker_id', id)
     .order('created_at', { ascending: false })
 

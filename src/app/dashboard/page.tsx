@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { calculateTrustScore } from '@/lib/trust-score'
 import ManageBillingButton from './ManageBillingButton'
 import SuccessBanner from './SuccessBanner'
 
@@ -12,19 +13,15 @@ export default async function DashboardPage() {
     redirect('/auth/login')
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*, is_verified, business_name, trade, trust_score')
-    .eq('id', user.id)
-    .single()
-
-  const { data: entries } = await supabase
-    .from('entries')
-    .select('*, customers(display_name, city, state)')
-    .eq('submitted_by', user.id)
-    .order('created_at', { ascending: false })
+  const [{ data: profile }, { data: entries }, { data: workerEntries }] = await Promise.all([
+    supabase.from('profiles').select('*').eq('id', user.id).single(),
+    supabase.from('entries').select('id, description, amount_owed, created_at, customers(display_name, city, state)').eq('submitted_by', user.id).order('created_at', { ascending: false }),
+    supabase.from('worker_entries').select('id').eq('submitted_by', user.id).limit(1),
+  ])
 
   const isActive = profile?.subscription_status === 'active'
+  const hasSubmissions = (entries?.length ?? 0) > 0 || (workerEntries?.length ?? 0) > 0
+  const trust = calculateTrustScore(profile ?? {}, hasSubmissions)
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
@@ -43,50 +40,48 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {/* Verification Status */}
-      <div className="mb-8 rounded-lg border border-[#e5e7eb] bg-white p-5">
-        {profile?.is_verified ? (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+      {/* Trust Score + Verification */}
+      <Link href="/my-profile" className="mb-8 block rounded-lg border border-[#e5e7eb] bg-white p-5 transition-colors hover:border-[#d1d5db]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {profile?.is_verified ? (
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-green-600">
                 <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
                 <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
                 <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <div>
-                <span className="rounded-full border border-green-300 bg-green-50 px-3 py-0.5 text-xs font-semibold text-green-600">
-                  Verified Business
-                </span>
-                <div className="mt-1 text-sm text-[#6b7280]">
-                  {profile.business_name}{profile.trade ? ` · ${profile.trade}` : ''}
-                </div>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-xs text-[#6b7280]">Trust Score</div>
-              <div className="mt-0.5 flex gap-1">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <span key={i} className={`h-2 w-4 rounded-full ${i <= (profile.trust_score ?? 1) ? 'bg-green-500' : 'bg-[#e5e7eb]'}`} />
-                ))}
-              </div>
-              <div className="mt-0.5 text-xs text-[#9ca3af]">{profile.trust_score ?? 1}/5</div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between">
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#9ca3af]">
+                <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+              </svg>
+            )}
             <div>
-              <div className="text-sm font-semibold text-[#111111]">Boost your credibility — get verified</div>
-              <p className="mt-0.5 text-xs text-[#6b7280]">Link your Google Business Profile to earn a verified badge on all your reports.</p>
+              {profile?.is_verified ? (
+                <>
+                  <span className="rounded-full border border-green-300 bg-green-50 px-3 py-0.5 text-xs font-semibold text-green-600">Verified Business</span>
+                  <div className="mt-1 text-sm text-[#6b7280]">{profile.business_name}{profile.trade ? ` · ${profile.trade}` : ''}</div>
+                </>
+              ) : (
+                <>
+                  <div className="text-sm font-semibold text-[#111111]">
+                    {trust.score < 5 ? `You're at ${trust.score}/5 — complete your profile to build credibility` : 'Profile complete!'}
+                  </div>
+                  <p className="mt-0.5 text-xs text-[#6b7280]">Click to view your profile and increase your trust score</p>
+                </>
+              )}
             </div>
-            <Link
-              href="/verify"
-              className="shrink-0 rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700"
-            >
-              Get Verified
-            </Link>
           </div>
-        )}
-      </div>
+          <div className="text-right">
+            <div className="text-xs text-[#6b7280]">Trust Score</div>
+            <div className="mt-0.5 flex gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <span key={i} className={`h-2 w-4 rounded-full ${i <= trust.score ? 'bg-green-500' : 'bg-[#e5e7eb]'}`} />
+              ))}
+            </div>
+            <div className="mt-0.5 text-xs text-[#9ca3af]">{trust.score}/5</div>
+          </div>
+        </div>
+      </Link>
 
       {/* Subscription Status */}
       <div className="mb-8 rounded-lg border border-[#e5e7eb] bg-white p-5">

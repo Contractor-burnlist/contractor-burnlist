@@ -299,6 +299,23 @@ export default function SubmitPage() {
         </p>
       </div>
 
+      {/* Privacy Guarantee */}
+      <div className="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <div className="flex gap-3">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="mt-0.5 shrink-0 text-blue-600">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
+            <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          <div>
+            <h3 className="text-sm font-bold text-blue-900">Your identity is completely anonymous</h3>
+            <p className="mt-0.5 text-xs leading-relaxed text-blue-800">
+              The customer or worker you report will never see your name, business name, or any identifying information.
+              Only your trust score badge appears on the report.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Report Type Selection */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <button

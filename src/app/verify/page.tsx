@@ -125,7 +125,10 @@ export default function VerifyPage() {
           <p className="mb-4 text-[#6b7280]">Your reports display a Verified badge, giving them extra credibility in the registry.</p>
           {profile.business_name && <p className="text-sm font-semibold text-[#111111]">{profile.business_name}</p>}
           {profile.trade && <p className="text-sm text-[#6b7280]">{profile.trade}</p>}
-          <div className="mt-6 flex justify-center gap-3">
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link href="/my-profile" className="rounded bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700">
+              Back to My Profile
+            </Link>
             <Link href="/submit" className="rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700">
               Submit a Report
             </Link>
@@ -161,7 +164,10 @@ export default function VerifyPage() {
             Verified Report
           </span>
           <p className="mt-4 text-sm text-[#6b7280]">badge, giving them extra credibility in the registry.</p>
-          <div className="mt-6 flex justify-center gap-3">
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link href="/my-profile" className="rounded bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700">
+              Back to My Profile
+            </Link>
             <Link href="/submit" className="rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700">
               Submit a Report
             </Link>
