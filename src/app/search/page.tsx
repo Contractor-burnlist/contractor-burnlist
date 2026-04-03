@@ -51,13 +51,13 @@ export default function SearchPage() {
 
     let customersQuery = supabase
       .from('customers')
-      .select('id, display_name, city, state, flag_count, risk_level, entries(count, submitter_verified)')
+      .select('id, display_name, city, state, flag_count, risk_level, entries(submitter_verified)')
       .order('flag_count', { ascending: false })
       .limit(50)
 
     let workersQuery = supabase
       .from('workers')
-      .select('id, display_name, city, state, flag_count, risk_level, trade_specialty, worker_entries(count, submitter_verified)')
+      .select('id, display_name, city, state, flag_count, risk_level, trade_specialty, worker_entries(submitter_verified)')
       .order('flag_count', { ascending: false })
       .limit(50)
 
@@ -87,7 +87,7 @@ export default function SearchPage() {
         flag_count: c.flag_count as number,
         risk_level: c.risk_level as string,
         trade: null,
-        entry_count: Array.isArray(entries) ? (entries[0]?.count as number ?? 0) : 0,
+        entry_count: Array.isArray(entries) ? entries.length : 0,
         has_verified_report: Array.isArray(entries) && entries.some((e) => e.submitter_verified === true),
       }
     })
@@ -103,7 +103,7 @@ export default function SearchPage() {
         flag_count: w.flag_count as number,
         risk_level: w.risk_level as string,
         trade: (w.trade_specialty as string) || null,
-        entry_count: Array.isArray(wEntries) ? (wEntries[0]?.count as number ?? 0) : 0,
+        entry_count: Array.isArray(wEntries) ? wEntries.length : 0,
         has_verified_report: Array.isArray(wEntries) && wEntries.some((e) => e.submitter_verified === true),
       }
     })
