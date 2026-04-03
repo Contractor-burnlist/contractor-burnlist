@@ -31,7 +31,13 @@ export default async function DashboardPage() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-[#111111]">Dashboard</h1>
-          <p className="mt-1 text-sm text-[#6b7280]">{user.email}</p>
+          <p className="mt-1 text-sm text-[#6b7280]">
+            {profile?.display_username ? (
+              <><span className="font-semibold text-[#111111]">{profile.display_username}</span> · {user.email}</>
+            ) : (
+              <>{user.email} · <Link href="/my-profile" className="text-[#DC2626] hover:underline">Set a username</Link></>
+            )}
+          </p>
         </div>
         <Link
           href="/submit"

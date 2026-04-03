@@ -12,22 +12,23 @@ export default function Navbar() {
   const [user, setUser] = useState<User | null>(null)
   const [isVerified, setIsVerified] = useState(false)
   const [repPoints, setRepPoints] = useState(0)
+  const [displayUsername, setDisplayUsername] = useState<string | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        supabase.from('profiles').select('is_verified, reputation_points').eq('id', session.user.id).single()
-          .then(({ data }) => { setIsVerified(data?.is_verified === true); setRepPoints(data?.reputation_points ?? 0) })
+        supabase.from('profiles').select('is_verified, reputation_points, display_username').eq('id', session.user.id).single()
+          .then(({ data }) => { setIsVerified(data?.is_verified === true); setRepPoints(data?.reputation_points ?? 0); setDisplayUsername(data?.display_username ?? null) })
       }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        supabase.from('profiles').select('is_verified, reputation_points').eq('id', session.user.id).single()
-          .then(({ data }) => { setIsVerified(data?.is_verified === true); setRepPoints(data?.reputation_points ?? 0) })
+        supabase.from('profiles').select('is_verified, reputation_points, display_username').eq('id', session.user.id).single()
+          .then(({ data }) => { setIsVerified(data?.is_verified === true); setRepPoints(data?.reputation_points ?? 0); setDisplayUsername(data?.display_username ?? null) })
       } else {
         setIsVerified(false)
       }
@@ -89,26 +90,16 @@ export default function Navbar() {
           <div className="hidden items-center gap-3 md:flex">
             {user ? (
               <>
-                {isVerified ? (
-                  <span className="flex items-center gap-1.5 text-sm text-[#6b7280]">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                <span className="flex items-center gap-1.5 text-sm text-[#6b7280]">
+                  {isVerified && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600 shrink-0">
                       <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
                       <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
                       <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    {user.email}
-                  </span>
-                ) : (
-                  <>
-                    <Link href="/verify" className="flex items-center gap-1 text-sm font-medium text-green-600 transition-colors hover:text-green-700">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
-                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-                      </svg>
-                      Get Verified
-                    </Link>
-                    <span className="text-sm text-[#6b7280]">{user.email}</span>
-                  </>
-                )}
+                  )}
+                  <span className="max-w-[160px] truncate">{displayUsername ?? user.email}</span>
+                </span>
                 <ReputationBadge points={repPoints} />
                 <button
                   onClick={handleSignOut}
@@ -159,26 +150,17 @@ export default function Navbar() {
             <Link href="/my-profile" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>My Profile</Link>
             {user ? (
               <>
-                {isVerified ? (
-                  <span className="flex items-center gap-1.5 text-sm text-[#6b7280]">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                <span className="flex items-center gap-1.5 text-sm text-[#6b7280]">
+                  {isVerified && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600 shrink-0">
                       <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
                       <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
                       <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    {user.email}
-                  </span>
-                ) : (
-                  <>
-                    <Link href="/verify" className="flex items-center gap-1 text-sm font-medium text-green-600" onClick={() => setMobileOpen(false)}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
-                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-                      </svg>
-                      Get Verified
-                    </Link>
-                    <span className="text-sm text-[#6b7280]">{user.email}</span>
-                  </>
-                )}
+                  )}
+                  {displayUsername ?? user.email}
+                  <ReputationBadge points={repPoints} />
+                </span>
                 <button onClick={() => { handleSignOut(); setMobileOpen(false) }} className="text-left text-sm text-[#6b7280] hover:text-[#111111]">Sign Out</button>
               </>
             ) : (

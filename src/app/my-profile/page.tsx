@@ -24,6 +24,11 @@ const US_STATES = [
   'SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC',
 ]
 
+const RESERVED_USERNAMES = [
+  'admin', 'administrator', 'moderator', 'mod', 'contractorburnlist', 'burnlist',
+  'support', 'staff', 'system', 'null', 'undefined', 'anonymous', 'deleted', 'removed',
+]
+
 type FullProfile = TrustProfile & {
   email?: string | null
   created_at?: string | null
@@ -32,6 +37,7 @@ type FullProfile = TrustProfile & {
   subscription_tier?: string | null
   reputation_points?: number | null
   comment_count?: number | null
+  display_username?: string | null
 }
 
 export default function MyProfilePage() {
@@ -43,6 +49,12 @@ export default function MyProfilePage() {
   const [saved, setSaved] = useState(false)
   const [hasSubmissions, setHasSubmissions] = useState(false)
   const [submissionCount, setSubmissionCount] = useState(0)
+  const [username, setUsername] = useState('')
+  const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken' | 'invalid' | 'reserved'>('idle')
+  const [usernameSaved, setUsernameSaved] = useState(false)
+  const [savingUsername, setSavingUsername] = useState(false)
+  const [usernameError, setUsernameError] = useState('')
+  const [debounceTimer, setDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null)
 
   const [form, setForm] = useState({
     business_name: '',
@@ -59,7 +71,7 @@ export default function MyProfilePage() {
       setEmail(user.email ?? '')
 
       const [{ data: prof }, { data: entries }, { data: workerEntries }] = await Promise.all([
-        supabase.from('profiles').select('business_name, business_phone, trade, is_verified, subscription_status, subscription_tier, created_at, city, state, reputation_points, comment_count').eq('id', user.id).single(),
+        supabase.from('profiles').select('business_name, business_phone, trade, is_verified, subscription_status, subscription_tier, created_at, city, state, reputation_points, comment_count, display_username').eq('id', user.id).single(),
         supabase.from('entries').select('id').eq('submitted_by', user.id).limit(1),
         supabase.from('worker_entries').select('id').eq('submitted_by', user.id).limit(1),
       ])
@@ -83,6 +95,7 @@ export default function MyProfilePage() {
         city: p?.city ?? '',
         state: p?.state ?? '',
       })
+      setUsername(p?.display_username ?? '')
       setLoading(false)
     })
   }, [router])
@@ -110,6 +123,45 @@ export default function MyProfilePage() {
     setProfile((prev) => prev ? { ...prev, ...form } : prev)
     setSaving(false)
     setSaved(true)
+  }
+
+  function handleUsernameChange(val: string) {
+    setUsername(val)
+    setUsernameSaved(false)
+    setUsernameError('')
+
+    if (debounceTimer) clearTimeout(debounceTimer)
+
+    if (!val) { setUsernameStatus('idle'); return }
+    if (!/^[a-zA-Z0-9_-]{3,20}$/.test(val)) { setUsernameStatus('invalid'); return }
+    if (RESERVED_USERNAMES.includes(val.toLowerCase())) { setUsernameStatus('reserved'); return }
+    if (val === profile?.display_username) { setUsernameStatus('idle'); return }
+
+    setUsernameStatus('checking')
+    const timer = setTimeout(async () => {
+      const supabase = createClient()
+      const { data } = await supabase.from('profiles').select('id').ilike('display_username', val).limit(1)
+      setUsernameStatus(data && data.length > 0 ? 'taken' : 'available')
+    }, 500)
+    setDebounceTimer(timer)
+  }
+
+  async function handleSaveUsername() {
+    if (!username || usernameStatus === 'taken' || usernameStatus === 'invalid' || usernameStatus === 'reserved') return
+    setSavingUsername(true)
+    setUsernameError('')
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    const { error: err } = await supabase.from('profiles').update({ display_username: username }).eq('id', user.id)
+    setSavingUsername(false)
+    if (err) {
+      setUsernameError(err.code === '23505' ? 'Username already taken.' : 'Something went wrong. Please try again.')
+      return
+    }
+    setProfile((prev) => prev ? { ...prev, display_username: username } : prev)
+    setUsernameSaved(true)
+    setUsernameStatus('idle')
   }
 
   if (loading) {
@@ -274,7 +326,64 @@ export default function MyProfilePage() {
         </div>
 
         {/* RIGHT — Business Profile Form */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 space-y-6">
+          {/* Username Section */}
+          <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
+            <h2 className="mb-1 text-lg font-bold text-[#111111]">Choose Your Username</h2>
+            <p className="mb-4 text-xs text-[#6b7280]">This is how other contractors will see you in discussions. Pick something memorable but anonymous.</p>
+
+            <div className="space-y-3">
+              <div>
+                <div className="relative">
+                  <input
+                    value={username}
+                    onChange={(e) => handleUsernameChange(e.target.value)}
+                    placeholder="e.g. PipeKing_SD, SparkMaster, RoofDog42"
+                    maxLength={20}
+                    className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 pr-10 text-sm text-[#111111] placeholder-[#9ca3af] outline-none focus:border-[#DC2626]"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                    {usernameStatus === 'checking' && <span className="h-4 w-4 block animate-spin rounded-full border-2 border-[#e5e7eb] border-t-[#DC2626]" />}
+                    {usernameStatus === 'available' && <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    {(usernameStatus === 'taken' || usernameStatus === 'invalid' || usernameStatus === 'reserved') && <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="#DC2626" strokeWidth="2" strokeLinecap="round"/></svg>}
+                  </span>
+                </div>
+                <div className="mt-1 text-xs">
+                  {usernameStatus === 'available' && <span className="text-green-600">Username available</span>}
+                  {usernameStatus === 'taken' && <span className="text-[#DC2626]">Username taken</span>}
+                  {usernameStatus === 'invalid' && <span className="text-[#DC2626]">3-20 characters, letters, numbers, underscores, hyphens only</span>}
+                  {usernameStatus === 'reserved' && <span className="text-[#DC2626]">This username is reserved</span>}
+                  {usernameStatus === 'idle' && username && <span className="text-[#9ca3af]">{username.length}/20 characters</span>}
+                </div>
+              </div>
+
+              {/* Privacy warning */}
+              <div className="rounded border border-amber-300 bg-amber-50 p-3">
+                <div className="flex gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="mt-0.5 shrink-0 text-amber-600">
+                    <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                    <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                  <p className="text-xs leading-relaxed text-amber-800">
+                    <strong>Privacy Reminder:</strong> We strongly recommend NOT using your real name, business name, phone number, location, or anything that could identify you or your company. Reported customers and workers may view discussions on this platform. Choose something fun and anonymous — your username is your public identity here.
+                  </p>
+                </div>
+              </div>
+
+              {usernameError && <p className="text-xs text-[#DC2626]">{usernameError}</p>}
+              {usernameSaved && <p className="text-xs text-green-600">Username saved!</p>}
+
+              <button
+                onClick={handleSaveUsername}
+                disabled={!username || savingUsername || usernameStatus === 'taken' || usernameStatus === 'invalid' || usernameStatus === 'reserved' || (!profile?.display_username && usernameStatus !== 'available') || (username === profile?.display_username)}
+                className="rounded bg-[#DC2626] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+              >
+                {savingUsername ? 'Saving...' : profile?.display_username ? 'Update Username' : 'Set Username'}
+              </button>
+            </div>
+          </div>
+
+          {/* Business Profile Form */}
           <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
             <h2 className="mb-1 text-lg font-bold text-[#111111]">Business Profile</h2>
             <div className="mb-5 flex items-start gap-2 rounded bg-[#f9fafb] p-3">

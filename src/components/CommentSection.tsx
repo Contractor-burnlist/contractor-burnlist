@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { getReputation } from '@/lib/reputation'
+import ReputationBadge from '@/components/ReputationBadge'
 
 type Comment = {
   id: string
@@ -12,6 +13,7 @@ type Comment = {
   is_deleted: boolean
   created_at: string
   updated_at: string
+  display_username: string | null
   is_verified: boolean
   reputation_points: number
   like_count: number
@@ -39,19 +41,26 @@ export default function CommentSection({
   const [posting, setPosting] = useState(false)
   const [sort, setSort] = useState<SortMode>('likes')
   const [showAll, setShowAll] = useState(false)
+  const [myUsername, setMyUsername] = useState<string | null>(null)
+  const [myRepPoints, setMyRepPoints] = useState(0)
 
   const loadComments = useCallback(async () => {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     setUserId(user?.id ?? null)
 
-    const filter = entryId ? { entry_id: entryId } : { worker_entry_id: workerEntryId }
+    if (user) {
+      const { data: myProf } = await supabase.from('profiles').select('display_username, reputation_points').eq('id', user.id).single()
+      setMyUsername(myProf?.display_username ?? null)
+      setMyRepPoints(myProf?.reputation_points ?? 0)
+    }
+
     const filterKey = entryId ? 'entry_id' : 'worker_entry_id'
     const filterVal = entryId ?? workerEntryId
 
     const { data: rawComments } = await supabase
       .from('comments')
-      .select('id, content, user_id, parent_comment_id, is_deleted, created_at, updated_at, profiles(is_verified, reputation_points)')
+      .select('id, content, user_id, parent_comment_id, is_deleted, created_at, updated_at, profiles(display_username, is_verified, reputation_points)')
       .eq(filterKey, filterVal!)
       .order('created_at', { ascending: true })
 
@@ -79,6 +88,7 @@ export default function CommentSection({
       is_deleted: c.is_deleted,
       created_at: c.created_at,
       updated_at: c.updated_at,
+      display_username: c.profiles?.display_username ?? null,
       is_verified: c.profiles?.is_verified ?? false,
       reputation_points: c.profiles?.reputation_points ?? 0,
       like_count: likeMap.get(c.id)?.count ?? 0,
@@ -202,7 +212,14 @@ export default function CommentSection({
             <>
               {/* Author line */}
               <div className="mb-1.5 flex flex-wrap items-center gap-2 text-xs">
-                <span className="font-medium text-[#111111]">{c.is_verified ? 'Verified Contractor' : 'Contractor'}</span>
+                <span className="font-semibold text-[#111111]">{c.display_username ?? 'Anonymous Contractor'}</span>
+                {c.is_verified && (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                    <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
+                    <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                    <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
                 <span className={`inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${rep.color} ${rep.bg} ${rep.border}`}>
                   <svg width="8" height="8" viewBox="0 0 24 24" fill="none" className={rep.color}><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>
                   {rep.rank}
@@ -293,9 +310,22 @@ export default function CommentSection({
       {/* Comment input */}
       {userId ? (
         <div className="mb-4">
+          <div className="mb-2 flex items-center gap-2 text-xs text-[#6b7280]">
+            <span>Posting as:</span>
+            {myUsername ? (
+              <span className="font-semibold text-[#111111]">{myUsername}</span>
+            ) : (
+              <>
+                <span className="text-[#9ca3af]">Anonymous Contractor</span>
+                <span>—</span>
+                <a href="/my-profile" className="font-semibold text-[#DC2626] hover:underline">Set a username</a>
+              </>
+            )}
+            <ReputationBadge points={myRepPoints} />
+          </div>
           <textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} maxLength={2000} rows={2} placeholder="Share your experience or insight..." className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] placeholder-[#9ca3af] outline-none focus:border-[#DC2626]" />
           <div className="mt-1.5 flex items-center justify-between">
-            <p className="text-[10px] text-[#9ca3af]">Your identity is anonymous. Others only see your reputation rank.</p>
+            <p className="text-[10px] text-[#9ca3af]">Your identity is anonymous. Others only see your username and reputation rank.</p>
             <div className="flex items-center gap-2">
               <span className="text-xs text-[#9ca3af]">{newComment.length}/2000</span>
               <button onClick={handlePost} disabled={!newComment.trim() || posting} className="rounded bg-[#DC2626] px-4 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-50">

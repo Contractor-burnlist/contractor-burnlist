@@ -48,7 +48,7 @@ async function getTopContributors() {
   const supabase = await createClient()
   const { data } = await supabase
     .from('profiles')
-    .select('reputation_points, comment_count, is_verified')
+    .select('reputation_points, comment_count, is_verified, display_username')
     .gt('reputation_points', 0)
     .order('reputation_points', { ascending: false })
     .limit(5)
@@ -179,7 +179,7 @@ export default async function HomePage() {
                   <div key={i} className="flex items-center justify-between rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-5 py-3">
                     <div className="flex items-center gap-3">
                       <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#111111] text-xs font-bold text-white">{i + 1}</span>
-                      <span className="text-sm font-medium text-[#111111]">{c.is_verified ? 'Verified Contractor' : 'Contractor'}</span>
+                      <span className="text-sm font-medium text-[#111111]">{c.display_username ?? (c.is_verified ? 'Verified Contractor' : 'Anonymous Contractor')}</span>
                       <span className={`inline-flex items-center gap-0.5 rounded-full border px-2 py-0.5 text-xs font-semibold ${rep.color} ${rep.bg} ${rep.border}`}>
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" className={rep.color}><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>
                         {rep.rank}
