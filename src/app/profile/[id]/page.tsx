@@ -16,8 +16,17 @@ const riskLabels: Record<string, string> = {
   unknown: 'Unknown',
 }
 
-export default async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProfilePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
   const { id } = await params
+  const { type } = await searchParams
+  const profileType = type === 'worker' ? 'worker' : 'customer'
+
   const supabase = await createClient()
 
   // Check auth + subscription
@@ -32,7 +41,18 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
     hasActiveSubscription = profile?.subscription_status === 'active'
   }
 
-  // Fetch customer
+  if (profileType === 'worker') {
+    return renderWorkerProfile(supabase, id, hasActiveSubscription)
+  }
+
+  return renderCustomerProfile(supabase, id, hasActiveSubscription)
+}
+
+async function renderCustomerProfile(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  id: string,
+  hasActiveSubscription: boolean,
+) {
   const { data: customer, error } = await supabase
     .from('customers')
     .select('*')
@@ -43,7 +63,6 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
     notFound()
   }
 
-  // Fetch entries
   const { data: entries } = await supabase
     .from('entries')
     .select('*')
@@ -66,6 +85,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
       <div className="mb-8 rounded-lg border border-[#e5e7eb] bg-white p-6">
         <div className="flex items-start justify-between">
           <div>
+            <div className="mb-2 flex items-center gap-2">
+              <span className="rounded-full bg-[#DC2626]/10 px-2.5 py-0.5 text-xs font-semibold text-[#DC2626]">Customer</span>
+            </div>
             <h1 className="text-3xl font-black text-[#111111]">{customer.display_name}</h1>
             <p className="mt-1 text-sm text-[#6b7280]">
               {customer.city}, {customer.state}
@@ -213,6 +235,182 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
       {/* CTA */}
       <div className="mt-10 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] p-6 text-center">
         <p className="mb-1 text-sm font-semibold text-[#111111]">Had an experience with this customer?</p>
+        <p className="mb-4 text-xs text-[#6b7280]">Help other contractors by sharing your report.</p>
+        <Link
+          href="/submit"
+          className="inline-block rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+        >
+          Submit a Report
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+async function renderWorkerProfile(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  id: string,
+  hasActiveSubscription: boolean,
+) {
+  const { data: worker, error } = await supabase
+    .from('workers')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error || !worker) {
+    notFound()
+  }
+
+  const { data: entries } = await supabase
+    .from('worker_entries')
+    .select('*')
+    .eq('worker_id', id)
+    .order('created_at', { ascending: false })
+
+  const entryList = entries || []
+  const firstReported = entryList.length > 0
+    ? new Date(entryList[entryList.length - 1].created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    : null
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+      <Link href="/search" className="mb-8 inline-flex items-center gap-2 text-sm text-[#6b7280] hover:text-[#111111]">
+        ← Back to Search
+      </Link>
+
+      {/* Header */}
+      <div className="mb-8 rounded-lg border border-[#e5e7eb] bg-white p-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="mb-2 flex items-center gap-2">
+              <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-semibold text-orange-600">Worker</span>
+            </div>
+            <h1 className="text-3xl font-black text-[#111111]">{worker.display_name}</h1>
+            <p className="mt-1 text-sm text-[#6b7280]">
+              {worker.city}, {worker.state}
+              {worker.trade_specialty && (
+                <span> · {worker.trade_specialty}</span>
+              )}
+            </p>
+          </div>
+          <span
+            className={`rounded-full border px-4 py-1.5 text-sm font-semibold ${riskColors[worker.risk_level] || riskColors.unknown}`}
+          >
+            {riskLabels[worker.risk_level] || 'Unknown'}
+          </span>
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div>
+            <div className="text-xs text-[#6b7280]">Reports</div>
+            <div className="text-2xl font-black text-[#111111]">{worker.flag_count || entryList.length}</div>
+            <div className="text-xs text-[#9ca3af]">from verified contractors</div>
+          </div>
+          {firstReported && (
+            <div>
+              <div className="text-xs text-[#6b7280]">First Reported</div>
+              <div className="text-sm font-semibold text-[#111111]">{firstReported}</div>
+            </div>
+          )}
+          <div>
+            <div className="text-xs text-[#6b7280]">Risk Level</div>
+            <div className="text-sm font-semibold capitalize text-[#111111]">{worker.risk_level || 'unknown'}</div>
+          </div>
+          {worker.trade_specialty && (
+            <div>
+              <div className="text-xs text-[#6b7280]">Trade</div>
+              <div className="text-sm font-semibold text-[#111111]">{worker.trade_specialty}</div>
+            </div>
+          )}
+        </div>
+
+        {/* Contact info — locked for non-subscribers */}
+        <div className="mt-6 border-t border-[#e5e7eb] pt-5">
+          {hasActiveSubscription ? (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {worker.phone && (
+                <div>
+                  <div className="text-xs text-[#6b7280]">Phone</div>
+                  <div className="text-sm font-medium text-[#111111]">{worker.phone}</div>
+                </div>
+              )}
+              {!worker.phone && (
+                <p className="text-sm text-[#9ca3af]">No contact information on file.</p>
+              )}
+            </div>
+          ) : (
+            <div className="relative">
+              <div className="pointer-events-none select-none blur-sm">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div>
+                    <div className="text-xs text-[#6b7280]">Phone</div>
+                    <div className="text-sm font-medium text-[#111111]">(555) 987-6543</div>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0110 0v4"/>
+                </svg>
+                <p className="text-sm font-semibold text-[#111111]">Subscribe to view contact details</p>
+                <Link
+                  href="/pricing"
+                  className="mt-2 rounded bg-[#DC2626] px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700"
+                >
+                  Get Access
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Entries */}
+      <h2 className="mb-4 text-lg font-bold text-[#111111]">
+        Reports from Contractors ({entryList.length})
+      </h2>
+
+      {entryList.length > 0 ? (
+        <div className="space-y-4">
+          {entryList.map((entry) => (
+            <div key={entry.id} className="rounded-lg border border-[#e5e7eb] bg-white p-5">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap gap-2">
+                  {entry.category_tags?.map((tag: string) => (
+                    <span
+                      key={tag}
+                      className="rounded border border-[#DC2626]/20 bg-[#DC2626]/5 px-2.5 py-0.5 text-xs font-medium text-[#DC2626]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                  {entry.is_verified_submission && (
+                    <span className="rounded border border-green-300 bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-600">
+                      Verified
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs text-[#9ca3af]">
+                  {entry.incident_date
+                    ? new Date(entry.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                    : new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </span>
+              </div>
+              <p className="text-sm leading-relaxed text-[#4b5563]">{entry.description}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-8 py-12 text-center">
+          <p className="text-[#6b7280]">No reports have been submitted yet.</p>
+        </div>
+      )}
+
+      {/* CTA */}
+      <div className="mt-10 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] p-6 text-center">
+        <p className="mb-1 text-sm font-semibold text-[#111111]">Had an experience with this worker?</p>
         <p className="mb-4 text-xs text-[#6b7280]">Help other contractors by sharing your report.</p>
         <Link
           href="/submit"

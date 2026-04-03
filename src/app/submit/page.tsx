@@ -1,8 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+
+function isRlsError(err: { code?: string; message?: string }): boolean {
+  return err.code === '42501' || (err.message?.includes('row-level security') ?? false)
+}
 
 // Customer category tags
 const customerCategories = [
@@ -98,6 +103,20 @@ export default function SubmitPage() {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const [certified, setCertified] = useState(false)
+  const [verified, setVerified] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) { setVerified(null); return }
+      supabase
+        .from('profiles')
+        .select('is_verified')
+        .eq('id', user.id)
+        .single()
+        .then(({ data }) => setVerified(data?.is_verified === true))
+    })
+  }, [])
 
   // Customer form state
   const [customerForm, setCustomerForm] = useState({
@@ -185,7 +204,7 @@ export default function SubmitPage() {
         .single()
 
       if (customerError) {
-        setError(`Failed to create customer record: ${customerError.message}`)
+        setError(isRlsError(customerError) ? '__rls__' : 'Something went wrong. Please try again.')
         setLoading(false)
         return
       }
@@ -202,7 +221,7 @@ export default function SubmitPage() {
         })
 
       if (entryError) {
-        setError(`Failed to submit entry: ${entryError.message}`)
+        setError(isRlsError(entryError) ? '__rls__' : 'Something went wrong. Please try again.')
         setLoading(false)
         return
       }
@@ -221,7 +240,7 @@ export default function SubmitPage() {
         .single()
 
       if (workerError) {
-        setError(`Failed to create worker record: ${workerError.message}`)
+        setError(isRlsError(workerError) ? '__rls__' : 'Something went wrong. Please try again.')
         setLoading(false)
         return
       }
@@ -237,7 +256,7 @@ export default function SubmitPage() {
         })
 
       if (entryError) {
-        setError(`Failed to submit entry: ${entryError.message}`)
+        setError(isRlsError(entryError) ? '__rls__' : 'Something went wrong. Please try again.')
         setLoading(false)
         return
       }
@@ -283,6 +302,18 @@ export default function SubmitPage() {
         </p>
       </div>
 
+      {verified === false && (
+        <div className="mb-8 rounded-lg border border-amber-300 bg-amber-50 p-6 text-center">
+          <div className="mb-3 text-3xl">🔒</div>
+          <p className="mb-1 text-sm font-semibold text-amber-800">Business Verification Required</p>
+          <p className="text-sm text-amber-700">
+            Unfortunately you will not be able to submit reports until you verify your business.
+            Please <Link href="/verify" className="font-semibold underline">click here</Link> to do so.
+          </p>
+        </div>
+      )}
+
+      {verified !== false && <>
       {/* Report Type Selection */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <button
@@ -336,9 +367,16 @@ export default function SubmitPage() {
       </div>
 
       {error && (
-        <div className="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-[#DC2626]">
-          {error}
-        </div>
+        error === '__rls__' ? (
+          <div className="mb-6 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            Unfortunately you will not be able to submit reports until you verify your business.
+            Please <Link href="/verify" className="font-semibold underline">click here</Link> to do so.
+          </div>
+        ) : (
+          <div className="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-[#DC2626]">
+            {error}
+          </div>
+        )
       )}
 
       {/* Customer Form */}
@@ -513,6 +551,7 @@ export default function SubmitPage() {
           </button>
         </form>
       )}
+      </>}
     </div>
   )
 }

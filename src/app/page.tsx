@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { createClient } from '@/lib/supabase/server'
 
 const stats = [
   { label: 'Contractors Protected', value: '12,400+' },
@@ -25,7 +26,25 @@ const steps = [
   },
 ]
 
-export default function HomePage() {
+async function getCtaHref(): Promise<string> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return '/auth/login?next=/pricing'
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('subscription_status')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.subscription_status === 'active') return '/dashboard'
+  return '/pricing'
+}
+
+export default async function HomePage() {
+  const ctaHref = await getCtaHref()
+
   return (
     <div>
       {/* Hero — stays dark */}
@@ -53,7 +72,7 @@ export default function HomePage() {
                 Search the Registry
               </Link>
               <Link
-                href="/auth/login"
+                href={ctaHref}
                 className="w-full rounded border border-[#2a2a2a] px-8 py-3 text-center text-sm font-semibold text-[#a0a0a0] transition-colors hover:border-white hover:text-white sm:w-auto"
               >
                 Get Access →
@@ -125,7 +144,7 @@ export default function HomePage() {
             Join thousands of contractors who check before they commit.
           </p>
           <Link
-            href="/auth/login"
+            href={ctaHref}
             className="inline-block rounded bg-white px-10 py-3 text-sm font-semibold text-[#DC2626] transition-colors hover:bg-gray-100"
           >
             Get Access Today
