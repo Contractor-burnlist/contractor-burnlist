@@ -3,24 +3,24 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 
-const REVENUE_OPTIONS = [
-  { label: 'Under $100K', mid: 75000 },
-  { label: '$100K – $250K', mid: 175000 },
-  { label: '$250K – $500K', mid: 375000 },
-  { label: '$500K – $1M', mid: 750000 },
-  { label: '$1M – $2.5M', mid: 1750000 },
-  { label: '$2.5M – $5M', mid: 3750000 },
-  { label: '$5M+', mid: 6000000 },
-]
+function getEmployeeFactors(count: number): { timeCost: number; fraudRate: number } {
+  if (count <= 0) return { timeCost: 6300, fraudRate: 0 }
+  if (count <= 5) return { timeCost: 12600, fraudRate: 0.03 }
+  if (count <= 10) return { timeCost: 18900, fraudRate: 0.04 }
+  if (count <= 25) return { timeCost: 25200, fraudRate: 0.05 }
+  if (count <= 50) return { timeCost: 37800, fraudRate: 0.05 }
+  return { timeCost: 50400, fraudRate: 0.06 }
+}
 
-const EMPLOYEE_OPTIONS = [
-  { label: 'Just me (solo)', timeCost: 6300, fraudRate: 0 },
-  { label: '2–5 employees', timeCost: 12600, fraudRate: 0.03 },
-  { label: '6–10 employees', timeCost: 18900, fraudRate: 0.04 },
-  { label: '11–25 employees', timeCost: 25200, fraudRate: 0.05 },
-  { label: '26–50 employees', timeCost: 37800, fraudRate: 0.05 },
-  { label: '50+ employees', timeCost: 50400, fraudRate: 0.06 },
-]
+function formatCurrency(raw: string): string {
+  const digits = raw.replace(/\D/g, '')
+  if (!digits) return ''
+  return Number(digits).toLocaleString()
+}
+
+function parseCurrency(formatted: string): number {
+  return Number(formatted.replace(/\D/g, '')) || 0
+}
 
 const TRADES = [
   'Plumbing', 'Electrical', 'HVAC', 'Painting', 'Cleaning',
@@ -77,20 +77,32 @@ function AnimatedDollar({ value }: { value: number }) {
 }
 
 export default function RiskCalculator() {
-  const [revenue, setRevenue] = useState('')
-  const [employees, setEmployees] = useState('')
+  const [revenueDisplay, setRevenueDisplay] = useState('')
+  const [employeesDisplay, setEmployeesDisplay] = useState('')
   const [trade, setTrade] = useState('')
   const [state, setState] = useState('')
   const [results, setResults] = useState<Results | null>(null)
   const [copied, setCopied] = useState(false)
   const resultsRef = useRef<HTMLDivElement>(null)
 
-  function calculate() {
-    const rev = REVENUE_OPTIONS.find((r) => r.label === revenue)
-    const emp = EMPLOYEE_OPTIONS.find((e) => e.label === employees)
-    if (!rev || !emp || !trade || !state) return
+  function handleRevenueChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value.replace(/\D/g, '')
+    setRevenueDisplay(formatCurrency(raw))
+    setResults(null)
+  }
 
-    const annualRev = rev.mid
+  function handleEmployeesChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value.replace(/\D/g, '')
+    setEmployeesDisplay(raw)
+    setResults(null)
+  }
+
+  function calculate() {
+    const annualRev = parseCurrency(revenueDisplay)
+    const empCount = Number(employeesDisplay) || 0
+    if (annualRev < 1 || !trade || !state) return
+
+    const emp = getEmployeeFactors(empCount)
     const badDebt = annualRev * 0.11 * 0.10 + annualRev * 0.05
     const timeCost = emp.timeCost
     const workerFraud = annualRev * emp.fraudRate
@@ -115,7 +127,7 @@ export default function RiskCalculator() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const isValid = revenue && employees && trade && state
+  const isValid = parseCurrency(revenueDisplay) >= 1 && employeesDisplay !== '' && trade && state
 
   const selectClass = 'w-full rounded border border-[#e5e7eb] bg-white px-4 py-3 text-sm text-[#111111] outline-none focus:border-[#DC2626] appearance-none'
 
@@ -131,17 +143,28 @@ export default function RiskCalculator() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-xs font-medium text-[#6b7280]">Annual Revenue</label>
-              <select value={revenue} onChange={(e) => { setRevenue(e.target.value); setResults(null) }} className={selectClass}>
-                <option value="">Select range</option>
-                {REVENUE_OPTIONS.map((r) => <option key={r.label} value={r.label}>{r.label}</option>)}
-              </select>
+              <div className="relative">
+                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-[#9ca3af]">$</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={revenueDisplay}
+                  onChange={handleRevenueChange}
+                  placeholder="0"
+                  className="w-full rounded border border-[#e5e7eb] bg-white py-3 pl-8 pr-4 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
+                />
+              </div>
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-medium text-[#6b7280]">Number of Employees</label>
-              <select value={employees} onChange={(e) => { setEmployees(e.target.value); setResults(null) }} className={selectClass}>
-                <option value="">Select size</option>
-                {EMPLOYEE_OPTIONS.map((e) => <option key={e.label} value={e.label}>{e.label}</option>)}
-              </select>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={employeesDisplay}
+                onChange={handleEmployeesChange}
+                placeholder="0"
+                className="w-full rounded border border-[#e5e7eb] bg-white px-4 py-3 text-sm text-[#111111] outline-none focus:border-[#DC2626]"
+              />
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-medium text-[#6b7280]">Trade / Industry</label>
