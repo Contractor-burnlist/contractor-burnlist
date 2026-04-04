@@ -60,12 +60,11 @@ export default async function HomePage() {
               <span className="text-xs font-medium text-[#DC2626]">Contractor-Verified Reports</span>
             </div>
             <h1 className="mb-6 font-[var(--font-display)] text-5xl font-black uppercase leading-none tracking-tight text-white sm:text-6xl lg:text-7xl">
-              Stop Working for Free.{' '}
-              <span className="text-[#DC2626]">Start Protecting Your Business.</span>
+              Bad Customers Don&apos;t Warn You.{' '}
+              <span className="text-[#DC2626]">Other Contractors Will.</span>
             </h1>
             <p className="mx-auto mb-8 max-w-2xl text-lg text-[#8a8a9a] lg:mx-0">
-              Contractors lose an average of $39,000/year to late payments, fraud, and theft.
-              The database that helps you vet customers and workers before you commit.
+              Not every handshake is honest. Search the contractor-built database for vetting customers and workers before you commit.
             </p>
 
             <p className="mb-10 text-sm font-medium text-[#6b7280]">Built by contractors, for contractors. Free to sign up — no credit card required.</p>
