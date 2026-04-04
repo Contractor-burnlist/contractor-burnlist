@@ -34,19 +34,19 @@ async function getTopContributors() {
 }
 
 const customerStats = [
-  { value: 39000, prefix: '$', suffix: '', label: 'Average annual cost to small businesses from late and unpaid invoices', source: 'Gateway Commercial Finance, 2025' },
-  { value: 56, prefix: '', suffix: '%', label: 'of small businesses are currently owed money from unpaid invoices', source: 'QuickBooks, 2025' },
-  { value: 53, prefix: '', suffix: '%', label: 'of contractors have turned down new business due to cash flow problems from unpaid invoices', source: 'Gateway Commercial Finance, 2025' },
-  { value: 32, prefix: '', suffix: '%', label: 'of businesses lose 5-30% of their annual revenue to bad debt', source: 'Creditsafe' },
-  { value: 64, prefix: '', suffix: '%', label: 'of businesses have invoices that are 90+ days overdue', source: 'Gateway Commercial Finance, 2025' },
-  { value: 3, prefix: '$', suffix: 'T', label: 'Total global cost of late payments to small and mid-sized businesses', source: 'Sage Research' },
+  { value: 39000, prefix: '$', suffix: '', label: 'Average annual cost to small businesses from late and unpaid invoices', source: 'Gateway Commercial Finance SMB Payment Survey, 2025' },
+  { value: 56, prefix: '', suffix: '%', label: 'of small businesses are currently owed money from unpaid invoices', source: 'QuickBooks 2025 US Small Business Late Payments Report (2,487 businesses surveyed)' },
+  { value: 53, prefix: '', suffix: '%', label: 'of contractors have turned down new business due to cash flow problems from unpaid invoices', source: 'Gateway Commercial Finance SMB Payment Survey, 2025' },
+  { value: 32, prefix: '', suffix: '%', label: 'of businesses lose 5-30% of their annual revenue to bad debt', source: 'Creditsafe Business Risk Report' },
+  { value: 64, prefix: '', suffix: '%', label: 'of businesses have invoices that are 90+ days overdue', source: 'Gateway Commercial Finance SMB Payment Survey, 2025' },
+  { value: 3, prefix: '$', suffix: 'T', label: 'Total global cost of late payments to small and mid-sized businesses', source: 'Sage / Plum Consulting "The Domino Effect" Report' },
 ]
 
 const workerStats = [
-  { value: 75, prefix: '', suffix: '%', label: 'of employees have admitted to stealing from their employer at least once', source: 'CalRest.org' },
-  { value: 150000, prefix: '$', suffix: '', label: 'Median loss for small businesses with fewer than 100 employees from employee fraud', source: 'ACFE, 2024' },
+  { value: 75, prefix: '', suffix: '%', label: 'of employees have admitted to stealing from their employer at least once', source: 'California Restaurant Association / Statistic Brain' },
+  { value: 150000, prefix: '$', suffix: '', label: 'Median loss for small businesses with fewer than 100 employees from employee fraud', source: 'Association of Certified Fraud Examiners (ACFE), 2024 Report to the Nations' },
   { value: 95, prefix: '', suffix: '%', label: 'of all businesses experience employee theft', source: 'California Restaurant Association' },
-  { value: 5, prefix: '', suffix: '%', label: 'of revenue is lost to employee fraud each year for the typical organization', source: 'ACFE' },
+  { value: 5, prefix: '', suffix: '%', label: 'of revenue is lost to employee fraud each year for the typical organization', source: 'ACFE, 2024 Report to the Nations' },
 ]
 
 const steps = [

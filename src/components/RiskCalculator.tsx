@@ -217,7 +217,7 @@ export default function RiskCalculator() {
                 </div>
                 <div className="text-2xl font-black text-[#111111]">${results.badDebt.toLocaleString()}</div>
                 <div className="mt-1 text-xs font-semibold text-[#6b7280]">Unpaid Invoices &amp; Bad Debt</div>
-                <p className="mt-2 text-[10px] text-[#9ca3af]">Based on 11% of revenue tied up in overdue invoices and 10% becoming bad debt</p>
+                <p className="mt-2 text-[10px] leading-relaxed text-[#9ca3af]">Source: Gateway Commercial Finance SMB Payment Survey (2025) — 11% of revenue tied up in overdue invoices; Sage &quot;The Domino Effect&quot; Report — 10% of overdue invoices become bad debt write-offs</p>
               </div>
               <div className="rounded-lg border border-[#e5e7eb] bg-white p-5">
                 <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-amber-100">
@@ -227,7 +227,7 @@ export default function RiskCalculator() {
                 </div>
                 <div className="text-2xl font-black text-[#111111]">${results.timeCost.toLocaleString()}</div>
                 <div className="mt-1 text-xs font-semibold text-[#6b7280]">Time Wasted Chasing Payments</div>
-                <p className="mt-2 text-[10px] text-[#9ca3af]">Hours spent following up on unpaid invoices instead of doing billable work</p>
+                <p className="mt-2 text-[10px] leading-relaxed text-[#9ca3af]">Source: QuickBooks 2025 Late Payments Report — small businesses spend 5-10+ hours/week on overdue invoice follow-up; industry average contractor billing rate of $75/hour</p>
               </div>
               <div className="rounded-lg border border-[#e5e7eb] bg-white p-5">
                 <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-orange-100">
@@ -239,19 +239,31 @@ export default function RiskCalculator() {
                   {results.workerFraud > 0 ? `$${results.workerFraud.toLocaleString()}` : '$0'}
                 </div>
                 <div className="mt-1 text-xs font-semibold text-[#6b7280]">Employee Theft &amp; Fraud</div>
-                <p className="mt-2 text-[10px] text-[#9ca3af]">
+                <p className="mt-2 text-[10px] leading-relaxed text-[#9ca3af]">
                   {results.workerFraud > 0
-                    ? 'The ACFE reports businesses lose 5% of revenue to occupational fraud'
-                    : 'Solo operator — no employee fraud exposure'}
+                    ? 'Source: Association of Certified Fraud Examiners (ACFE), 2024 Report to the Nations — typical organizations lose 5% of revenue to occupational fraud; small businesses under 100 employees face highest median losses'
+                    : 'Solo operators face minimal internal theft risk but should still vet subcontractors and laborers'}
                 </p>
               </div>
             </div>
 
             {/* Context */}
-            <p className="text-center text-sm text-[#6b7280]">
-              Contractors in <strong className="text-[#111111]">{results.state}</strong> working in <strong className="text-[#111111]">{results.trade}</strong> face{' '}
-              <strong className="text-[#DC2626]">{results.riskLevel}</strong> risk compared to the national baseline.
-            </p>
+            <div className="space-y-2 text-center">
+              <p className="text-sm text-[#6b7280]">
+                Contractors in <strong className="text-[#111111]">{results.state}</strong> working in <strong className="text-[#111111]">{results.trade}</strong> face{' '}
+                <strong className="text-[#DC2626]">{results.riskLevel}</strong> risk compared to the national baseline.
+              </p>
+              {(TRADE_MULTIPLIER[results.trade] ?? 1) > 1 && (
+                <p className="text-[10px] text-[#9ca3af]">
+                  Trade adjustment applied: {results.trade} businesses face higher risk based on Better Business Bureau complaint frequency data and industry fraud reporting patterns. Trade-specific multipliers are estimated from aggregate BBB and FTC complaint data and may not reflect individual circumstances.
+                </p>
+              )}
+              {results.riskLevel !== 'average' && (
+                <p className="text-[10px] text-[#9ca3af]">
+                  Regional adjustment applied: {results.state} has higher than average late payment and fraud reporting rates based on FTC Consumer Sentinel data and Gateway Commercial Finance regional analysis.
+                </p>
+              )}
+            </div>
 
             {/* CTA */}
             <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-6 text-center">
@@ -280,13 +292,12 @@ export default function RiskCalculator() {
               </button>
             </div>
 
-            {/* Fine print */}
-            <p className="text-center text-[10px] leading-relaxed text-[#9ca3af]">
-              These estimates are based on published industry research from the Association of Certified Fraud Examiners (ACFE),
-              Gateway Commercial Finance, QuickBooks, Sage, and the Better Business Bureau.
-              Individual results may vary. This calculator provides general estimates for educational purposes only
-              and does not guarantee specific outcomes.
-            </p>
+            {/* Disclaimer */}
+            <div className="rounded border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3">
+              <p className="text-[10px] leading-relaxed text-[#9ca3af]">
+                <strong className="text-[#6b7280]">DISCLAIMER:</strong> This calculator provides general estimates for educational and informational purposes only. Calculations are based on published industry research from the Association of Certified Fraud Examiners (ACFE, 2024), Gateway Commercial Finance SMB Payment Survey (2025), QuickBooks 2025 US Small Business Late Payments Report, Sage &quot;The Domino Effect&quot; Report, and Better Business Bureau Scam Tracker data. Trade-specific risk multipliers and state-level adjustments are approximations derived from aggregate complaint and fraud reporting data — they are not precise actuarial calculations. Your actual losses may be significantly higher or lower depending on your specific business practices, client base, contracts, and internal controls. These estimates do not constitute financial advice. Consult a financial professional for guidance specific to your business.
+              </p>
+            </div>
           </div>
         )}
       </div>
