@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
   const admin = await createServiceClient()
   let query = admin.from('content_flags')
-    .select('id, content_type, content_id, reason, description, status, admin_notes, created_at, profiles(email, display_username)')
+    .select('id, content_type, content_id, reason, description, status, admin_notes, created_at, contact_name, contact_email, attachment_paths, profiles(email, display_username)')
     .order('created_at', { ascending: false })
     .limit(50)
 

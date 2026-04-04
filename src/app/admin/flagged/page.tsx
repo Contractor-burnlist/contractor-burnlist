@@ -69,9 +69,19 @@ export default function AdminFlaggedPage() {
                     </span>
                   </div>
                   <div className="mt-2 text-xs text-[#6b7280]">
-                    Flagged by: {f.profiles?.display_username ?? f.profiles?.email ?? 'Unknown'}
+                    {f.contact_name ? (
+                      <span>Dispute from: <strong className="text-[#111111]">{f.contact_name}</strong>{f.contact_email && <> &middot; <a href={`mailto:${f.contact_email}`} className="text-[#DC2626] hover:underline">{f.contact_email}</a></>}</span>
+                    ) : (
+                      <span>Flagged by: {f.profiles?.display_username ?? f.profiles?.email ?? 'Unknown'}</span>
+                    )}
                   </div>
                   {f.description && <p className="mt-1 text-xs text-[#374151]">{f.description}</p>}
+                  {f.attachment_paths && f.attachment_paths.length > 0 && (
+                    <div className="mt-1 flex items-center gap-1 text-[10px] text-[#6b7280]">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                      {f.attachment_paths.length} attachment{f.attachment_paths.length > 1 ? 's' : ''}
+                    </div>
+                  )}
                   <div className="mt-1 text-[10px] text-[#9ca3af]">
                     Content ID: {f.content_id.slice(0, 8)}... &middot; {new Date(f.created_at).toLocaleString()}
                   </div>
