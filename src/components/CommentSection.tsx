@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { getReputation } from '@/lib/reputation'
 import ReputationBadge from '@/components/ReputationBadge'
+import FlagButton from '@/components/FlagButton'
 
 type Comment = {
   id: string
@@ -263,11 +264,15 @@ export default function CommentSection({
                   {!isReply && userId && (
                     <button onClick={() => { setReplyingTo(replyingTo === c.id ? null : c.id); setReplyText('') }} className="text-xs text-[#9ca3af] hover:text-[#111111]">Reply</button>
                   )}
-                  {isAuthor && (
+                  {isAuthor ? (
                     <>
                       <button onClick={() => { setEditingId(c.id); setEditText(c.content) }} className="text-xs text-[#9ca3af] hover:text-[#111111]">Edit</button>
                       <button onClick={() => handleDelete(c.id)} className="text-xs text-[#9ca3af] hover:text-[#DC2626]">Delete</button>
                     </>
+                  ) : userId && (
+                    <div className="relative">
+                      <FlagButton contentType="comment" contentId={c.id} />
+                    </div>
                   )}
                 </div>
               )}

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 import CommentSection from '@/components/CommentSection'
+import FlagButton from '@/components/FlagButton'
 
 const riskColors: Record<string, string> = {
   high: 'text-[#DC2626] bg-[#DC2626]/10 border-[#DC2626]/30',
@@ -230,11 +231,14 @@ async function renderCustomerProfile(
                     </span>
                   )}
                 </div>
-                <span className="text-xs text-[#9ca3af]">
-                  {entry.incident_date
-                    ? new Date(entry.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                    : new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                </span>
+                <div className="relative flex items-center gap-2">
+                  <span className="text-xs text-[#9ca3af]">
+                    {entry.incident_date
+                      ? new Date(entry.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                      : new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </span>
+                  <FlagButton contentType="entry" contentId={entry.id} />
+                </div>
               </div>
               <p className="mb-3 text-sm leading-relaxed text-[#4b5563]">{entry.description}</p>
               {entry.amount_owed > 0 && (
@@ -425,11 +429,14 @@ async function renderWorkerProfile(
                     </span>
                   )}
                 </div>
-                <span className="text-xs text-[#9ca3af]">
-                  {entry.incident_date
-                    ? new Date(entry.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                    : new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                </span>
+                <div className="relative flex items-center gap-2">
+                  <span className="text-xs text-[#9ca3af]">
+                    {entry.incident_date
+                      ? new Date(entry.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                      : new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </span>
+                  <FlagButton contentType="worker_entry" contentId={entry.id} />
+                </div>
               </div>
               <p className="text-sm leading-relaxed text-[#4b5563]">{entry.description}</p>
               <CommentSection workerEntryId={entry.id} />

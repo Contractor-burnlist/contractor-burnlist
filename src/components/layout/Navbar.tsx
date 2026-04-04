@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 import ReputationBadge from '@/components/ReputationBadge'
+import { ADMIN_EMAILS } from '@/lib/admin'
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -84,6 +85,11 @@ export default function Navbar() {
             >
               My Profile
             </Link>
+            {user && ADMIN_EMAILS.includes(user.email ?? '') && (
+              <Link href="/admin" className="text-sm font-medium text-[#DC2626] transition-colors hover:text-red-700">
+                Admin
+              </Link>
+            )}
           </div>
 
           {/* Right Nav */}
@@ -148,6 +154,9 @@ export default function Navbar() {
             <Link href="/submit" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Submit Report</Link>
             <Link href="/dashboard" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Dashboard</Link>
             <Link href="/my-profile" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>My Profile</Link>
+            {user && ADMIN_EMAILS.includes(user.email ?? '') && (
+              <Link href="/admin" className="text-sm font-medium text-[#DC2626]" onClick={() => setMobileOpen(false)}>Admin</Link>
+            )}
             {user ? (
               <>
                 <span className="flex items-center gap-1.5 text-sm text-[#6b7280]">
