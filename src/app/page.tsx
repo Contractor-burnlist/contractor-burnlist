@@ -4,31 +4,34 @@ import { createClient, createServiceClient } from '@/lib/supabase/server'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 import AnimatedStat from '@/components/AnimatedStat'
 import RiskCalculator from '@/components/RiskCalculator'
+import StickyCTA from '@/components/StickyCTA'
 
 async function getCtaHref(): Promise<string> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
   if (!user) return '/auth/login?next=/pricing'
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('subscription_status')
-    .eq('id', user.id)
-    .single()
-
+  const { data: profile } = await supabase.from('profiles').select('subscription_status').eq('id', user.id).single()
   if (profile?.subscription_status === 'active') return '/dashboard'
   return '/pricing'
 }
 
+async function getLiveCounts() {
+  const supabase = await createServiceClient()
+  const [{ count: reports }, { count: users }, { count: workerReports }] = await Promise.all([
+    supabase.from('entries').select('id', { count: 'exact', head: true }),
+    supabase.from('profiles').select('id', { count: 'exact', head: true }),
+    supabase.from('worker_entries').select('id', { count: 'exact', head: true }),
+  ])
+  return { reports: (reports ?? 0) + (workerReports ?? 0), users: users ?? 0 }
+}
 
 const customerStats = [
-  { value: 39000, prefix: '$', suffix: '', label: 'Average annual cost to small businesses from late and unpaid invoices', source: 'Gateway Commercial Finance SMB Payment Survey, 2025' },
-  { value: 56, prefix: '', suffix: '%', label: 'of small businesses are currently owed money from unpaid invoices', source: 'QuickBooks 2025 US Small Business Late Payments Report (2,487 businesses surveyed)' },
-  { value: 53, prefix: '', suffix: '%', label: 'of contractors have turned down new business due to cash flow problems from unpaid invoices', source: 'Gateway Commercial Finance SMB Payment Survey, 2025' },
-  { value: 32, prefix: '', suffix: '%', label: 'of businesses lose 5-30% of their annual revenue to bad debt', source: 'Creditsafe Business Risk Report' },
-  { value: 64, prefix: '', suffix: '%', label: 'of businesses have invoices that are 90+ days overdue', source: 'Gateway Commercial Finance SMB Payment Survey, 2025' },
-  { value: 3, prefix: '$', suffix: 'T', label: 'Total global cost of late payments to small and mid-sized businesses', source: 'Sage / Plum Consulting "The Domino Effect" Report' },
+  { value: 39000, prefix: '$', suffix: '', label: 'Average annual cost to small businesses from late and unpaid invoices', source: 'Gateway Commercial Finance SMB Payment Survey, 2025', hero: true },
+  { value: 56, prefix: '', suffix: '%', label: 'of small businesses are currently owed money from unpaid invoices', source: 'QuickBooks 2025 US Small Business Late Payments Report (2,487 businesses surveyed)', hero: false },
+  { value: 53, prefix: '', suffix: '%', label: 'of contractors have turned down new business due to cash flow problems from unpaid invoices', source: 'Gateway Commercial Finance SMB Payment Survey, 2025', hero: false },
+  { value: 32, prefix: '', suffix: '%', label: 'of businesses lose 5-30% of their annual revenue to bad debt', source: 'Creditsafe Business Risk Report', hero: false },
+  { value: 64, prefix: '', suffix: '%', label: 'of businesses have invoices that are 90+ days overdue', source: 'Gateway Commercial Finance SMB Payment Survey, 2025', hero: false },
+  { value: 3, prefix: '$', suffix: 'T', label: 'Total global cost of late payments to small and mid-sized businesses', source: 'Sage / Plum Consulting "The Domino Effect" Report', hero: false },
 ]
 
 const workerStats = [
@@ -38,22 +41,19 @@ const workerStats = [
   { value: 5, prefix: '', suffix: '%', label: 'of revenue is lost to employee fraud each year for the typical organization', source: 'ACFE, 2024 Report to the Nations' },
 ]
 
-const steps = [
-  { number: '01', title: 'Sign Up Free', description: 'Create your account with Google in seconds. No credit card required to get started.' },
-  { number: '02', title: 'Search Before You Commit', description: 'Check any customer or worker against the database before you take the job or make the hire.' },
-  { number: '03', title: 'Report Bad Actors', description: 'Submit reports on non-payers, fraudsters, and problem workers to protect fellow contractors.' },
-  { number: '04', title: 'Build Your Reputation', description: 'Earn trust badges, build your reputation rank, and become a valued voice in the community.' },
+const stepIcons = [
+  <svg key="s" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/></svg>,
+  <svg key="m" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+  <svg key="f" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>,
+  <svg key="st" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>,
 ]
 
-async function getLiveCounts() {
-  const supabase = await createServiceClient()
-  const [{ count: reports }, { count: users }] = await Promise.all([
-    supabase.from('entries').select('id', { count: 'exact', head: true }),
-    supabase.from('profiles').select('id', { count: 'exact', head: true }),
-  ])
-  const { count: workerReports } = await supabase.from('worker_entries').select('id', { count: 'exact', head: true })
-  return { reports: (reports ?? 0) + (workerReports ?? 0), users: users ?? 0 }
-}
+const steps = [
+  { title: 'Sign Up Free', description: 'Create your account with Google in seconds. No credit card required.' },
+  { title: 'Search Before You Commit', description: 'Check any customer or worker against the database before you take the job.' },
+  { title: 'Report Bad Actors', description: 'Submit reports on non-payers, fraudsters, and problem workers.' },
+  { title: 'Build Your Reputation', description: 'Earn trust badges and become a valued voice in the community.' },
+]
 
 export default async function HomePage() {
   const ctaHref = await getCtaHref()
@@ -62,45 +62,42 @@ export default async function HomePage() {
   return (
     <div>
       {/* HERO */}
-      <section className="relative border-b border-[#2a2a2a] bg-[#0a0a0a] px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl flex items-center gap-12">
+      <section className="relative overflow-hidden border-b border-[#1a1a2e] bg-[#0d0d1a] px-4 py-28 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(135deg, #0d0d1a 0%, #1a0a0a 50%, #0d0d1a 100%)' }}>
+        <div className="pointer-events-none absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h40v40H0z\' fill=\'none\'/%3E%3Cpath d=\'M0 0h1v1H0zM20 20h1v1h-1z\' fill=\'white\'/%3E%3C/svg%3E")', backgroundSize: '40px 40px' }} />
+        <div className="relative mx-auto max-w-7xl flex items-center gap-16">
           <div className="flex-1 text-center lg:text-left">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#DC2626]/30 bg-[#DC2626]/10 px-4 py-1.5">
-              <span className="h-2 w-2 rounded-full bg-[#DC2626]" />
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#DC2626]/30 bg-[#DC2626]/10 px-4 py-1.5">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#DC2626]" />
               <span className="text-xs font-medium text-[#DC2626]">Contractor-Verified Reports</span>
             </div>
-            <h1 className="mb-6 text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="mb-6 font-[var(--font-display)] text-5xl font-black uppercase leading-none tracking-tight text-white sm:text-6xl lg:text-7xl">
               Stop Working for Free.{' '}
               <span className="text-[#DC2626]">Start Protecting Your Business.</span>
             </h1>
-            <p className="mx-auto mb-6 max-w-2xl text-lg text-[#a0a0a0] lg:mx-0">
+            <p className="mx-auto mb-8 max-w-2xl text-lg text-[#8a8a9a] lg:mx-0">
               Contractors lose an average of $39,000/year to late payments, fraud, and theft.
               The database that helps you vet customers and workers before you commit.
             </p>
+
             {liveCounts.reports > 0 && (
-              <div className="mb-10 flex items-center justify-center gap-6 lg:justify-start">
+              <div className="mb-10 flex items-center justify-center gap-8 lg:justify-start">
                 <div className="text-center lg:text-left">
-                  <div className="text-2xl font-black text-white">{liveCounts.reports.toLocaleString()}</div>
-                  <div className="text-xs text-[#6b7280]">reports submitted</div>
+                  <div className="font-[var(--font-display)] text-4xl font-black text-white">{liveCounts.reports.toLocaleString()}</div>
+                  <div className="text-xs font-medium uppercase tracking-wider text-[#6b7280]">reports submitted</div>
                 </div>
-                <div className="h-8 w-px bg-[#2a2a2a]" />
+                <div className="h-10 w-px bg-white/10" />
                 <div className="text-center lg:text-left">
-                  <div className="text-2xl font-black text-white">{liveCounts.users.toLocaleString()}</div>
-                  <div className="text-xs text-[#6b7280]">contractors</div>
+                  <div className="font-[var(--font-display)] text-4xl font-black text-white">{liveCounts.users.toLocaleString()}</div>
+                  <div className="text-xs font-medium uppercase tracking-wider text-[#6b7280]">contractors</div>
                 </div>
               </div>
             )}
+
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
-              <Link
-                href="/search"
-                className="w-full rounded bg-[#DC2626] px-8 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-red-700 sm:w-auto"
-              >
+              <Link href="/search" className="w-full rounded-lg bg-[#DC2626] px-8 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-[#DC2626]/20 transition-all hover:scale-105 hover:bg-red-600 hover:shadow-xl hover:shadow-[#DC2626]/30 sm:w-auto">
                 Search the Database
               </Link>
-              <Link
-                href={ctaHref}
-                className="w-full rounded border border-[#2a2a2a] px-8 py-3 text-center text-sm font-semibold text-[#a0a0a0] transition-colors hover:border-white hover:text-white sm:w-auto"
-              >
+              <Link href={ctaHref} className="w-full rounded-lg border border-white/20 px-8 py-3.5 text-center text-sm font-semibold text-[#a0a0a0] transition-all hover:border-white/50 hover:text-white sm:w-auto">
                 Get Access →
               </Link>
             </div>
@@ -114,63 +111,74 @@ export default async function HomePage() {
             <Image
               src="/mascot-removebg-preview.png"
               alt="Contractor Burnlist mascot"
-              width={280}
-              height={280}
-              className="object-contain"
-              style={{ height: '280px', width: 'auto' }}
+              width={300}
+              height={300}
+              className="object-contain animate-[float_3s_ease-in-out_infinite]"
+              style={{ height: '300px', width: 'auto' }}
               priority
             />
           </div>
         </div>
+        <style>{`@keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }`}</style>
       </section>
 
       {/* RISK CALCULATOR */}
       <RiskCalculator />
 
-      {/* THE WAKE-UP CALL — BAD CUSTOMERS */}
-      <section className="border-b border-[#2a2a2a] bg-[#0a0a0a] px-4 py-20 sm:px-6 lg:px-8">
+      {/* STATS — THE NUMBERS DON'T LIE */}
+      <section className="border-b border-[#1a1a2e] bg-[#0d0d1a] px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-14 text-center">
-            <h2 className="mb-3 text-3xl font-black text-white sm:text-4xl">The Numbers Don&apos;t Lie</h2>
-            <p className="text-[#a0a0a0]">The home services industry has a problem no one talks about. Here&apos;s what it&apos;s costing you.</p>
+          <div className="mb-16 text-center">
+            <h2 className="font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-white sm:text-5xl">The Numbers Don&apos;t Lie</h2>
+            <p className="mt-3 text-[#8a8a9a]">The home services industry has a problem no one talks about.</p>
           </div>
 
-          <h3 className="mb-6 text-center text-sm font-bold uppercase tracking-widest text-[#DC2626]">The Cost of Bad Customers</h3>
-          <div className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {customerStats.map((s) => (
-              <div key={s.label} className="rounded-lg border border-[#2a2a2a] bg-[#111111] p-6">
-                <div className="mb-2 text-4xl font-black text-[#DC2626] sm:text-5xl">
+          <h3 className="mb-8 text-center text-xs font-bold uppercase tracking-[0.2em] text-[#DC2626]">The Cost of Bad Customers</h3>
+
+          {/* Hero stat */}
+          <div className="mb-6 rounded-xl border-l-4 border-l-[#DC2626] border border-[#1a1a2e] bg-[#111122] p-8 text-center sm:p-10">
+            <div className="font-[var(--font-display)] text-6xl font-black text-[#DC2626] sm:text-7xl lg:text-8xl">
+              <AnimatedStat value={customerStats[0].value} prefix={customerStats[0].prefix} suffix={customerStats[0].suffix} />
+            </div>
+            <p className="mt-3 text-base text-[#a0a0a0]">{customerStats[0].label}</p>
+            <p className="mt-1 text-[10px] italic text-[#4b5563]">Source: {customerStats[0].source}</p>
+          </div>
+
+          <div className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {customerStats.slice(1).map((s, i) => (
+              <div key={s.label} className={`rounded-xl border border-[#1a1a2e] p-6 ${i % 2 === 0 ? 'bg-[#111122]' : 'bg-[#0f0f1e]'}`}>
+                <div className="font-[var(--font-display)] text-3xl font-black text-[#DC2626] sm:text-4xl">
                   <AnimatedStat value={s.value} prefix={s.prefix} suffix={s.suffix} />
                 </div>
-                <p className="mb-3 text-sm leading-relaxed text-[#a0a0a0]">{s.label}</p>
-                <p className="text-[10px] text-[#4b5563]">Source: {s.source}</p>
+                <p className="mt-2 text-xs leading-relaxed text-[#8a8a9a]">{s.label}</p>
+                <p className="mt-2 text-[10px] italic text-[#4b5563]">Source: {s.source}</p>
               </div>
             ))}
           </div>
 
-          <h3 className="mb-6 text-center text-sm font-bold uppercase tracking-widest text-orange-500">The Cost of Bad Workers &amp; Laborers</h3>
-          <div className="mb-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {workerStats.map((s) => (
-              <div key={s.label} className="rounded-lg border border-[#2a2a2a] bg-[#111111] p-6">
-                <div className="mb-2 text-4xl font-black text-orange-500 sm:text-5xl">
+          <h3 className="mb-8 text-center text-xs font-bold uppercase tracking-[0.2em] text-orange-500">The Cost of Bad Workers &amp; Laborers</h3>
+          <div className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {workerStats.map((s, i) => (
+              <div key={s.label} className={`rounded-xl border border-[#1a1a2e] p-6 ${i % 2 === 0 ? 'bg-[#111122]' : 'bg-[#0f0f1e]'}`}>
+                <div className="font-[var(--font-display)] text-3xl font-black text-orange-500 sm:text-4xl">
                   <AnimatedStat value={s.value} prefix={s.prefix} suffix={s.suffix} />
                 </div>
-                <p className="mb-3 text-sm leading-relaxed text-[#a0a0a0]">{s.label}</p>
-                <p className="text-[10px] text-[#4b5563]">Source: {s.source}</p>
+                <p className="mt-2 text-xs leading-relaxed text-[#8a8a9a]">{s.label}</p>
+                <p className="mt-2 text-[10px] italic text-[#4b5563]">Source: {s.source}</p>
               </div>
             ))}
           </div>
 
           <div className="text-center">
-            <p className="mb-8 text-lg font-bold text-white">
+            <p className="mb-8 font-[var(--font-display)] text-xl font-bold uppercase tracking-tight text-white sm:text-2xl">
               One bad customer can cost you thousands. One dishonest worker can sink your business.{' '}
               <span className="text-[#DC2626]">Knowledge is protection.</span>
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link href="/search" className="w-full rounded bg-[#DC2626] px-8 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-red-700 sm:w-auto">
+              <Link href="/search" className="w-full rounded-lg bg-[#DC2626] px-8 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-[#DC2626]/20 transition-all hover:scale-105 hover:bg-red-600 sm:w-auto">
                 Search the Database
               </Link>
-              <Link href="/submit" className="w-full rounded border border-[#2a2a2a] px-8 py-3 text-center text-sm font-semibold text-[#a0a0a0] transition-colors hover:border-white hover:text-white sm:w-auto">
+              <Link href="/submit" className="w-full rounded-lg border border-white/20 px-8 py-3.5 text-center text-sm font-semibold text-[#a0a0a0] transition-all hover:border-white/50 hover:text-white sm:w-auto">
                 Submit a Report
               </Link>
             </div>
@@ -179,18 +187,26 @@ export default async function HomePage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-black text-[#111111]">How It Works</h2>
+      <section className="border-b border-[#e5e7eb] bg-[#fafafa] px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-16 text-center">
+            <h2 className="font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-[#111111]">How It Works</h2>
             <p className="mt-3 text-[#6b7280]">Four steps to protect yourself and your peers</p>
           </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((step) => (
-              <div key={step.number} className="rounded-lg border border-[#e5e7eb] bg-white p-8">
-                <div className="mb-4 text-4xl font-black text-[#DC2626]">{step.number}</div>
-                <h3 className="mb-3 text-lg font-bold text-[#111111]">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-[#6b7280]">{step.description}</p>
+          <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((step, i) => (
+              <div key={step.title} className="relative p-8 text-center">
+                {i < 3 && <div className="absolute right-0 top-1/2 hidden h-px w-8 bg-[#DC2626]/30 lg:block" />}
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center font-[var(--font-display)] text-[120px] font-black leading-none text-[#f0f0f0]">
+                  {String(i + 1).padStart(2, '0')}
+                </div>
+                <div className="relative">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#DC2626]/10 text-[#DC2626]">
+                    {stepIcons[i]}
+                  </div>
+                  <h3 className="mb-2 text-base font-bold text-[#111111]">{step.title}</h3>
+                  <p className="text-xs leading-relaxed text-[#6b7280]">{step.description}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -198,37 +214,37 @@ export default async function HomePage() {
       </section>
 
       {/* TWO-SIDED PROTECTION */}
-      <section className="border-b border-[#e5e7eb] bg-white px-4 py-20 sm:px-6 lg:px-8">
+      <section className="border-b border-[#e5e7eb] bg-white px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-black text-[#111111]">Two-Sided Protection</h2>
+          <div className="mb-16 text-center">
+            <h2 className="font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-[#111111]">Two-Sided Protection</h2>
             <p className="mt-3 text-[#6b7280]">Vet the people you work for — and the people who work for you</p>
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div className="rounded-lg border-2 border-[#DC2626]/20 bg-[#DC2626]/5 p-8">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#DC2626]/10">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="rounded-2xl bg-gradient-to-br from-[#7f1d1d] to-[#991b1b] p-8 text-white shadow-xl transition-transform hover:-translate-y-1">
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-white/15">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><line x1="4" y1="4" x2="20" y2="20"/>
                 </svg>
               </div>
-              <h3 className="mb-2 text-xl font-bold text-[#111111]">Customer Database</h3>
-              <ul className="space-y-2 text-sm text-[#6b7280]">
-                <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />Search customers before you take the job</li>
-                <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />See their flag count and reports from other contractors</li>
-                <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />Know who doesn&apos;t pay, who commits fraud, who&apos;s hostile</li>
+              <h3 className="mb-3 font-[var(--font-display)] text-2xl font-bold uppercase">Customer Database</h3>
+              <ul className="space-y-2.5 text-sm text-white/80">
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Search customers before you take the job</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>See flag count and reports from other contractors</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Know who doesn&apos;t pay, who commits fraud</li>
               </ul>
             </div>
-            <div className="rounded-lg border-2 border-orange-300/30 bg-orange-50 p-8">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-100">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div className="rounded-2xl bg-gradient-to-br from-[#78350f] to-[#92400e] p-8 text-white shadow-xl transition-transform hover:-translate-y-1">
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-white/15">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M2 18v1a1 1 0 001 1h18a1 1 0 001-1v-1"/><path d="M2 18l3-9h14l3 9"/><path d="M9 9V5a1 1 0 011-1h4a1 1 0 011 1v4"/>
                 </svg>
               </div>
-              <h3 className="mb-2 text-xl font-bold text-[#111111]">Worker Database</h3>
-              <ul className="space-y-2 text-sm text-[#6b7280]">
-                <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />Vet workers and laborers before you hire</li>
-                <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />See reports on theft, no-shows, poor workmanship</li>
-                <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />Protect your business from the inside out</li>
+              <h3 className="mb-3 font-[var(--font-display)] text-2xl font-bold uppercase">Worker Database</h3>
+              <ul className="space-y-2.5 text-sm text-white/80">
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Vet workers and laborers before you hire</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>See reports on theft, no-shows, poor workmanship</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Protect your business from the inside out</li>
               </ul>
             </div>
           </div>
@@ -236,75 +252,113 @@ export default async function HomePage() {
       </section>
 
       {/* COMMUNITY */}
-      <section className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-3 text-3xl font-black text-[#111111]">Join the Growing Community of Contractors</h2>
-          <p className="mb-10 text-[#6b7280]">
-            More than a database — it&apos;s a community. Discuss reports, earn reputation, and build trust with fellow contractors.
-          </p>
-          <div className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
-              <div className="mb-3 text-3xl">💬</div>
-              <h3 className="mb-1 text-sm font-bold text-[#111111]">Discussions</h3>
-              <p className="text-xs text-[#6b7280]">Comment on reports, share insights, and help the community make better decisions</p>
+      <section className="border-b border-[#1a1a2e] bg-[#0d0d1a] px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-16 text-center">
+            <h2 className="font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-white">Join the Community</h2>
+            <p className="mt-3 text-[#8a8a9a]">More than a database — it&apos;s a community of contractors watching each other&apos;s backs.</p>
+          </div>
+
+          <div className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div className="rounded-xl border border-[#1a1a2e] bg-[#111122] p-6 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              </div>
+              <h3 className="mb-1 text-sm font-bold text-white">Discussions</h3>
+              <p className="text-xs text-[#8a8a9a]">Comment on reports, share insights, and help the community make better decisions</p>
             </div>
-            <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
-              <div className="mb-3 text-3xl">⭐</div>
-              <h3 className="mb-1 text-sm font-bold text-[#111111]">Reputation Ranks</h3>
-              <p className="text-xs text-[#6b7280]">Earn points for contributing. Rise from Rookie to Legend and stand out in the community</p>
+            <div className="rounded-xl border border-[#1a1a2e] bg-[#111122] p-6 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-400">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+              </div>
+              <h3 className="mb-1 text-sm font-bold text-white">Reputation Ranks</h3>
+              <p className="text-xs text-[#8a8a9a]">Earn points for contributing. Rise from Rookie to Legend and stand out</p>
             </div>
-            <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
-              <div className="mb-3 text-3xl">🛡️</div>
-              <h3 className="mb-1 text-sm font-bold text-[#111111]">Verified Badges</h3>
-              <p className="text-xs text-[#6b7280]">Link your Google Business Profile to earn a verified badge and boost your trust score</p>
+            <div className="rounded-xl border border-[#1a1a2e] bg-[#111122] p-6 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-400">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"><path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4" strokeLinecap="round"/></svg>
+              </div>
+              <h3 className="mb-1 text-sm font-bold text-white">Verified Badges</h3>
+              <p className="text-xs text-[#8a8a9a]">Link your Google Business Profile to earn a verified badge and boost trust</p>
             </div>
           </div>
 
-          <Link href={ctaHref} className="inline-block rounded bg-[#DC2626] px-10 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700">
-            Get Started Free
-          </Link>
+          {/* Mock discussion preview */}
+          <div className="mx-auto mb-12 max-w-lg rounded-xl border border-[#1a1a2e] bg-[#111122] p-5">
+            <div className="flex items-center gap-2 text-xs text-[#8a8a9a]">
+              <span className="font-semibold text-white">PipeKing_SD</span>
+              <span className="rounded-full border border-amber-700 bg-amber-900/30 px-1.5 py-0.5 text-[10px] font-semibold text-amber-400">Veteran</span>
+              <span>2h ago</span>
+            </div>
+            <p className="mt-2 text-sm text-[#a0a0a0]">Dealt with this customer last year. Same exact pattern — agreed to the quote, then disputed everything after the work was done. Glad someone finally reported them.</p>
+            <div className="mt-3 flex items-center gap-4 text-xs text-[#6b7280]">
+              <span className="flex items-center gap-1 text-[#DC2626]">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                12
+              </span>
+              <span>3 replies</span>
+            </div>
+          </div>
+
+          <div className="text-center">
+            {liveCounts.users > 0 && (
+              <p className="mb-6 text-sm text-[#8a8a9a]">Join <span className="font-bold text-white">{liveCounts.users.toLocaleString()}</span> contractors protecting each other</p>
+            )}
+            <Link href={ctaHref} className="inline-block rounded-lg bg-[#DC2626] px-10 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#DC2626]/20 transition-all hover:scale-105 hover:bg-red-600">
+              Get Started Free
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* PRICING TEASER */}
-      <section className="border-b border-[#e5e7eb] bg-white px-4 py-20 sm:px-6 lg:px-8">
+      <section className="border-b border-[#e5e7eb] bg-[#fafafa] px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-3 text-3xl font-black text-[#111111]">Simple, Transparent Pricing</h2>
-          <p className="mb-10 text-[#6b7280]">Free to sign up. Upgrade when you need full access.</p>
+          <h2 className="font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-[#111111]">Simple, Transparent Pricing</h2>
+          <p className="mt-3 mb-12 text-[#6b7280]">Free to sign up. Upgrade when you need full access.</p>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div className="rounded-lg border border-[#e5e7eb] p-6 text-left">
-              <h3 className="text-lg font-bold text-[#111111]">Shield</h3>
-              <div className="mt-1 mb-4"><span className="text-3xl font-black text-[#111111]">$19</span><span className="text-[#6b7280]">/mo</span></div>
-              <ul className="space-y-2 text-sm text-[#6b7280]">
-                <li>Unlimited report submissions</li>
-                <li>Search the customer database</li>
-                <li>View full report descriptions</li>
+            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-8 text-left shadow-sm">
+              <h3 className="font-[var(--font-display)] text-2xl font-bold uppercase text-[#111111]">Shield</h3>
+              <div className="mt-2 mb-6"><span className="font-[var(--font-display)] text-5xl font-black text-[#111111]">$19</span><span className="text-[#6b7280]">/mo</span></div>
+              <ul className="space-y-3 text-sm text-[#6b7280]">
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Unlimited report submissions</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Search the customer database</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>View initials, city &amp; flag count</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>View full report descriptions</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Community discussions</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Email alerts (coming soon)</li>
               </ul>
             </div>
-            <div className="rounded-lg border-2 border-[#DC2626] p-6 text-left relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#DC2626] px-3 py-0.5 text-xs font-semibold text-white">Recommended</div>
-              <h3 className="text-lg font-bold text-[#111111]">Fortress</h3>
-              <div className="mt-1 mb-4"><span className="text-3xl font-black text-[#111111]">$39</span><span className="text-[#6b7280]">/mo</span></div>
-              <ul className="space-y-2 text-sm text-[#6b7280]">
-                <li>Everything in Shield</li>
-                <li>Full address + phone visible</li>
-                <li>Worker & laborer database</li>
-                <li>Export results (CSV)</li>
+            <div className="relative rounded-2xl border-2 border-[#DC2626] bg-white p-8 text-left shadow-lg">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#DC2626] px-4 py-1 text-xs font-bold text-white shadow">Best Value</div>
+              <h3 className="font-[var(--font-display)] text-2xl font-bold uppercase text-[#111111]">Fortress</h3>
+              <div className="mt-2 mb-6"><span className="font-[var(--font-display)] text-5xl font-black text-[#111111]">$39</span><span className="text-[#6b7280]">/mo</span></div>
+              <ul className="space-y-3 text-sm text-[#6b7280]">
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Everything in Shield, plus:</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Full address &amp; phone on reports</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Worker &amp; laborer database access</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Advanced search filters</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Export results (CSV)</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Priority support</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Integrations (coming soon)</li>
               </ul>
             </div>
           </div>
-          <Link href="/pricing" className="mt-8 inline-block rounded border border-[#DC2626] px-8 py-3 text-sm font-semibold text-[#DC2626] transition-colors hover:bg-[#DC2626] hover:text-white">
+          <Link href="/pricing" className="mt-10 inline-block rounded-lg border border-[#DC2626] px-8 py-3 text-sm font-bold text-[#DC2626] transition-all hover:bg-[#DC2626] hover:text-white">
             View Plans →
           </Link>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-[#DC2626] px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="mb-4 text-3xl font-black text-white">Ready to protect your business?</h2>
-          <p className="mb-8 text-white/80">Join contractors who check before they commit.</p>
-          <Link href={ctaHref} className="inline-block rounded bg-white px-10 py-3 text-sm font-semibold text-[#DC2626] transition-colors hover:bg-gray-100">
+      {/* FINAL CTA */}
+      <section className="relative overflow-hidden bg-[#DC2626] px-4 py-24 sm:px-6 lg:px-8">
+        <div className="pointer-events-none absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h40v40H0z\' fill=\'none\'/%3E%3Cpath d=\'M0 0h1v1H0zM20 20h1v1h-1z\' fill=\'white\'/%3E%3C/svg%3E")', backgroundSize: '40px 40px' }} />
+        <div className="relative mx-auto max-w-2xl text-center">
+          <h2 className="mb-4 font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-white sm:text-5xl">Ready to Protect Your Business?</h2>
+          {liveCounts.users > 0 && (
+            <p className="mb-8 text-white/80">Join {liveCounts.users.toLocaleString()} contractors who check before they commit.</p>
+          )}
+          <Link href={ctaHref} className="inline-block rounded-lg bg-white px-10 py-3.5 text-sm font-bold text-[#DC2626] shadow-lg transition-all hover:scale-105 hover:shadow-xl">
             Get Access Today
           </Link>
         </div>
@@ -316,6 +370,8 @@ export default async function HomePage() {
           <PlatformDisclaimer variant="full" />
         </div>
       </section>
+
+      <StickyCTA href={ctaHref} />
     </div>
   )
 }
