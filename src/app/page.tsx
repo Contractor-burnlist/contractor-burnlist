@@ -4,7 +4,6 @@ import { createClient } from '@/lib/supabase/server'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 import AnimatedStat from '@/components/AnimatedStat'
 import RiskCalculator from '@/components/RiskCalculator'
-import { getReputation } from '@/lib/reputation'
 
 async function getCtaHref(): Promise<string> {
   const supabase = await createClient()
@@ -22,16 +21,6 @@ async function getCtaHref(): Promise<string> {
   return '/pricing'
 }
 
-async function getTopContributors() {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('profiles')
-    .select('reputation_points, comment_count, is_verified, display_username')
-    .gt('reputation_points', 0)
-    .order('reputation_points', { ascending: false })
-    .limit(5)
-  return data ?? []
-}
 
 const customerStats = [
   { value: 39000, prefix: '$', suffix: '', label: 'Average annual cost to small businesses from late and unpaid invoices', source: 'Gateway Commercial Finance SMB Payment Survey, 2025' },
@@ -58,7 +47,6 @@ const steps = [
 
 export default async function HomePage() {
   const ctaHref = await getCtaHref()
-  const topContributors = await getTopContributors()
 
   return (
     <div>
@@ -112,6 +100,9 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* RISK CALCULATOR */}
+      <RiskCalculator />
+
       {/* THE WAKE-UP CALL — BAD CUSTOMERS */}
       <section className="border-b border-[#2a2a2a] bg-[#0a0a0a] px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
@@ -162,9 +153,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* RISK CALCULATOR */}
-      <RiskCalculator />
 
       {/* HOW IT WORKS */}
       <section className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-20 sm:px-6 lg:px-8">
@@ -247,33 +235,6 @@ export default async function HomePage() {
               <p className="text-xs text-[#6b7280]">Link your Google Business Profile to earn a verified badge and boost your trust score</p>
             </div>
           </div>
-
-          {topContributors.length > 0 && (
-            <div className="mb-10">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#9ca3af]">Top Contributors</h3>
-              <div className="space-y-2">
-                {topContributors.map((c: any, i: number) => {
-                  const rep = getReputation(c.reputation_points)
-                  return (
-                    <div key={i} className="flex items-center justify-between rounded-lg border border-[#e5e7eb] bg-white px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#111111] text-xs font-bold text-white">{i + 1}</span>
-                        <span className="text-sm font-medium text-[#111111]">{c.display_username ?? (c.is_verified ? 'Verified Contractor' : 'Anonymous Contractor')}</span>
-                        <span className={`inline-flex items-center gap-0.5 rounded-full border px-2 py-0.5 text-xs font-semibold ${rep.color} ${rep.bg} ${rep.border}`}>
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" className={rep.color}><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>
-                          {rep.rank}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-4 text-xs text-[#6b7280]">
-                        <span>{c.reputation_points} pts</span>
-                        <span>{c.comment_count ?? 0} comments</span>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
 
           <Link href={ctaHref} className="inline-block rounded bg-[#DC2626] px-10 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700">
             Get Started Free
