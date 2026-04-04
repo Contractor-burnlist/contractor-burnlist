@@ -27,12 +27,6 @@ export async function POST(request: Request) {
     const customerId = session.customer as string
     const subscriptionId = session.subscription as string
 
-    console.log('[webhook] checkout.session.completed')
-    console.log('[webhook] session.metadata:', JSON.stringify(session.metadata))
-    console.log('[webhook] userId:', userId)
-    console.log('[webhook] customerId:', customerId)
-    console.log('[webhook] subscriptionId:', subscriptionId)
-
     if (!userId) {
       console.error('[webhook] NO userId in metadata — cannot update tables')
     }
@@ -46,12 +40,6 @@ export async function POST(request: Request) {
       const tier = priceId === process.env.NEXT_PUBLIC_FORTRESS_PRICE_ID ? 'fortress' : 'shield'
       const periodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
 
-      console.log('[webhook] priceId:', priceId)
-      console.log('[webhook] FORTRESS env:', process.env.NEXT_PUBLIC_FORTRESS_PRICE_ID)
-      console.log('[webhook] tier:', tier)
-      console.log('[webhook] periodEnd:', periodEnd)
-
-      // Upsert subscriptions table
       const { error: subError } = await supabase.from('subscriptions').upsert({
         user_id: userId,
         stripe_subscription_id: subscription.id,
@@ -63,11 +51,8 @@ export async function POST(request: Request) {
 
       if (subError) {
         console.error('[webhook] subscriptions upsert error:', JSON.stringify(subError))
-      } else {
-        console.log('[webhook] subscriptions upsert SUCCESS')
       }
 
-      // Update profiles table + increment trust_score for subscription (cap at 5)
       const { data: existingProfile } = await supabase.from('profiles').select('trust_score').eq('id', userId).single()
       const currentScore = existingProfile?.trust_score ?? 1
       const { error: profError } = await supabase.from('profiles').update({
@@ -79,8 +64,6 @@ export async function POST(request: Request) {
 
       if (profError) {
         console.error('[webhook] profiles update error:', JSON.stringify(profError))
-      } else {
-        console.log('[webhook] profiles update SUCCESS')
       }
     }
   }
@@ -89,12 +72,10 @@ export async function POST(request: Request) {
     const subscription = event.data.object as any
     const customerId = subscription.customer as string
 
-    // Update subscriptions via stripe_subscription_id
     await supabase.from('subscriptions').update({
       status: 'inactive',
     }).eq('stripe_subscription_id', subscription.id)
 
-    // Update profiles
     await supabase.from('profiles').update({
       subscription_status: 'inactive',
       subscription_tier: null,
@@ -109,7 +90,6 @@ export async function POST(request: Request) {
     const tier = priceId === process.env.NEXT_PUBLIC_FORTRESS_PRICE_ID ? 'fortress' : 'shield'
     const periodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
 
-    // Update subscriptions table
     await supabase.from('subscriptions').update({
       stripe_price_id: priceId,
       tier: tier,
@@ -117,7 +97,6 @@ export async function POST(request: Request) {
       current_period_end: periodEnd,
     }).eq('stripe_subscription_id', subscription.id)
 
-    // Update profiles table
     await supabase.from('profiles').update({
       subscription_status: status,
       subscription_tier: tier,

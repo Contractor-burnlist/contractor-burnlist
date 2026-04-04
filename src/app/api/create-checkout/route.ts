@@ -3,42 +3,27 @@ import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-  console.log('[create-checkout] Starting checkout session creation')
-  console.log('STRIPE_SECRET_KEY exists:', !!process.env.STRIPE_SECRET_KEY)
-  console.log('STRIPE_SECRET_KEY prefix:', process.env.STRIPE_SECRET_KEY?.slice(0, 7))
-
   const supabase = await createClient()
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-  if (authError) {
-    console.error('[create-checkout] Auth error:', authError.message)
-  }
+  const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    console.log('[create-checkout] No user found — returning 401')
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-
-  console.log('[create-checkout] User:', user.id, user.email)
 
   let body
   try {
     body = await request.json()
-  } catch (e: any) {
-    console.error('[create-checkout] Failed to parse request body:', e.message)
+  } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
   }
 
   const { priceId } = body
-  console.log('Price ID received:', priceId)
 
   if (!priceId) {
-    console.log('[create-checkout] No priceId provided — returning 400')
     return NextResponse.json({ error: 'Price ID is required' }, { status: 400 })
   }
 
   const origin = process.env.NEXT_PUBLIC_APP_URL || request.headers.get('origin') || 'http://localhost:3000'
-  console.log('[create-checkout] Origin:', origin)
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -53,12 +38,11 @@ export async function POST(request: Request) {
       },
     })
 
-    console.log('[create-checkout] Session created:', session.id, session.url)
     return NextResponse.json({ url: session.url })
   } catch (err: any) {
-    console.error('[create-checkout] Stripe error full:', JSON.stringify(err, Object.getOwnPropertyNames(err)))
+    console.error('[create-checkout] Stripe error:', err.message)
     return NextResponse.json(
-      { error: err.message, type: err.type, code: err.code, raw: JSON.stringify(err, Object.getOwnPropertyNames(err)) },
+      { error: err.message },
       { status: 500 }
     )
   }

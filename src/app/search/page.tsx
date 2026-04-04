@@ -73,9 +73,6 @@ export default function SearchPage() {
 
     const [customersRes, workersRes] = await Promise.all([customersQuery, workersQuery])
 
-    console.log('[search] customers:', customersRes.data?.length ?? 0, 'error:', customersRes.error)
-    console.log('[search] workers:', workersRes.data?.length ?? 0, 'error:', workersRes.error)
-
     const customerResults: SearchResult[] = (customersRes.data || []).map((c: Record<string, unknown>) => {
       const entries = c.entries as Record<string, unknown>[] | undefined
       return {
