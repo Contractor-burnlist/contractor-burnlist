@@ -16,11 +16,19 @@ export default function AdminFlaggedPage() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('pending')
 
+  const [error, setError] = useState('')
+
   async function load() {
     setLoading(true)
+    setError('')
     const res = await fetch(`/api/admin/flags?status=${tab}`)
-    const { data } = await res.json()
-    setFlags(data ?? [])
+    const json = await res.json()
+    if (!res.ok) {
+      setError(json.error || `API error ${res.status}`)
+      setFlags([])
+    } else {
+      setFlags(json.data ?? [])
+    }
     setLoading(false)
   }
 
@@ -49,9 +57,13 @@ export default function AdminFlaggedPage() {
         ))}
       </div>
 
+      {error && (
+        <div className="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-xs text-[#DC2626]">{error}</div>
+      )}
+
       {loading ? (
         <div className="flex justify-center py-12"><div className="h-6 w-6 animate-spin rounded-full border-2 border-[#e5e7eb] border-t-[#DC2626]" /></div>
-      ) : flags.length === 0 ? (
+      ) : flags.length === 0 && !error ? (
         <p className="py-8 text-center text-sm text-[#9ca3af]">No flags found.</p>
       ) : (
         <div className="space-y-3">
