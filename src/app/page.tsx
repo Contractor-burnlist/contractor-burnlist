@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 import AnimatedStat from '@/components/AnimatedStat'
+import RiskCalculator from '@/components/RiskCalculator'
 import { getReputation } from '@/lib/reputation'
 
 async function getCtaHref(): Promise<string> {
@@ -161,6 +162,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* RISK CALCULATOR */}
+      <RiskCalculator />
 
       {/* HOW IT WORKS */}
       <section className="border-b border-[#e5e7eb] bg-[#f9fafb] px-4 py-20 sm:px-6 lg:px-8">
