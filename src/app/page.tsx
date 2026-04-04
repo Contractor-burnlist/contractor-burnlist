@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createServiceClient } from '@/lib/supabase/server'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 import AnimatedStat from '@/components/AnimatedStat'
 import RiskCalculator from '@/components/RiskCalculator'
@@ -45,8 +45,19 @@ const steps = [
   { number: '04', title: 'Build Your Reputation', description: 'Earn trust badges, build your reputation rank, and become a valued voice in the community.' },
 ]
 
+async function getLiveCounts() {
+  const supabase = await createServiceClient()
+  const [{ count: reports }, { count: users }] = await Promise.all([
+    supabase.from('entries').select('id', { count: 'exact', head: true }),
+    supabase.from('profiles').select('id', { count: 'exact', head: true }),
+  ])
+  const { count: workerReports } = await supabase.from('worker_entries').select('id', { count: 'exact', head: true })
+  return { reports: (reports ?? 0) + (workerReports ?? 0), users: users ?? 0 }
+}
+
 export default async function HomePage() {
   const ctaHref = await getCtaHref()
+  const liveCounts = await getLiveCounts()
 
   return (
     <div>
@@ -62,10 +73,23 @@ export default async function HomePage() {
               Stop Working for Free.{' '}
               <span className="text-[#DC2626]">Start Protecting Your Business.</span>
             </h1>
-            <p className="mx-auto mb-10 max-w-2xl text-lg text-[#a0a0a0] lg:mx-0">
+            <p className="mx-auto mb-6 max-w-2xl text-lg text-[#a0a0a0] lg:mx-0">
               Contractors lose an average of $39,000/year to late payments, fraud, and theft.
               The database that helps you vet customers and workers before you commit.
             </p>
+            {liveCounts.reports > 0 && (
+              <div className="mb-10 flex items-center justify-center gap-6 lg:justify-start">
+                <div className="text-center lg:text-left">
+                  <div className="text-2xl font-black text-white">{liveCounts.reports.toLocaleString()}</div>
+                  <div className="text-xs text-[#6b7280]">reports submitted</div>
+                </div>
+                <div className="h-8 w-px bg-[#2a2a2a]" />
+                <div className="text-center lg:text-left">
+                  <div className="text-2xl font-black text-white">{liveCounts.users.toLocaleString()}</div>
+                  <div className="text-xs text-[#6b7280]">contractors</div>
+                </div>
+              </div>
+            )}
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
               <Link
                 href="/search"

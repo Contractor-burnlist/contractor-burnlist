@@ -25,7 +25,7 @@ type SearchResult = {
   risk_level: string
   trade: string | null
   entry_count: number
-  has_verified_report: boolean
+  has_verified_report?: boolean
 }
 
 export default function SearchPage() {
@@ -48,11 +48,23 @@ export default function SearchPage() {
     })
   }, [])
 
-  async function runSearch(searchTerm: string, existingClient?: ReturnType<typeof createClient>) {
+  async function handleSearch(e: React.FormEvent) {
+    e.preventDefault()
+    if (!query.trim()) return
     setLoading(true)
     setSearched(true)
 
-    const supabase = existingClient ?? createClient()
+    if (isLoggedIn === false) {
+      // Public search — use API route with service role
+      const res = await fetch(`/api/public-search?q=${encodeURIComponent(query.trim())}`)
+      const { data } = await res.json()
+      setResults((data ?? []).map((r: any) => ({ ...r, has_verified_report: false })))
+      setLoading(false)
+      return
+    }
+
+    // Authenticated search — query directly via Supabase client
+    const supabase = createClient()
 
     let customersQuery = supabase
       .from('customers')
@@ -66,15 +78,13 @@ export default function SearchPage() {
       .order('flag_count', { ascending: false })
       .limit(50)
 
-    if (searchTerm) {
-      const p = `%${searchTerm}%`
-      customersQuery = customersQuery.or(
-        `full_name.ilike.${p},phone.ilike.${p},address.ilike.${p},city.ilike.${p},display_name.ilike.${p}`
-      )
-      workersQuery = workersQuery.or(
-        `full_name.ilike.${p},phone.ilike.${p},city.ilike.${p},display_name.ilike.${p},trade_specialty.ilike.${p}`
-      )
-    }
+    const p = `%${query.trim()}%`
+    customersQuery = customersQuery.or(
+      `full_name.ilike.${p},phone.ilike.${p},address.ilike.${p},city.ilike.${p},display_name.ilike.${p}`
+    )
+    workersQuery = workersQuery.or(
+      `full_name.ilike.${p},phone.ilike.${p},city.ilike.${p},display_name.ilike.${p},trade_specialty.ilike.${p}`
+    )
 
     const [customersRes, workersRes] = await Promise.all([customersQuery, workersQuery])
 
@@ -123,12 +133,6 @@ export default function SearchPage() {
     if (filter === 'customers') return r.type === 'customer'
     return r.type === 'worker'
   })
-
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault()
-    if (!query.trim()) return
-    runSearch(query.trim())
-  }
 
   const customerCount = results.filter((r) => r.type === 'customer').length
   const workerCount = results.filter((r) => r.type === 'worker').length
@@ -198,39 +202,55 @@ export default function SearchPage() {
             {filteredResults.length} result{filteredResults.length !== 1 ? 's' : ''}{query.trim() ? <> for &quot;{query}&quot;</> : ''}
           </p>
           <div className="space-y-3">
-            {/* Blurred placeholder for non-authenticated users */}
-            {isLoggedIn === false && (
-              <div className="relative rounded-lg border border-[#e5e7eb] bg-white px-5 py-6">
-                <div className="pointer-events-none select-none blur-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="rounded-full bg-[#DC2626]/10 px-2.5 py-0.5 text-xs font-semibold text-[#DC2626]">Customer</span>
-                      <div>
-                        <div className="font-semibold text-[#111111]">M.T.</div>
-                        <div className="mt-0.5 text-xs text-[#6b7280]">Austin, TX</div>
+            {/* PUBLIC / NOT LOGGED IN — show real results with blurred detail overlay */}
+            {isLoggedIn === false && filteredResults.map((result) => (
+              <div key={`${result.type}-${result.id}`} className="relative overflow-hidden rounded-lg border border-[#e5e7eb] bg-white px-5 py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${result.type === 'customer' ? 'bg-[#DC2626]/10 text-[#DC2626]' : 'bg-orange-100 text-orange-600'}`}>
+                      {result.type === 'customer' ? 'Customer' : 'Worker'}
+                    </span>
+                    <div>
+                      <div className="font-semibold text-[#111111]">{result.display_name}</div>
+                      <div className="mt-0.5 flex items-center gap-2 text-xs text-[#6b7280]">
+                        <span>{result.city}, {result.state}</span>
+                        {result.trade && <><span className="text-[#d1d5db]">·</span><span>{result.trade}</span></>}
                       </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <div className="text-xs text-[#6b7280]">Flags</div>
-                        <div className="font-bold text-[#111111]">5</div>
-                      </div>
-                      <span className="rounded-full border border-[#DC2626]/30 bg-[#DC2626]/10 px-3 py-1 text-xs font-semibold text-[#DC2626]">high</span>
                     </div>
                   </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#DC2626] px-1.5 text-xs font-bold text-white">{result.flag_count}</span>
+                      <span className="text-xs text-[#6b7280]">flags</span>
+                    </div>
+                    <span className={`rounded-full border px-3 py-1 text-xs font-semibold capitalize ${riskColors[result.risk_level] || riskColors.unknown}`}>{result.risk_level}</span>
+                  </div>
                 </div>
-                <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg bg-white/80">
-                  <p className="mb-3 text-sm font-semibold text-[#111111]">Subscribe to view full details</p>
-                  <Link
-                    href="/pricing"
-                    className="rounded bg-[#DC2626] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
-                  >
-                    Get Access
-                  </Link>
+                {/* Blurred detail preview */}
+                <div className="relative mt-3">
+                  <div className="pointer-events-none select-none blur-[6px]">
+                    <div className="h-3 w-3/4 rounded bg-[#e5e7eb]" />
+                    <div className="mt-1.5 h-3 w-1/2 rounded bg-[#e5e7eb]" />
+                  </div>
+                  <div className="absolute inset-0 flex items-center">
+                    <p className="text-xs text-[#9ca3af]">Sign up free to view report details</p>
+                  </div>
                 </div>
+              </div>
+            ))}
+
+            {/* Sign up CTA after public results */}
+            {isLoggedIn === false && filteredResults.length > 0 && (
+              <div className="rounded-lg border-2 border-dashed border-[#DC2626]/30 bg-[#DC2626]/5 p-6 text-center">
+                <p className="mb-1 text-sm font-bold text-[#111111]">Sign up free to search the full database</p>
+                <p className="mb-4 text-xs text-[#6b7280]">Create your free account to view report details, submit your own reports, and join the community.</p>
+                <Link href="/auth/login?next=/search" className="inline-block rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700">
+                  Sign Up Free
+                </Link>
               </div>
             )}
 
+            {/* AUTHENTICATED — full or tier-gated results */}
             {isLoggedIn && filteredResults.map((result) => {
               const isWorkerLocked = result.type === 'worker' && subTier !== 'fortress'
               if (isWorkerLocked) {
