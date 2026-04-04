@@ -12,7 +12,7 @@ const DISPUTE_REASONS = [
   { value: 'other', label: 'Other' },
 ]
 
-export default function DisputeForm({ contentType, contentId }: { contentType: 'customer' | 'worker'; contentId: string }) {
+export default function DisputeForm({ contentType, contentId, variant = 'link' }: { contentType: 'customer' | 'worker'; contentId: string; variant?: 'link' | 'banner' }) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -48,15 +48,24 @@ export default function DisputeForm({ contentType, contentId }: { contentType: '
 
   if (status === 'done') {
     return (
-      <div className="mt-6 rounded-lg border border-green-200 bg-green-50 p-5 text-center">
-        <div className="mb-2 text-2xl">✓</div>
-        <p className="text-sm font-semibold text-green-800">Your dispute has been submitted.</p>
+      <div className={`rounded-lg border border-green-200 bg-green-50 p-5 text-center ${variant === 'banner' ? 'mb-4' : 'mt-6'}`}>
+        <p className="text-sm font-semibold text-green-800">✓ Your dispute has been submitted.</p>
         <p className="mt-1 text-xs text-green-700">Our team will review it and may contact you at the email address provided. Please allow up to 5 business days for a response.</p>
       </div>
     )
   }
 
   if (!open) {
+    if (variant === 'banner') {
+      return (
+        <button onClick={() => setOpen(true)} className="mb-4 flex w-full items-center gap-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-left transition-colors hover:bg-amber-100">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+          </svg>
+          <span className="text-sm font-semibold text-amber-800">Is this about you? Dispute this report →</span>
+        </button>
+      )
+    }
     return (
       <button onClick={() => setOpen(true)} className="mt-4 flex items-center gap-1.5 text-xs text-[#9ca3af] transition-colors hover:text-[#6b7280]">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

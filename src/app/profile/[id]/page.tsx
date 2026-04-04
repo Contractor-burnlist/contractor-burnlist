@@ -101,6 +101,9 @@ async function renderCustomerProfile(
         ← Back to Search
       </Link>
 
+      {/* Dispute Banner */}
+      <DisputeForm contentType="customer" contentId={id} variant="banner" />
+
       {/* Header */}
       <div className="mb-8 rounded-lg border border-[#e5e7eb] bg-white p-6">
         <div className="flex items-start justify-between">
@@ -274,11 +277,6 @@ async function renderCustomerProfile(
         </Link>
       </div>
 
-      {/* Dispute */}
-      <div className="mt-6 rounded-lg border border-[#e5e7eb] bg-white p-5">
-        <DisputeForm contentType="customer" contentId={id} />
-      </div>
-
       <div className="mt-8">
         <PlatformDisclaimer variant="full" />
       </div>
@@ -286,7 +284,7 @@ async function renderCustomerProfile(
       <p className="mt-4 text-[10px] leading-relaxed text-[#9ca3af]">
         The information on this page was submitted by individual contractors and represents their personal experiences and opinions.
         Contractor Burnlist does not verify the accuracy of reports. If you believe information about you is false or inaccurate,
-        you may submit a dispute using the link above. See our <Link href="/terms" className="underline hover:text-[#6b7280]">Terms &amp; Conditions</Link> and <Link href="/privacy" className="underline hover:text-[#6b7280]">Privacy Policy</Link> for more information.
+        you may submit a dispute using the banner above. See our <Link href="/terms" className="underline hover:text-[#6b7280]">Terms &amp; Conditions</Link> and <Link href="/privacy" className="underline hover:text-[#6b7280]">Privacy Policy</Link> for more information.
       </p>
     </div>
   )
@@ -323,6 +321,9 @@ async function renderWorkerProfile(
       <Link href="/search" className="mb-8 inline-flex items-center gap-2 text-sm text-[#6b7280] hover:text-[#111111]">
         ← Back to Search
       </Link>
+
+      {/* Dispute Banner */}
+      <DisputeForm contentType="worker" contentId={id} variant="banner" />
 
       {/* Header */}
       <div className="mb-8 rounded-lg border border-[#e5e7eb] bg-white p-6">
@@ -474,11 +475,6 @@ async function renderWorkerProfile(
         </Link>
       </div>
 
-      {/* Dispute */}
-      <div className="mt-6 rounded-lg border border-[#e5e7eb] bg-white p-5">
-        <DisputeForm contentType="worker" contentId={id} />
-      </div>
-
       <div className="mt-8">
         <PlatformDisclaimer variant="full" />
       </div>
@@ -486,7 +482,7 @@ async function renderWorkerProfile(
       <p className="mt-4 text-[10px] leading-relaxed text-[#9ca3af]">
         The information on this page was submitted by individual contractors and represents their personal experiences and opinions.
         Contractor Burnlist does not verify the accuracy of reports. If you believe information about you is false or inaccurate,
-        you may submit a dispute using the link above. See our <Link href="/terms" className="underline hover:text-[#6b7280]">Terms &amp; Conditions</Link> and <Link href="/privacy" className="underline hover:text-[#6b7280]">Privacy Policy</Link> for more information.
+        you may submit a dispute using the banner above. See our <Link href="/terms" className="underline hover:text-[#6b7280]">Terms &amp; Conditions</Link> and <Link href="/privacy" className="underline hover:text-[#6b7280]">Privacy Policy</Link> for more information.
       </p>
     </div>
   )
