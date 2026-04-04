@@ -455,7 +455,7 @@ export default function SubmitPage() {
             <label className="flex cursor-pointer items-start gap-3">
               <input type="checkbox" checked={certified} onChange={(e) => setCertified(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#d1d5db] accent-[#DC2626]" />
               <span className="text-sm leading-relaxed text-[#6b7280]">
-                I confirm that this report is truthful and based on my firsthand experience. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
+                I confirm that this report is truthful and based on my direct, firsthand experience. I understand that I am solely responsible for the content I submit and that submitting knowingly false information may expose me to legal liability, including defamation claims. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
                 <span className="text-[#DC2626]"> *</span>
               </span>
             </label>
@@ -535,7 +535,7 @@ export default function SubmitPage() {
             <label className="flex cursor-pointer items-start gap-3">
               <input type="checkbox" checked={certified} onChange={(e) => setCertified(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#d1d5db] accent-[#DC2626]" />
               <span className="text-sm leading-relaxed text-[#6b7280]">
-                I confirm that this report is truthful and based on my firsthand experience. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
+                I confirm that this report is truthful and based on my direct, firsthand experience. I understand that I am solely responsible for the content I submit and that submitting knowingly false information may expose me to legal liability, including defamation claims. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
                 <span className="text-[#DC2626]"> *</span>
               </span>
             </label>

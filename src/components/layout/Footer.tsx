@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="flex items-center gap-4 text-xs text-[#6b7280]">
             <Link href="/terms" className="hover:text-white transition-colors">Terms &amp; Conditions</Link>
             <span className="text-[#4b5563]">|</span>
-            <Link href="/terms" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <span className="text-[#4b5563]">|</span>
             <a href="mailto:support@contractorburnlist.com" className="hover:text-white transition-colors">Contact</a>
           </div>
