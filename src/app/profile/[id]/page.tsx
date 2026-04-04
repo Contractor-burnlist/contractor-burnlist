@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 import CommentSection from '@/components/CommentSection'
 import FlagButton from '@/components/FlagButton'
+import DisputeForm from '@/components/DisputeForm'
 
 const riskColors: Record<string, string> = {
   high: 'text-[#DC2626] bg-[#DC2626]/10 border-[#DC2626]/30',
@@ -145,6 +146,7 @@ async function renderCustomerProfile(
 
         {/* Contact info — Fortress only */}
         <div className="mt-6 border-t border-[#e5e7eb] pt-5">
+          {/* Contact info — Fortress only */}
           {isFortress ? (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {customer.phone && (
@@ -272,9 +274,20 @@ async function renderCustomerProfile(
         </Link>
       </div>
 
+      {/* Dispute */}
+      <div className="mt-6 rounded-lg border border-[#e5e7eb] bg-white p-5">
+        <DisputeForm contentType="customer" contentId={id} />
+      </div>
+
       <div className="mt-8">
         <PlatformDisclaimer variant="full" />
       </div>
+
+      <p className="mt-4 text-[10px] leading-relaxed text-[#9ca3af]">
+        The information on this page was submitted by individual contractors and represents their personal experiences and opinions.
+        Contractor Burnlist does not verify the accuracy of reports. If you believe information about you is false or inaccurate,
+        you may submit a dispute using the link above. See our <Link href="/terms" className="underline hover:text-[#6b7280]">Terms &amp; Conditions</Link> and <Link href="/privacy" className="underline hover:text-[#6b7280]">Privacy Policy</Link> for more information.
+      </p>
     </div>
   )
 }
@@ -461,9 +474,20 @@ async function renderWorkerProfile(
         </Link>
       </div>
 
+      {/* Dispute */}
+      <div className="mt-6 rounded-lg border border-[#e5e7eb] bg-white p-5">
+        <DisputeForm contentType="worker" contentId={id} />
+      </div>
+
       <div className="mt-8">
         <PlatformDisclaimer variant="full" />
       </div>
+
+      <p className="mt-4 text-[10px] leading-relaxed text-[#9ca3af]">
+        The information on this page was submitted by individual contractors and represents their personal experiences and opinions.
+        Contractor Burnlist does not verify the accuracy of reports. If you believe information about you is false or inaccurate,
+        you may submit a dispute using the link above. See our <Link href="/terms" className="underline hover:text-[#6b7280]">Terms &amp; Conditions</Link> and <Link href="/privacy" className="underline hover:text-[#6b7280]">Privacy Policy</Link> for more information.
+      </p>
     </div>
   )
 }
