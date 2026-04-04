@@ -33,27 +33,43 @@ export default async function ProfilePage({
 
   // Check auth + subscription
   const { data: { user } } = await supabase.auth.getUser()
-  let hasActiveSubscription = false
+  let subTier: string | null = null
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('subscription_status')
+      .select('subscription_status, subscription_tier')
       .eq('id', user.id)
       .single()
-    hasActiveSubscription = profile?.subscription_status === 'active'
+    if (profile?.subscription_status === 'active') subTier = profile.subscription_tier
   }
+
+  const isFortress = subTier === 'fortress'
+  const hasActiveSubscription = subTier !== null
 
   if (profileType === 'worker') {
-    return renderWorkerProfile(supabase, id, hasActiveSubscription)
+    if (!isFortress) {
+      return (
+        <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 lg:px-8">
+          <div className="rounded-lg border border-[#e5e7eb] bg-white p-10">
+            <div className="mb-4 text-4xl">🔒</div>
+            <h2 className="mb-2 text-2xl font-black text-[#111111]">Worker Registry — Fortress Only</h2>
+            <p className="mb-6 text-[#6b7280]">Worker and laborer reports are available exclusively to Fortress subscribers.</p>
+            <Link href="/pricing" className="inline-block rounded bg-[#DC2626] px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700">Upgrade to Fortress</Link>
+          </div>
+        </div>
+      )
+    }
+    return renderWorkerProfile(supabase, id, isFortress)
   }
 
-  return renderCustomerProfile(supabase, id, hasActiveSubscription)
+  return renderCustomerProfile(supabase, id, hasActiveSubscription, isFortress)
 }
 
 async function renderCustomerProfile(
   supabase: Awaited<ReturnType<typeof createClient>>,
   id: string,
   hasActiveSubscription: boolean,
+  isFortress: boolean,
 ) {
   const { data: customer, error } = await supabase
     .from('customers')
@@ -126,9 +142,9 @@ async function renderCustomerProfile(
           </div>
         </div>
 
-        {/* Contact info — locked for non-subscribers */}
+        {/* Contact info — Fortress only */}
         <div className="mt-6 border-t border-[#e5e7eb] pt-5">
-          {hasActiveSubscription ? (
+          {isFortress ? (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {customer.phone && (
                 <div>
@@ -171,7 +187,7 @@ async function renderCustomerProfile(
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0110 0v4"/>
                 </svg>
-                <p className="text-sm font-semibold text-[#111111]">Subscribe to view contact details</p>
+                <p className="text-sm font-semibold text-[#111111]">Upgrade to Fortress to view contact details</p>
                 <Link
                   href="/pricing"
                   className="mt-2 rounded bg-[#DC2626] px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700"
@@ -262,7 +278,7 @@ async function renderCustomerProfile(
 async function renderWorkerProfile(
   supabase: Awaited<ReturnType<typeof createClient>>,
   id: string,
-  hasActiveSubscription: boolean,
+  isFortress: boolean,
 ) {
   const { data: worker, error } = await supabase
     .from('workers')
@@ -337,9 +353,9 @@ async function renderWorkerProfile(
           )}
         </div>
 
-        {/* Contact info — locked for non-subscribers */}
+        {/* Contact info — Fortress only */}
         <div className="mt-6 border-t border-[#e5e7eb] pt-5">
-          {hasActiveSubscription ? (
+          {isFortress ? (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {worker.phone && (
                 <div>
@@ -366,7 +382,7 @@ async function renderWorkerProfile(
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0110 0v4"/>
                 </svg>
-                <p className="text-sm font-semibold text-[#111111]">Subscribe to view contact details</p>
+                <p className="text-sm font-semibold text-[#111111]">Upgrade to Fortress to view contact details</p>
                 <Link
                   href="/pricing"
                   className="mt-2 rounded bg-[#DC2626] px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700"

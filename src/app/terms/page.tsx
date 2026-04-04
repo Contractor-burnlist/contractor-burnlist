@@ -68,7 +68,8 @@ export default function TermsPage() {
         <section>
           <h2 className="mb-3 border-b border-[#e5e7eb] pb-2 text-lg font-bold text-[#111111]">8. Subscriptions and Payments</h2>
           <ul className="list-disc space-y-1.5 pl-5">
-            <li>Certain features require a paid subscription: Shield ($19/month) or Fortress ($39/month).</li>
+            <li>Report submissions and community participation are free for all authenticated users.</li>
+            <li>Viewing search results and report details requires a paid subscription: Shield ($19/month) for the customer registry, or Fortress ($39/month) for full access including the worker registry and contact details.</li>
             <li>Subscriptions are billed monthly through Stripe.</li>
             <li>Users may cancel at any time through the billing portal.</li>
             <li>No refunds are provided for partial billing periods.</li>

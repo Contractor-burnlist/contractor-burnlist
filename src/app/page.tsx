@@ -252,9 +252,9 @@ export default async function HomePage() {
               <h3 className="text-lg font-bold text-[#111111]">Shield</h3>
               <div className="mt-1 mb-4"><span className="text-3xl font-black text-[#111111]">$19</span><span className="text-[#6b7280]">/mo</span></div>
               <ul className="space-y-2 text-sm text-[#6b7280]">
-                <li>Search the registry</li>
-                <li>View initials + city</li>
-                <li>Submit up to 3 entries/month</li>
+                <li>Unlimited report submissions</li>
+                <li>Search the customer registry</li>
+                <li>View full report descriptions</li>
               </ul>
             </div>
             <div className="rounded-lg border-2 border-[#DC2626] p-6 text-left relative">
@@ -264,8 +264,8 @@ export default async function HomePage() {
               <ul className="space-y-2 text-sm text-[#6b7280]">
                 <li>Everything in Shield</li>
                 <li>Full address + phone visible</li>
-                <li>Unlimited submissions</li>
-                <li>Worker registry access</li>
+                <li>Worker & laborer registry</li>
+                <li>Export results (CSV)</li>
               </ul>
             </div>
           </div>

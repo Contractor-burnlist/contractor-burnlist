@@ -34,12 +34,17 @@ export default function SearchPage() {
   const [searched, setSearched] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
+  const [subTier, setSubTier] = useState<string | null>(null)
   const [filter, setFilter] = useState<FilterType>('all')
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setIsLoggedIn(!!session)
+      if (session?.user) {
+        const { data: prof } = await supabase.from('profiles').select('subscription_status, subscription_tier').eq('id', session.user.id).single()
+        if (prof?.subscription_status === 'active') setSubTier(prof.subscription_tier)
+      }
     })
   }, [])
 
@@ -226,65 +231,87 @@ export default function SearchPage() {
               </div>
             )}
 
-            {isLoggedIn && filteredResults.map((result) => (
-              <Link
-                key={`${result.type}-${result.id}`}
-                href={`/profile/${result.id}?type=${result.type}`}
-                className="flex items-center justify-between rounded-lg border border-[#e5e7eb] bg-white px-5 py-4 transition-colors hover:border-[#d1d5db]"
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                      result.type === 'customer'
-                        ? 'bg-[#DC2626]/10 text-[#DC2626]'
-                        : 'bg-orange-100 text-orange-600'
-                    }`}
-                  >
-                    {result.type === 'customer' ? 'Customer' : 'Worker'}
-                  </span>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-[#111111]">{result.display_name}</span>
-                      {result.has_verified_report && (
-                        <span title="Reported by a verified contractor">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
-                            <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
-                            <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-                            <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </span>
-                      )}
+            {isLoggedIn && filteredResults.map((result) => {
+              const isWorkerLocked = result.type === 'worker' && subTier !== 'fortress'
+              if (isWorkerLocked) {
+                return (
+                  <div key={`${result.type}-${result.id}`} className="relative rounded-lg border border-[#e5e7eb] bg-white px-5 py-4">
+                    <div className="pointer-events-none select-none blur-sm">
+                      <div className="flex items-center gap-3">
+                        <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-semibold text-orange-600">Worker</span>
+                        <div>
+                          <div className="font-semibold text-[#111111]">{result.display_name}</div>
+                          <div className="mt-0.5 text-xs text-[#6b7280]">{result.city}, {result.state}</div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="mt-0.5 flex items-center gap-2 text-xs text-[#6b7280]">
-                      <span>{result.city}, {result.state}</span>
-                      {result.trade && (
-                        <>
-                          <span className="text-[#d1d5db]">·</span>
-                          <span>{result.trade}</span>
-                        </>
-                      )}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg bg-white/80">
+                      <p className="mb-2 text-sm font-semibold text-[#111111]">Worker registry requires Fortress</p>
+                      <Link href="/pricing" className="rounded bg-[#DC2626] px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700">Upgrade to Fortress</Link>
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <div className="text-xs text-[#6b7280]">Reports</div>
-                    <div className="text-sm font-bold text-[#111111]">{result.entry_count}</div>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#DC2626] px-1.5 text-xs font-bold text-white">
-                      {result.flag_count}
+                )
+              }
+              return (
+                <Link
+                  key={`${result.type}-${result.id}`}
+                  href={`/profile/${result.id}?type=${result.type}`}
+                  className="flex items-center justify-between rounded-lg border border-[#e5e7eb] bg-white px-5 py-4 transition-colors hover:border-[#d1d5db]"
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                        result.type === 'customer'
+                          ? 'bg-[#DC2626]/10 text-[#DC2626]'
+                          : 'bg-orange-100 text-orange-600'
+                      }`}
+                    >
+                      {result.type === 'customer' ? 'Customer' : 'Worker'}
                     </span>
-                    <span className="text-xs text-[#6b7280]">flags</span>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-semibold text-[#111111]">{result.display_name}</span>
+                        {result.has_verified_report && (
+                          <span title="Reported by a verified contractor">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
+                              <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
+                              <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                              <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-2 text-xs text-[#6b7280]">
+                        <span>{result.city}, {result.state}</span>
+                        {result.trade && (
+                          <>
+                            <span className="text-[#d1d5db]">·</span>
+                            <span>{result.trade}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <span
-                    className={`rounded-full border px-3 py-1 text-xs font-semibold capitalize ${riskColors[result.risk_level] || riskColors.unknown}`}
-                  >
-                    {result.risk_level}
-                  </span>
-                </div>
-              </Link>
-            ))}
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <div className="text-xs text-[#6b7280]">Reports</div>
+                      <div className="text-sm font-bold text-[#111111]">{result.entry_count}</div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#DC2626] px-1.5 text-xs font-bold text-white">
+                        {result.flag_count}
+                      </span>
+                      <span className="text-xs text-[#6b7280]">flags</span>
+                    </div>
+                    <span
+                      className={`rounded-full border px-3 py-1 text-xs font-semibold capitalize ${riskColors[result.risk_level] || riskColors.unknown}`}
+                    >
+                      {result.risk_level}
+                    </span>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </div>
       )}
