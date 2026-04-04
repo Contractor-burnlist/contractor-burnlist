@@ -136,7 +136,7 @@ export default function SearchPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10">
-        <h1 className="mb-2 text-3xl font-black text-[#111111]">Search the Registry</h1>
+        <h1 className="mb-2 text-3xl font-black text-[#111111]">Search the Database</h1>
         <p className="text-[#6b7280]">Search customers and workers by name, trade, city, or phone</p>
       </div>
 
@@ -246,7 +246,7 @@ export default function SearchPage() {
                       </div>
                     </div>
                     <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg bg-white/80">
-                      <p className="mb-2 text-sm font-semibold text-[#111111]">Worker registry requires Fortress</p>
+                      <p className="mb-2 text-sm font-semibold text-[#111111]">Worker database requires Fortress</p>
                       <Link href="/pricing" className="rounded bg-[#DC2626] px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700">Upgrade to Fortress</Link>
                     </div>
                   </div>

@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Contractor Burnlist — Vet Your Customers Before You Start",
-  description: "Avoid the headaches. Vet your customers before the first nail goes in. The contractor community's registry for flagging problem clients.",
+  description: "Avoid the headaches. Vet your customers before the first nail goes in. The contractor community's database for flagging problem clients.",
   openGraph: {
     title: "Contractor Burnlist — Vet Your Customers Before You Start",
     description: "Avoid the headaches. Vet your customers before the first nail goes in.",

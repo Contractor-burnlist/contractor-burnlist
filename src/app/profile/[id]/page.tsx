@@ -52,7 +52,7 @@ export default async function ProfilePage({
         <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 lg:px-8">
           <div className="rounded-lg border border-[#e5e7eb] bg-white p-10">
             <div className="mb-4 text-4xl">🔒</div>
-            <h2 className="mb-2 text-2xl font-black text-[#111111]">Worker Registry — Fortress Only</h2>
+            <h2 className="mb-2 text-2xl font-black text-[#111111]">Worker Database — Fortress Only</h2>
             <p className="mb-6 text-[#6b7280]">Worker and laborer reports are available exclusively to Fortress subscribers.</p>
             <Link href="/pricing" className="inline-block rounded bg-[#DC2626] px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700">Upgrade to Fortress</Link>
           </div>

@@ -40,7 +40,7 @@ const workerStats = [
 
 const steps = [
   { number: '01', title: 'Sign Up Free', description: 'Create your account with Google in seconds. No credit card required to get started.' },
-  { number: '02', title: 'Search Before You Commit', description: 'Check any customer or worker against the registry before you take the job or make the hire.' },
+  { number: '02', title: 'Search Before You Commit', description: 'Check any customer or worker against the database before you take the job or make the hire.' },
   { number: '03', title: 'Report Bad Actors', description: 'Submit reports on non-payers, fraudsters, and problem workers to protect fellow contractors.' },
   { number: '04', title: 'Build Your Reputation', description: 'Earn trust badges, build your reputation rank, and become a valued voice in the community.' },
 ]
@@ -64,14 +64,14 @@ export default async function HomePage() {
             </h1>
             <p className="mx-auto mb-10 max-w-2xl text-lg text-[#a0a0a0] lg:mx-0">
               Contractors lose an average of $39,000/year to late payments, fraud, and theft.
-              The registry that helps you vet customers and workers before you commit.
+              The database that helps you vet customers and workers before you commit.
             </p>
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
               <Link
                 href="/search"
                 className="w-full rounded bg-[#DC2626] px-8 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-red-700 sm:w-auto"
               >
-                Search the Registry
+                Search the Database
               </Link>
               <Link
                 href={ctaHref}
@@ -144,7 +144,7 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/search" className="w-full rounded bg-[#DC2626] px-8 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-red-700 sm:w-auto">
-                Search the Registry
+                Search the Database
               </Link>
               <Link href="/submit" className="w-full rounded border border-[#2a2a2a] px-8 py-3 text-center text-sm font-semibold text-[#a0a0a0] transition-colors hover:border-white hover:text-white sm:w-auto">
                 Submit a Report
@@ -187,7 +187,7 @@ export default async function HomePage() {
                   <circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><line x1="4" y1="4" x2="20" y2="20"/>
                 </svg>
               </div>
-              <h3 className="mb-2 text-xl font-bold text-[#111111]">Customer Registry</h3>
+              <h3 className="mb-2 text-xl font-bold text-[#111111]">Customer Database</h3>
               <ul className="space-y-2 text-sm text-[#6b7280]">
                 <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />Search customers before you take the job</li>
                 <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />See their flag count and reports from other contractors</li>
@@ -200,7 +200,7 @@ export default async function HomePage() {
                   <path d="M2 18v1a1 1 0 001 1h18a1 1 0 001-1v-1"/><path d="M2 18l3-9h14l3 9"/><path d="M9 9V5a1 1 0 011-1h4a1 1 0 011 1v4"/>
                 </svg>
               </div>
-              <h3 className="mb-2 text-xl font-bold text-[#111111]">Worker Registry</h3>
+              <h3 className="mb-2 text-xl font-bold text-[#111111]">Worker Database</h3>
               <ul className="space-y-2 text-sm text-[#6b7280]">
                 <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />Vet workers and laborers before you hire</li>
                 <li className="flex items-start gap-2"><span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />See reports on theft, no-shows, poor workmanship</li>
@@ -216,7 +216,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="mb-3 text-3xl font-black text-[#111111]">Join the Growing Community of Contractors</h2>
           <p className="mb-10 text-[#6b7280]">
-            More than a registry — it&apos;s a community. Discuss reports, earn reputation, and build trust with fellow contractors.
+            More than a database — it&apos;s a community. Discuss reports, earn reputation, and build trust with fellow contractors.
           </p>
           <div className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
             <div className="rounded-lg border border-[#e5e7eb] bg-white p-6">
@@ -253,7 +253,7 @@ export default async function HomePage() {
               <div className="mt-1 mb-4"><span className="text-3xl font-black text-[#111111]">$19</span><span className="text-[#6b7280]">/mo</span></div>
               <ul className="space-y-2 text-sm text-[#6b7280]">
                 <li>Unlimited report submissions</li>
-                <li>Search the customer registry</li>
+                <li>Search the customer database</li>
                 <li>View full report descriptions</li>
               </ul>
             </div>
@@ -264,7 +264,7 @@ export default async function HomePage() {
               <ul className="space-y-2 text-sm text-[#6b7280]">
                 <li>Everything in Shield</li>
                 <li>Full address + phone visible</li>
-                <li>Worker & laborer registry</li>
+                <li>Worker & laborer database</li>
                 <li>Export results (CSV)</li>
               </ul>
             </div>

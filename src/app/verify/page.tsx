@@ -122,7 +122,7 @@ export default function VerifyPage() {
             </svg>
           </div>
           <h2 className="mb-2 text-2xl font-black text-[#111111]">Your Business is Verified!</h2>
-          <p className="mb-4 text-[#6b7280]">Your reports display a Verified badge, giving them extra credibility in the registry.</p>
+          <p className="mb-4 text-[#6b7280]">Your reports display a Verified badge, giving them extra credibility in the database.</p>
           {profile.business_name && <p className="text-sm font-semibold text-[#111111]">{profile.business_name}</p>}
           {profile.trade && <p className="text-sm text-[#6b7280]">{profile.trade}</p>}
           <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -163,7 +163,7 @@ export default function VerifyPage() {
             </svg>
             Verified Report
           </span>
-          <p className="mt-4 text-sm text-[#6b7280]">badge, giving them extra credibility in the registry.</p>
+          <p className="mt-4 text-sm text-[#6b7280]">badge, giving them extra credibility in the database.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link href="/my-profile" className="rounded bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700">
               Back to My Profile
@@ -194,7 +194,7 @@ export default function VerifyPage() {
         <h1 className="mb-2 text-3xl font-black text-[#111111]">Get the Verified Badge</h1>
         <p className="text-[#6b7280]">
           Link your Google Business Profile to earn a verified badge on all your reports.
-          Verified reports carry more weight in the registry and show other contractors you&apos;re legit.
+          Verified reports carry more weight in the database and show other contractors you&apos;re legit.
         </p>
       </div>
 
@@ -203,7 +203,7 @@ export default function VerifyPage() {
         {[
           { icon: '🛡️', text: 'Verified badge on all your submissions' },
           { icon: '📈', text: 'Higher trust score' },
-          { icon: '⭐', text: 'Stand out in the registry' },
+          { icon: '⭐', text: 'Stand out in the database' },
         ].map((b) => (
           <div key={b.text} className="rounded-lg border border-green-200 bg-green-50 p-4 text-center">
             <div className="mb-2 text-2xl">{b.icon}</div>

@@ -273,7 +273,7 @@ export default function RiskCalculator() {
               </p>
               <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link href="/search" className="w-full rounded bg-[#DC2626] px-6 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-red-700 sm:w-auto">
-                  Search the Registry
+                  Search the Database
                 </Link>
                 <Link href="/pricing" className="w-full rounded border border-[#DC2626] px-6 py-2.5 text-center text-sm font-semibold text-[#DC2626] transition-colors hover:bg-[#DC2626] hover:text-white sm:w-auto">
                   View Plans

@@ -11,7 +11,7 @@ const plans = [
     tagline: 'Your first line of defense',
     features: [
       'Unlimited report submissions',
-      'Search the customer registry',
+      'Search the customer database',
       'View initials, city & flag count',
       'View full report descriptions',
       'Participate in community discussions',
@@ -28,7 +28,7 @@ const plans = [
     features: [
       'Everything in Shield, plus:',
       'Full address & phone number on reports',
-      'Worker & laborer registry access',
+      'Worker & laborer database access',
       'Advanced search filters',
       'Export search results (CSV)',
       'Priority support',
