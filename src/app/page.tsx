@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { createClient, createServiceClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
 import AnimatedStat from '@/components/AnimatedStat'
 import RiskCalculator from '@/components/RiskCalculator'
@@ -13,16 +13,6 @@ async function getCtaHref(): Promise<string> {
   const { data: profile } = await supabase.from('profiles').select('subscription_status').eq('id', user.id).single()
   if (profile?.subscription_status === 'active') return '/dashboard'
   return '/pricing'
-}
-
-async function getLiveCounts() {
-  const supabase = await createServiceClient()
-  const [{ count: reports }, { count: users }, { count: workerReports }] = await Promise.all([
-    supabase.from('entries').select('id', { count: 'exact', head: true }),
-    supabase.from('profiles').select('id', { count: 'exact', head: true }),
-    supabase.from('worker_entries').select('id', { count: 'exact', head: true }),
-  ])
-  return { reports: (reports ?? 0) + (workerReports ?? 0), users: users ?? 0 }
 }
 
 const customerStats = [
@@ -57,7 +47,6 @@ const steps = [
 
 export default async function HomePage() {
   const ctaHref = await getCtaHref()
-  const liveCounts = await getLiveCounts()
 
   return (
     <div>
@@ -79,19 +68,7 @@ export default async function HomePage() {
               The database that helps you vet customers and workers before you commit.
             </p>
 
-            {liveCounts.reports > 0 && (
-              <div className="mb-10 flex items-center justify-center gap-8 lg:justify-start">
-                <div className="text-center lg:text-left">
-                  <div className="font-[var(--font-display)] text-4xl font-black text-white">{liveCounts.reports.toLocaleString()}</div>
-                  <div className="text-xs font-medium uppercase tracking-wider text-[#6b7280]">reports submitted</div>
-                </div>
-                <div className="h-10 w-px bg-white/10" />
-                <div className="text-center lg:text-left">
-                  <div className="font-[var(--font-display)] text-4xl font-black text-white">{liveCounts.users.toLocaleString()}</div>
-                  <div className="text-xs font-medium uppercase tracking-wider text-[#6b7280]">contractors</div>
-                </div>
-              </div>
-            )}
+            <p className="mb-10 text-sm font-medium text-[#6b7280]">Built by contractors, for contractors. Free to sign up — no credit card required.</p>
 
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
               <Link href="/search" className="w-full rounded-lg bg-[#DC2626] px-8 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-[#DC2626]/20 transition-all hover:scale-105 hover:bg-red-600 hover:shadow-xl hover:shadow-[#DC2626]/30 sm:w-auto">
@@ -301,9 +278,6 @@ export default async function HomePage() {
           </div>
 
           <div className="text-center">
-            {liveCounts.users > 0 && (
-              <p className="mb-6 text-sm text-[#8a8a9a]">Join <span className="font-bold text-white">{liveCounts.users.toLocaleString()}</span> contractors protecting each other</p>
-            )}
             <Link href={ctaHref} className="inline-block rounded-lg bg-[#DC2626] px-10 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#DC2626]/20 transition-all hover:scale-105 hover:bg-red-600">
               Get Started Free
             </Link>
@@ -355,9 +329,7 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h40v40H0z\' fill=\'none\'/%3E%3Cpath d=\'M0 0h1v1H0zM20 20h1v1h-1z\' fill=\'white\'/%3E%3C/svg%3E")', backgroundSize: '40px 40px' }} />
         <div className="relative mx-auto max-w-2xl text-center">
           <h2 className="mb-4 font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-white sm:text-5xl">Ready to Protect Your Business?</h2>
-          {liveCounts.users > 0 && (
-            <p className="mb-8 text-white/80">Join {liveCounts.users.toLocaleString()} contractors who check before they commit.</p>
-          )}
+          <p className="mb-8 text-white/80">Join contractors who check before they commit.</p>
           <Link href={ctaHref} className="inline-block rounded-lg bg-white px-10 py-3.5 text-sm font-bold text-[#DC2626] shadow-lg transition-all hover:scale-105 hover:shadow-xl">
             Get Access Today
           </Link>
