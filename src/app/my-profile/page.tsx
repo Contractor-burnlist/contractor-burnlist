@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { calculateTrustScore, type TrustProfile } from '@/lib/trust-score'
+import { ADMIN_EMAILS } from '@/lib/admin'
 import { getReputation } from '@/lib/reputation'
 import ReputationBadge from '@/components/ReputationBadge'
 
@@ -187,8 +188,20 @@ export default function MyProfilePage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="mb-2 text-3xl font-black text-[#111111]">My Profile</h1>
-      <p className="mb-8 text-[#6b7280]">Build your business profile and increase your trust score</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="mb-2 text-3xl font-black text-[#111111]">My Profile</h1>
+          <p className="text-[#6b7280]">Build your business profile and increase your trust score</p>
+        </div>
+        {ADMIN_EMAILS.includes(email) && (
+          <Link href="/admin" className="flex items-center gap-2 rounded-lg bg-[#111111] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2a2a2a]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+            </svg>
+            Admin Panel
+          </Link>
+        )}
+      </div>
 
       {/* Privacy Guarantee Banner */}
       <div className="mb-8 rounded-lg border border-blue-200 bg-blue-50 p-5">
