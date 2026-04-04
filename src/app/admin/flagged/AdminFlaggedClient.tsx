@@ -26,7 +26,7 @@ type Flag = {
   contact_email: string | null
   attachment_paths: string[] | null
   user_id: string | null
-  profiles: { email: string; display_username: string | null } | null
+  profiles: { email: string; display_username: string | null } | { email: string; display_username: string | null }[] | null
 }
 
 export default function AdminFlaggedClient({ initialFlags }: { initialFlags: Flag[] }) {
@@ -81,7 +81,7 @@ export default function AdminFlaggedClient({ initialFlags }: { initialFlags: Fla
                     {f.contact_name ? (
                       <span>Dispute from: <strong className="text-[#111111]">{f.contact_name}</strong>{f.contact_email && <> &middot; <a href={`mailto:${f.contact_email}`} className="text-[#DC2626] hover:underline">{f.contact_email}</a></>}</span>
                     ) : (
-                      <span>Flagged by: {f.profiles?.display_username ?? f.profiles?.email ?? 'Unknown'}</span>
+                      <span>Flagged by: {(() => { const p = Array.isArray(f.profiles) ? f.profiles[0] : f.profiles; return p?.display_username ?? p?.email ?? 'Unknown' })()}</span>
                     )}
                   </div>
                   {f.description && <p className="mt-1 text-xs text-[#374151]">{f.description}</p>}
