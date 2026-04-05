@@ -4,13 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
-
-const riskColors: Record<string, string> = {
-  high: 'text-[#DC2626] bg-[#DC2626]/10 border-[#DC2626]/30',
-  medium: 'text-yellow-600 bg-yellow-50 border-yellow-300',
-  low: 'text-green-600 bg-green-50 border-green-300',
-  unknown: 'text-[#6b7280] bg-gray-50 border-gray-300',
-}
+import { riskScoreLabel } from '@/lib/risk-score'
 
 type ResultType = 'customer' | 'worker'
 type FilterType = 'all' | 'customers' | 'workers'
@@ -22,7 +16,7 @@ type SearchResult = {
   city: string
   state: string
   flag_count: number
-  risk_level: string
+  risk_score: number
   trade: string | null
   entry_count: number
   has_verified_report?: boolean
@@ -68,13 +62,13 @@ export default function SearchPage() {
 
     let customersQuery = supabase
       .from('customers')
-      .select('id, display_name, city, state, flag_count, risk_level, entries(submitter_verified)')
+      .select('id, display_name, city, state, flag_count, risk_score, entries(submitter_verified)')
       .order('flag_count', { ascending: false })
       .limit(50)
 
     let workersQuery = supabase
       .from('workers')
-      .select('id, display_name, city, state, flag_count, risk_level, trade_specialty, worker_entries(submitter_verified)')
+      .select('id, display_name, city, state, flag_count, risk_score, trade_specialty, worker_entries(submitter_verified)')
       .order('flag_count', { ascending: false })
       .limit(50)
 
@@ -97,7 +91,7 @@ export default function SearchPage() {
         city: c.city as string,
         state: c.state as string,
         flag_count: c.flag_count as number,
-        risk_level: c.risk_level as string,
+        risk_score: Number(c.risk_score) || 0,
         trade: null,
         entry_count: Array.isArray(entries) ? entries.length : 0,
         has_verified_report: Array.isArray(entries) && entries.some((e) => e.submitter_verified === true),
@@ -113,7 +107,7 @@ export default function SearchPage() {
         city: w.city as string,
         state: w.state as string,
         flag_count: w.flag_count as number,
-        risk_level: w.risk_level as string,
+        risk_score: Number(w.risk_score) || 0,
         trade: (w.trade_specialty as string) || null,
         entry_count: Array.isArray(wEntries) ? wEntries.length : 0,
         has_verified_report: Array.isArray(wEntries) && wEntries.some((e) => e.submitter_verified === true),
@@ -223,7 +217,9 @@ export default function SearchPage() {
                       <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#DC2626] px-1.5 text-xs font-bold text-white">{result.flag_count}</span>
                       <span className="text-xs text-[#6b7280]">flags</span>
                     </div>
-                    <span className={`rounded-full border px-3 py-1 text-xs font-semibold capitalize ${riskColors[result.risk_level] || riskColors.unknown}`}>{result.risk_level}</span>
+                    {(() => { const r = riskScoreLabel(result.risk_score); return (
+                      <span className={`rounded-full border px-2.5 py-1 text-xs font-bold ${r.color} ${r.bg}`}>{result.risk_score.toFixed(1)}</span>
+                    )})()}
                   </div>
                 </div>
                 {/* Blurred detail preview */}
@@ -323,11 +319,11 @@ export default function SearchPage() {
                       </span>
                       <span className="text-xs text-[#6b7280]">flags</span>
                     </div>
-                    <span
-                      className={`rounded-full border px-3 py-1 text-xs font-semibold capitalize ${riskColors[result.risk_level] || riskColors.unknown}`}
-                    >
-                      {result.risk_level}
-                    </span>
+                    {(() => { const r = riskScoreLabel(result.risk_score); return (
+                      <span className={`rounded-full border px-2.5 py-1 text-xs font-bold ${r.color} ${r.bg}`}>
+                        {result.risk_score.toFixed(1)}
+                      </span>
+                    )})()}
                   </div>
                 </Link>
               )

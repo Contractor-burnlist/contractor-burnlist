@@ -12,13 +12,13 @@ export async function GET(request: Request) {
   const [{ data: customers }, { data: workers }] = await Promise.all([
     supabase
       .from('customers')
-      .select('id, display_name, city, state, flag_count, risk_level, entries(id)')
+      .select('id, display_name, city, state, flag_count, risk_score, entries(id)')
       .or(`full_name.ilike.${p},city.ilike.${p},display_name.ilike.${p}`)
       .order('flag_count', { ascending: false })
       .limit(10),
     supabase
       .from('workers')
-      .select('id, display_name, city, state, flag_count, risk_level, trade_specialty, worker_entries(id)')
+      .select('id, display_name, city, state, flag_count, risk_score, trade_specialty, worker_entries(id)')
       .or(`full_name.ilike.${p},city.ilike.${p},display_name.ilike.${p},trade_specialty.ilike.${p}`)
       .order('flag_count', { ascending: false })
       .limit(10),
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       city: c.city,
       state: c.state,
       flag_count: c.flag_count,
-      risk_level: c.risk_level,
+      risk_score: Number(c.risk_score) || 0,
       trade: null,
       entry_count: Array.isArray(c.entries) ? c.entries.length : 0,
     })),
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
       city: w.city,
       state: w.state,
       flag_count: w.flag_count,
-      risk_level: w.risk_level,
+      risk_score: Number(w.risk_score) || 0,
       trade: w.trade_specialty || null,
       entry_count: Array.isArray(w.worker_entries) ? w.worker_entries.length : 0,
     })),

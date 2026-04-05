@@ -222,6 +222,8 @@ export default function SubmitPage() {
         setLoading(false)
         return
       }
+
+      fetch('/api/recalculate-risk', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'customer', id: customer.id }) }).catch(() => {})
     } else {
       const f = workerForm
       const { data: worker, error: workerError } = await supabase
@@ -258,6 +260,8 @@ export default function SubmitPage() {
         setLoading(false)
         return
       }
+
+      fetch('/api/recalculate-risk', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'worker', id: worker.id }) }).catch(() => {})
     }
 
     setLoading(false)

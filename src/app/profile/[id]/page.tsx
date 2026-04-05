@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import PlatformDisclaimer from '@/components/PlatformDisclaimer'
+import { riskScoreLabel } from '@/lib/risk-score'
 import CommentSection from '@/components/CommentSection'
 import FlagButton from '@/components/FlagButton'
 import DisputeForm from '@/components/DisputeForm'
@@ -116,11 +117,12 @@ async function renderCustomerProfile(
               {customer.city}, {customer.state}
             </p>
           </div>
-          <span
-            className={`rounded-full border px-4 py-1.5 text-sm font-semibold ${riskColors[customer.risk_level] || riskColors.unknown}`}
-          >
-            {riskLabels[customer.risk_level] || 'Unknown'}
-          </span>
+          {(() => { const r = riskScoreLabel(Number(customer.risk_score) || 0); return (
+            <div className="text-right">
+              <div className={`text-2xl font-black ${r.color}`}>{(Number(customer.risk_score) || 0).toFixed(1)}<span className="text-sm font-normal text-[#9ca3af]">/10</span></div>
+              <div className={`text-xs font-semibold ${r.color}`}>{r.label}</div>
+            </div>
+          )})()}
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -141,10 +143,14 @@ async function renderCustomerProfile(
               <div className="text-sm font-semibold text-[#111111]">{firstReported}</div>
             </div>
           )}
-          <div>
-            <div className="text-xs text-[#6b7280]">Risk Level</div>
-            <div className="text-sm font-semibold capitalize text-[#111111]">{customer.risk_level || 'unknown'}</div>
-          </div>
+          {customer.risk_factors && customer.risk_factors.length > 0 && (
+            <div className="sm:col-span-2">
+              <div className="text-xs text-[#6b7280]">Risk Factors</div>
+              <ul className="mt-1 space-y-0.5 text-xs text-[#6b7280]">
+                {customer.risk_factors.map((f: string, i: number) => <li key={i}>· {f}</li>)}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Contact info — Fortress only */}
@@ -340,11 +346,12 @@ async function renderWorkerProfile(
               )}
             </p>
           </div>
-          <span
-            className={`rounded-full border px-4 py-1.5 text-sm font-semibold ${riskColors[worker.risk_level] || riskColors.unknown}`}
-          >
-            {riskLabels[worker.risk_level] || 'Unknown'}
-          </span>
+          {(() => { const r = riskScoreLabel(Number(worker.risk_score) || 0); return (
+            <div className="text-right">
+              <div className={`text-2xl font-black ${r.color}`}>{(Number(worker.risk_score) || 0).toFixed(1)}<span className="text-sm font-normal text-[#9ca3af]">/10</span></div>
+              <div className={`text-xs font-semibold ${r.color}`}>{r.label}</div>
+            </div>
+          )})()}
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -359,10 +366,14 @@ async function renderWorkerProfile(
               <div className="text-sm font-semibold text-[#111111]">{firstReported}</div>
             </div>
           )}
-          <div>
-            <div className="text-xs text-[#6b7280]">Risk Level</div>
-            <div className="text-sm font-semibold capitalize text-[#111111]">{worker.risk_level || 'unknown'}</div>
-          </div>
+          {worker.risk_factors && worker.risk_factors.length > 0 && (
+            <div className="sm:col-span-2">
+              <div className="text-xs text-[#6b7280]">Risk Factors</div>
+              <ul className="mt-1 space-y-0.5 text-xs text-[#6b7280]">
+                {worker.risk_factors.map((f: string, i: number) => <li key={i}>· {f}</li>)}
+              </ul>
+            </div>
+          )}
           {worker.trade_specialty && (
             <div>
               <div className="text-xs text-[#6b7280]">Trade</div>

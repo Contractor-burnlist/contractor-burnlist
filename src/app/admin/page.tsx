@@ -1,4 +1,5 @@
 import { createServiceClient } from '@/lib/supabase/server'
+import RecalculateButton from './RecalculateButton'
 
 export default async function AdminPage() {
   const supabase = await createServiceClient()
@@ -49,7 +50,10 @@ export default async function AdminPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-black text-[#111111]">Admin Overview</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-black text-[#111111]">Admin Overview</h1>
+        <RecalculateButton />
+      </div>
 
       <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
         {stats.map((s) => (
