@@ -1,5 +1,7 @@
 import { createServiceClient, createClient } from '@/lib/supabase/server'
 import { requireAdmin } from '@/lib/admin'
+import { sendEmail } from '@/lib/email'
+import { disputeReviewedEmail } from '@/lib/email-templates'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
@@ -25,13 +27,15 @@ export async function PATCH(request: Request) {
   const supabase = await createClient()
   if (!await requireAdmin(supabase)) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
-  const { flagId, action, notes } = await request.json()
+  const { flagId, action, notes, includeNotes } = await request.json()
   const admin = await createServiceClient()
+
+  // Fetch the flag for email notification
+  const { data: flag } = await admin.from('content_flags').select('content_type, content_id, contact_email, created_at').eq('id', flagId).single()
 
   if (action === 'dismiss') {
     await admin.from('content_flags').update({ status: 'dismissed', admin_notes: notes || null }).eq('id', flagId)
   } else if (action === 'action_taken') {
-    const { data: flag } = await admin.from('content_flags').select('content_type, content_id').eq('id', flagId).single()
     if (flag) {
       if (flag.content_type === 'entry') await admin.from('entries').delete().eq('id', flag.content_id)
       else if (flag.content_type === 'worker_entry') await admin.from('worker_entries').delete().eq('id', flag.content_id)
@@ -40,5 +44,15 @@ export async function PATCH(request: Request) {
     await admin.from('content_flags').update({ status: 'action_taken', admin_notes: notes || null }).eq('id', flagId)
   }
 
-  return NextResponse.json({ success: true })
+  // Send notification email to disputant if they provided an email
+  if (flag?.contact_email && (action === 'dismiss' || action === 'action_taken')) {
+    const email = disputeReviewedEmail(
+      action as 'dismissed' | 'action_taken',
+      flag.created_at,
+      action === 'action_taken' && includeNotes && notes ? notes : undefined,
+    )
+    sendEmail({ to: flag.contact_email, subject: email.subject, html: email.html }).catch(() => {})
+  }
+
+  return NextResponse.json({ success: true, emailSent: !!flag?.contact_email })
 }

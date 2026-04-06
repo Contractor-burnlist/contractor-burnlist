@@ -107,7 +107,17 @@ export default function DisputeForm({ contentType, contentId, variant = 'link' }
       attachment_paths: uploadedPaths.length > 0 ? uploadedPaths : null,
     })
 
-    setStatus(error ? 'error' : 'done')
+    if (error) {
+      setStatus('error')
+    } else {
+      setStatus('done')
+      // Notify original submitters (fire-and-forget)
+      fetch('/api/dispute-notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contentType, contentId, reason }),
+      }).catch(() => {})
+    }
   }
 
   function isImage(file: File) { return file.type.startsWith('image/') }

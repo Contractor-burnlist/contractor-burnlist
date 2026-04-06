@@ -35,17 +35,19 @@ export default function AdminFlaggedClient({ initialFlags }: { initialFlags: Fla
 
   const filtered = tab === 'all' ? flags : flags.filter((f) => f.status === tab)
 
-  async function handleAction(flagId: string, action: 'dismiss' | 'action_taken') {
+  async function handleAction(flagId: string, action: 'dismiss' | 'action_taken', includeNotes = false) {
     const msg = action === 'action_taken' ? 'Remove flagged content and mark as resolved?' : 'Dismiss this flag?'
     if (!confirm(msg)) return
 
-    await fetch('/api/admin/flags', {
+    const res = await fetch('/api/admin/flags', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ flagId, action }),
+      body: JSON.stringify({ flagId, action, includeNotes }),
     })
+    const { emailSent } = await res.json()
 
     setFlags((prev) => prev.map((f) => f.id === flagId ? { ...f, status: action === 'dismiss' ? 'dismissed' : 'action_taken' } : f))
+    if (emailSent) alert('Notification email sent to disputant.')
   }
 
   return (
@@ -97,9 +99,13 @@ export default function AdminFlaggedClient({ initialFlags }: { initialFlags: Fla
                   {f.admin_notes && <p className="mt-1 text-[10px] italic text-[#6b7280]">Admin: {f.admin_notes}</p>}
                 </div>
                 {f.status === 'pending' && (
-                  <div className="flex shrink-0 gap-1">
-                    <button onClick={() => handleAction(f.id, 'dismiss')} className="rounded border border-[#e5e7eb] px-2 py-1 text-[10px] text-[#6b7280] hover:bg-[#f9fafb]">Dismiss</button>
-                    <button onClick={() => handleAction(f.id, 'action_taken')} className="rounded border border-[#DC2626] px-2 py-1 text-[10px] text-[#DC2626] hover:bg-red-50">Remove Content</button>
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    {f.contact_email && <span className="text-[10px] text-green-600">Email will be sent to disputant</span>}
+                    {!f.contact_email && f.contact_name && <span className="text-[10px] text-[#9ca3af]">No email provided</span>}
+                    <div className="flex gap-1">
+                      <button onClick={() => handleAction(f.id, 'dismiss')} className="rounded border border-[#e5e7eb] px-2 py-1 text-[10px] text-[#6b7280] hover:bg-[#f9fafb]">Dismiss</button>
+                      <button onClick={() => handleAction(f.id, 'action_taken')} className="rounded border border-[#DC2626] px-2 py-1 text-[10px] text-[#DC2626] hover:bg-red-50">Remove Content</button>
+                    </div>
                   </div>
                 )}
               </div>
