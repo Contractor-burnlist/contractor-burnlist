@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { getReputation } from '@/lib/reputation'
 import ReputationBadge from '@/components/ReputationBadge'
 import FlagButton from '@/components/FlagButton'
 
@@ -199,7 +198,7 @@ export default function CommentSection({
   const totalCount = comments.reduce((sum, c) => sum + 1 + c.replies.length, 0)
 
   function renderComment(c: Comment, isReply = false) {
-    const rep = getReputation(c.reputation_points)
+
     const isAuthor = c.user_id === userId
     const isEditing = editingId === c.id
     const wasEdited = c.updated_at !== c.created_at && !c.is_deleted
@@ -221,10 +220,7 @@ export default function CommentSection({
                     <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 )}
-                <span className={`inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold ${rep.color} ${rep.bg} ${rep.border}`}>
-                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" className={rep.color}><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>
-                  {rep.rank}
-                </span>
+                <ReputationBadge points={c.reputation_points} />
                 <span className="text-[#9ca3af]">{timeAgo(c.created_at)}</span>
                 {wasEdited && <span className="text-[#9ca3af]">(edited)</span>}
               </div>
