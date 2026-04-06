@@ -22,11 +22,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     .order('created_at', { ascending: true })
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-      <Link href={`/community/${slug}`} className="mb-6 inline-flex items-center gap-2 text-sm text-[#6b7280] hover:text-[#111111]">
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+      <Link href={`/community/${slug}`} className="mb-6 inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700">
         ← Back to {(post.forum_categories as any)?.emoji} {(post.forum_categories as any)?.name}
       </Link>
       <PostDetail post={post} replies={replies ?? []} slug={slug} />
+      </div>
     </div>
   )
 }

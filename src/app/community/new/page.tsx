@@ -56,45 +56,47 @@ function NewPostForm() {
   }
 
   return (
+    <div className="min-h-screen bg-gray-50">
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="mb-2 text-2xl font-black text-[#111111]">New Post</h1>
-      <div className="mb-6 flex items-center gap-2 text-xs text-[#6b7280]">
+      <h1 className="mb-2 text-2xl font-extrabold text-gray-900">New Post</h1>
+      <div className="mb-6 flex items-center gap-2 text-xs text-gray-500">
         <span>Posting as:</span>
-        <span className="font-semibold text-[#111111]">{myUsername ?? 'Anonymous'}</span>
+        <span className="font-semibold text-gray-900">{myUsername ?? 'Anonymous'}</span>
         <ReputationBadge points={myRepPoints} />
       </div>
-      <p className="mb-6 text-xs text-[#9ca3af]">Your identity is your username — your real name and business are never shown.</p>
+      <p className="mb-6 text-xs text-gray-400">Your identity is your username — your real name and business are never shown.</p>
 
-      {error && <div className="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-xs text-[#DC2626]">{error}</div>}
+      {error && <div className="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-600">{error}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1 block text-xs font-medium text-[#6b7280]">Category <span className="text-[#DC2626]">*</span></label>
-          <select value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)} required className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm outline-none focus:border-[#DC2626]">
+          <label className="mb-1 block text-xs font-medium text-gray-500">Category <span className="text-red-600">*</span></label>
+          <select value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)} required className="w-full rounded border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none focus:border-red-500">
             <option value="">Select a category</option>
             {categories.map((c) => <option key={c.slug} value={c.slug}>{c.emoji} {c.name}</option>)}
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-[#6b7280]">Title <span className="text-[#DC2626]">*</span> <span className="font-normal text-[#9ca3af]">(5-200)</span></label>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={200} placeholder="What's on your mind?" className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm outline-none focus:border-[#DC2626]" />
-          <div className="mt-1 text-right text-xs text-[#9ca3af]">{title.length}/200</div>
+          <label className="mb-1 block text-xs font-medium text-gray-500">Title <span className="text-red-600">*</span> <span className="font-normal text-gray-400">(5-200)</span></label>
+          <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={200} placeholder="What's on your mind?" className="w-full rounded border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none focus:border-red-500" />
+          <div className="mt-1 text-right text-xs text-gray-400">{title.length}/200</div>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-[#6b7280]">Content <span className="text-[#DC2626]">*</span> <span className="font-normal text-[#9ca3af]">(10-10,000)</span></label>
-          <textarea value={content} onChange={(e) => setContent(e.target.value)} maxLength={10000} rows={8} placeholder="Share your thoughts, experience, or question..." className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm outline-none focus:border-[#DC2626]" />
-          <div className="mt-1 text-right text-xs text-[#9ca3af]">{content.length}/10,000</div>
+          <label className="mb-1 block text-xs font-medium text-gray-500">Content <span className="text-red-600">*</span> <span className="font-normal text-gray-400">(10-10,000)</span></label>
+          <textarea value={content} onChange={(e) => setContent(e.target.value)} maxLength={10000} rows={8} placeholder="Share your thoughts, experience, or question..." className="w-full rounded border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none focus:border-red-500" />
+          <div className="mt-1 text-right text-xs text-gray-400">{content.length}/10,000</div>
         </div>
-        <button type="submit" disabled={posting} className="w-full rounded bg-[#DC2626] py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50">
+        <button type="submit" disabled={posting} className="w-full rounded bg-red-600 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50">
           {posting ? 'Posting...' : 'Post'}
         </button>
       </form>
+    </div>
     </div>
   )
 }
 
 export default function NewPostPage() {
-  return <Suspense fallback={<div className="flex min-h-[50vh] items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#e5e7eb] border-t-[#DC2626]" /></div>}>
+  return <Suspense fallback={<div className="flex min-h-[50vh] items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#DC2626]" /></div>}>
     <NewPostForm />
   </Suspense>
 }

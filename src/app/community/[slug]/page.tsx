@@ -20,25 +20,27 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     .limit(50)
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-      <Link href="/community" className="mb-6 inline-flex items-center gap-2 text-sm text-[#6b7280] hover:text-[#111111]">← Back to Community</Link>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+        <Link href="/community" className="mb-6 inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700">← Back to Community</Link>
 
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-extrabold text-[#0a0a0a]">{category.emoji} {category.name}</h1>
-          <p className="mt-1 text-sm text-[#6b7280]">{category.description}</p>
-          {slug === 'legal-contracts' && (
-            <p className="mt-2 text-xs italic text-amber-700">Discussion here is for informational purposes only and does not constitute legal advice.</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-extrabold text-gray-900">{category.emoji} {category.name}</h1>
+            <p className="mt-1 text-sm text-gray-600">{category.description}</p>
+            {slug === 'legal-contracts' && (
+              <p className="mt-2 text-xs italic text-amber-700">Discussion here is for informational purposes only and does not constitute legal advice.</p>
+            )}
+          </div>
+          {!category.is_locked && (
+            <Link href={`/community/new?category=${slug}`} className="rounded-lg bg-[#DC2626] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-red-700">
+              New Post
+            </Link>
           )}
         </div>
-        {!category.is_locked && (
-          <Link href={`/community/new?category=${slug}`} className="rounded-lg bg-[#DC2626] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700">
-            New Post
-          </Link>
-        )}
-      </div>
 
-      <CategoryPostList posts={posts ?? []} slug={slug} />
+        <CategoryPostList posts={posts ?? []} slug={slug} />
+      </div>
     </div>
   )
 }

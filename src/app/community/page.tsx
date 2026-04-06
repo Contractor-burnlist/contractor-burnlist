@@ -9,7 +9,6 @@ export default async function CommunityPage() {
     .select('id, name, slug, description, emoji, display_order')
     .order('display_order')
 
-  // Get post counts and latest post per category
   const { data: posts } = await supabase
     .from('forum_posts')
     .select('id, title, category_id, created_at, profiles(display_username)')
@@ -25,7 +24,6 @@ export default async function CommunityPage() {
     catStats.set(p.category_id, stat)
   }
 
-  // Trending: top 5 posts by upvotes in last 7 days
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
   const { data: trending } = await supabase
     .from('forum_posts')
@@ -44,58 +42,60 @@ export default async function CommunityPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-extrabold text-[#0a0a0a]">Contractor Community</h1>
-          <p className="mt-1 text-[#6b7280]">Talk shop, share stories, and learn from contractors who get it.</p>
-        </div>
-        <Link href="/community/new" className="rounded-lg bg-[#DC2626] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700">
-          New Post
-        </Link>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-3">
-          {(categories ?? []).map((cat: any) => {
-            const stat = catStats.get(cat.id)
-            return (
-              <Link key={cat.id} href={`/community/${cat.slug}`} className="flex items-start gap-4 rounded-lg border border-[#e5e7eb] bg-white p-5 transition-colors hover:border-[#d1d5db]">
-                <span className="text-2xl">{cat.emoji}</span>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-sm font-bold text-[#111111]">{cat.name}</h3>
-                  <p className="mt-0.5 text-xs text-[#6b7280]">{cat.description}</p>
-                  <div className="mt-2 flex items-center gap-3 text-[10px] text-[#9ca3af]">
-                    <span>{stat?.count ?? 0} posts</span>
-                    {stat?.latest && (
-                      <span className="truncate">Latest: {stat.latest.title} · {timeAgo(stat.latest.created_at)}</span>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            )
-          })}
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-extrabold text-gray-900">Contractor Community</h1>
+            <p className="mt-1 text-gray-600">Talk shop, share stories, and learn from contractors who get it.</p>
+          </div>
+          <Link href="/community/new" className="rounded-lg bg-[#DC2626] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-red-700">
+            New Post
+          </Link>
         </div>
 
-        <div>
-          <h2 className="mb-3 text-sm font-bold text-[#111111]">Trending This Week</h2>
-          {(trending ?? []).length > 0 ? (
-            <div className="space-y-2">
-              {(trending ?? []).map((p: any) => (
-                <Link key={p.id} href={`/community/${(p.forum_categories as any)?.slug}/${p.id}`} className="block rounded-lg border border-[#e5e7eb] bg-white p-3 transition-colors hover:border-[#d1d5db]">
-                  <p className="text-sm font-bold text-[#0a0a0a] line-clamp-2">{p.title}</p>
-                  <div className="mt-1.5 flex items-center gap-2 text-[10px] text-[#9ca3af]">
-                    <span>{(p.forum_categories as any)?.emoji}</span>
-                    <span>↑{p.upvote_count}</span>
-                    <span>{p.reply_count} replies</span>
-                    <span>{(p.profiles as any)?.display_username ?? 'Anonymous'}</span>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-3">
+            {(categories ?? []).map((cat: any) => {
+              const stat = catStats.get(cat.id)
+              return (
+                <Link key={cat.id} href={`/community/${cat.slug}`} className="flex items-start gap-4 rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-gray-300">
+                  <span className="text-2xl">{cat.emoji}</span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-bold text-gray-900">{cat.name}</h3>
+                    <p className="mt-0.5 text-xs text-gray-600">{cat.description}</p>
+                    <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
+                      <span>{stat?.count ?? 0} posts</span>
+                      {stat?.latest && (
+                        <span className="truncate">Latest: {stat.latest.title} · {timeAgo(stat.latest.created_at)}</span>
+                      )}
+                    </div>
                   </div>
                 </Link>
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs text-[#9ca3af]">No trending posts yet. Be the first!</p>
-          )}
+              )
+            })}
+          </div>
+
+          <div>
+            <h2 className="mb-3 text-sm font-bold text-gray-900">Trending This Week</h2>
+            {(trending ?? []).length > 0 ? (
+              <div className="space-y-2">
+                {(trending ?? []).map((p: any) => (
+                  <Link key={p.id} href={`/community/${(p.forum_categories as any)?.slug}/${p.id}`} className="block rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition-colors hover:border-gray-300">
+                    <p className="text-sm font-bold text-gray-900 line-clamp-2">{p.title}</p>
+                    <div className="mt-1.5 flex items-center gap-2 text-xs text-gray-500">
+                      <span>{(p.forum_categories as any)?.emoji}</span>
+                      <span>↑{p.upvote_count}</span>
+                      <span>{p.reply_count} replies</span>
+                      <span>{(p.profiles as any)?.display_username ?? 'Anonymous'}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">No trending posts yet. Be the first!</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
