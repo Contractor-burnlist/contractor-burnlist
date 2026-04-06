@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import ReputationBadge from '@/components/ReputationBadge'
+import TradeFlair from '@/components/TradeFlair'
 
 function timeAgo(d: string) {
   const s = Math.floor((Date.now() - new Date(d).getTime()) / 1000)
@@ -33,7 +34,7 @@ function AuthorLine({ prof, createdAt, edited }: { prof: any; createdAt: string;
   return (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
       <span className="text-sm font-semibold text-gray-900">{prof?.display_username ?? 'Anonymous'}</span>
-      {prof?.trade && <span className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-medium text-gray-700">{prof.trade}</span>}
+      {prof?.trade && <TradeFlair trade={prof.trade} />}
       <ReputationBadge points={prof?.reputation_points ?? 0} />
       <span className="text-xs text-gray-400">{timeAgo(createdAt)}</span>
       {edited && <span className="text-[10px] italic text-gray-400">(edited)</span>}

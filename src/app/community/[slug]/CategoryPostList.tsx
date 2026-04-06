@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import ReputationBadge from '@/components/ReputationBadge'
+import TradeFlair from '@/components/TradeFlair'
 
 function timeAgo(d: string) {
   const s = Math.floor((Date.now() - new Date(d).getTime()) / 1000)
@@ -79,7 +80,7 @@ export default function CategoryPostList({ posts, slug }: { posts: any[]; slug: 
               <p className="mt-1.5 text-sm leading-relaxed text-gray-600 line-clamp-2">{post.content?.slice(0, 200)}</p>
               <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="text-xs font-semibold text-gray-900">{prof?.display_username ?? 'Anonymous'}</span>
-                {prof?.trade && <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-700">{prof.trade}</span>}
+                {prof?.trade && <TradeFlair trade={prof.trade} />}
                 <ReputationBadge points={prof?.reputation_points ?? 0} />
                 <span className="text-xs text-gray-500">·</span>
                 <span className="text-xs text-gray-500">{post.reply_count} replies</span>
