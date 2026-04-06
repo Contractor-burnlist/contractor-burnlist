@@ -60,14 +60,6 @@ const TRADES = [
 
 type ReportType = 'customer' | 'worker' | null
 
-function generateInitials(fullName: string): string {
-  return fullName
-    .trim()
-    .split(/\s+/)
-    .map((part) => part[0]?.toUpperCase() + '.')
-    .join('')
-}
-
 function CheckboxTag({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
   return (
     <label
@@ -178,96 +170,29 @@ export default function SubmitPage() {
 
     setLoading(true)
 
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const res = await fetch('/api/submit-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: reportType,
+        customerForm: reportType === 'customer' ? customerForm : undefined,
+        workerForm: reportType === 'worker' ? workerForm : undefined,
+        isVerified,
+        isProfileComplete,
+      }),
+    })
 
-    if (!user) {
+    const data = await res.json()
+
+    if (res.status === 401) {
       router.push('/auth/login?next=/submit')
       return
     }
 
-    if (reportType === 'customer') {
-      const f = customerForm
-      const { data: customer, error: customerError } = await supabase
-        .from('customers')
-        .insert({
-          full_name: f.full_name,
-          display_name: generateInitials(f.full_name),
-          address: f.address,
-          city: f.city,
-          state: f.state,
-          zip: f.zip || null,
-          phone: f.phone || null,
-          email: f.email || null,
-        })
-        .select('id')
-        .single()
-
-      if (customerError) {
-        setError('Something went wrong. Please try again.')
-        setLoading(false)
-        return
-      }
-
-      const { error: entryError } = await supabase
-        .from('entries')
-        .insert({
-          customer_id: customer.id,
-          submitted_by: user.id,
-          description: f.description,
-          amount_owed: f.amount_owed ? parseFloat(f.amount_owed) : null,
-          incident_date: f.incident_date,
-          category_tags: f.categories,
-          submitter_verified: isVerified,
-          submitter_profile_complete: isProfileComplete,
-        })
-
-      if (entryError) {
-        setError('Something went wrong. Please try again.')
-        setLoading(false)
-        return
-      }
-
-      fetch('/api/recalculate-risk', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'customer', id: customer.id }) }).catch(() => {})
-    } else {
-      const f = workerForm
-      const { data: worker, error: workerError } = await supabase
-        .from('workers')
-        .insert({
-          full_name: f.full_name,
-          phone: f.phone || null,
-          city: f.city,
-          state: f.state,
-          trade_specialty: f.trade_specialty || null,
-        })
-        .select('id')
-        .single()
-
-      if (workerError) {
-        setError('Something went wrong. Please try again.')
-        setLoading(false)
-        return
-      }
-
-      const { error: entryError } = await supabase
-        .from('worker_entries')
-        .insert({
-          worker_id: worker.id,
-          submitted_by: user.id,
-          description: f.description,
-          incident_date: f.incident_date,
-          category_tags: f.categories,
-          submitter_verified: isVerified,
-          submitter_profile_complete: isProfileComplete,
-        })
-
-      if (entryError) {
-        setError('Something went wrong. Please try again.')
-        setLoading(false)
-        return
-      }
-
-      fetch('/api/recalculate-risk', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'worker', id: worker.id }) }).catch(() => {})
+    if (!res.ok) {
+      setError(data.error || 'Something went wrong. Please try again.')
+      setLoading(false)
+      return
     }
 
     setLoading(false)
