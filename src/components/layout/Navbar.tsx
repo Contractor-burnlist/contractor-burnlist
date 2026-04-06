@@ -52,47 +52,32 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
             <Image src="/logo-icon.png" alt="Contractor Burnlist" width={44} height={44} style={{ height: '44px', width: 'auto', mixBlendMode: 'multiply' }} priority />
-            <div className="flex flex-col leading-none" style={{ fontFamily: "'Arial Black', 'Arial', sans-serif" }}>
-              <span className="text-sm font-black text-[#111111] tracking-wide">CONTRACTOR</span>
+            <div className="flex flex-col leading-none font-[var(--font-display)]">
+              <span className="text-sm font-black text-[#111111] tracking-wider">CONTRACTOR</span>
               <div className="my-0.5 h-px w-full bg-[#DC2626]" />
-              <span className="text-sm font-black text-[#DC2626] tracking-wide">BURNLIST</span>
+              <span className="text-sm font-black text-[#DC2626] tracking-wider">BURNLIST</span>
             </div>
           </Link>
 
           {/* Center Nav */}
-          <div className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/search"
-              className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
-            >
-              Search Database
+          <div className="hidden items-center gap-6 md:flex">
+            <Link href="/search" className="border-b-2 border-transparent font-[var(--font-display)] text-sm font-bold uppercase tracking-wider text-[#6b7280] transition-all hover:border-[#DC2626] hover:text-[#111111] lg:text-base">
+              Search
             </Link>
-            <Link
-              href="/submit"
-              className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
-            >
-              Submit Feedback
+            <Link href="/submit" className="border-b-2 border-transparent font-[var(--font-display)] text-sm font-bold uppercase tracking-wider text-[#6b7280] transition-all hover:border-[#DC2626] hover:text-[#111111] lg:text-base">
+              Submit
             </Link>
-            <Link
-              href="/community"
-              className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
-            >
+            <Link href="/community" className="border-b-2 border-transparent font-[var(--font-display)] text-sm font-bold uppercase tracking-wider text-[#6b7280] transition-all hover:border-[#DC2626] hover:text-[#111111] lg:text-base">
               Community
             </Link>
-            <Link
-              href="/dashboard"
-              className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
-            >
+            <Link href="/dashboard" className="border-b-2 border-transparent font-[var(--font-display)] text-sm font-bold uppercase tracking-wider text-[#6b7280] transition-all hover:border-[#DC2626] hover:text-[#111111] lg:text-base">
               Dashboard
             </Link>
-            <Link
-              href="/my-profile"
-              className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
-            >
-              My Profile
+            <Link href="/my-profile" className="border-b-2 border-transparent font-[var(--font-display)] text-sm font-bold uppercase tracking-wider text-[#6b7280] transition-all hover:border-[#DC2626] hover:text-[#111111] lg:text-base">
+              Profile
             </Link>
             {user && ADMIN_EMAILS.includes(user.email ?? '') && (
-              <Link href="/admin" className="text-sm font-medium text-[#DC2626] transition-colors hover:text-red-700">
+              <Link href="/admin" className="border-b-2 border-transparent font-[var(--font-display)] text-sm font-bold uppercase tracking-wider text-[#DC2626] transition-all hover:border-[#DC2626] lg:text-base">
                 Admin
               </Link>
             )}
@@ -155,14 +140,14 @@ export default function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="border-t border-[#e5e7eb] bg-white px-4 py-4 md:hidden">
-          <div className="flex flex-col gap-4">
-            <Link href="/search" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Search Database</Link>
-            <Link href="/submit" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Submit Feedback</Link>
-            <Link href="/community" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Community</Link>
-            <Link href="/dashboard" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Dashboard</Link>
-            <Link href="/my-profile" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>My Profile</Link>
+          <div className="flex flex-col gap-1">
+            <Link href="/search" className="block py-3 font-[var(--font-display)] text-lg font-bold uppercase tracking-wider text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Search</Link>
+            <Link href="/submit" className="block py-3 font-[var(--font-display)] text-lg font-bold uppercase tracking-wider text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Submit</Link>
+            <Link href="/community" className="block py-3 font-[var(--font-display)] text-lg font-bold uppercase tracking-wider text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Community</Link>
+            <Link href="/dashboard" className="block py-3 font-[var(--font-display)] text-lg font-bold uppercase tracking-wider text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Dashboard</Link>
+            <Link href="/my-profile" className="block py-3 font-[var(--font-display)] text-lg font-bold uppercase tracking-wider text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Profile</Link>
             {user && ADMIN_EMAILS.includes(user.email ?? '') && (
-              <Link href="/admin" className="text-sm font-medium text-[#DC2626]" onClick={() => setMobileOpen(false)}>Admin</Link>
+              <Link href="/admin" className="block py-3 font-[var(--font-display)] text-lg font-bold uppercase tracking-wider text-[#DC2626]" onClick={() => setMobileOpen(false)}>Admin</Link>
             )}
             {user ? (
               <>
