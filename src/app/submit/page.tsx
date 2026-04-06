@@ -100,6 +100,7 @@ export default function SubmitPage() {
   const [error, setError] = useState('')
   const [certified, setCertified] = useState(false)
   const [isVerified, setIsVerified] = useState(false)
+  const [isProfileComplete, setIsProfileComplete] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
@@ -107,10 +108,13 @@ export default function SubmitPage() {
       if (!user) return
       supabase
         .from('profiles')
-        .select('is_verified')
+        .select('is_verified, business_name, business_phone, trade, display_username')
         .eq('id', user.id)
         .single()
-        .then(({ data }) => setIsVerified(data?.is_verified === true))
+        .then(({ data }) => {
+          setIsVerified(data?.is_verified === true)
+          setIsProfileComplete(!!(data?.business_name && data?.business_phone && data?.trade && data?.display_username))
+        })
     })
   }, [])
 
@@ -215,6 +219,7 @@ export default function SubmitPage() {
           incident_date: f.incident_date,
           category_tags: f.categories,
           submitter_verified: isVerified,
+          submitter_profile_complete: isProfileComplete,
         })
 
       if (entryError) {
@@ -253,6 +258,7 @@ export default function SubmitPage() {
           incident_date: f.incident_date,
           category_tags: f.categories,
           submitter_verified: isVerified,
+          submitter_profile_complete: isProfileComplete,
         })
 
       if (entryError) {

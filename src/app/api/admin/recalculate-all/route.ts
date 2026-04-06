@@ -33,5 +33,24 @@ export async function POST() {
     workerCount++
   }
 
-  return NextResponse.json({ message: `Recalculated risk for ${customerCount} customers and ${workerCount} workers` })
+  // Backfill submitter_profile_complete on all entries
+  const { data: allEntries } = await admin.from('entries').select('id, submitted_by')
+  let badgeCount = 0
+  for (const e of allEntries ?? []) {
+    if (!e.submitted_by) continue
+    const { data: p } = await admin.from('profiles').select('business_name, business_phone, trade, display_username').eq('id', e.submitted_by).single()
+    const complete = !!(p?.business_name && p?.business_phone && p?.trade && p?.display_username)
+    await admin.from('entries').update({ submitter_profile_complete: complete }).eq('id', e.id)
+    badgeCount++
+  }
+  const { data: allWorkerEntries } = await admin.from('worker_entries').select('id, submitted_by')
+  for (const e of allWorkerEntries ?? []) {
+    if (!e.submitted_by) continue
+    const { data: p } = await admin.from('profiles').select('business_name, business_phone, trade, display_username').eq('id', e.submitted_by).single()
+    const complete = !!(p?.business_name && p?.business_phone && p?.trade && p?.display_username)
+    await admin.from('worker_entries').update({ submitter_profile_complete: complete }).eq('id', e.id)
+    badgeCount++
+  }
+
+  return NextResponse.json({ message: `Recalculated risk for ${customerCount} customers and ${workerCount} workers. Backfilled ${badgeCount} profile complete badges.` })
 }

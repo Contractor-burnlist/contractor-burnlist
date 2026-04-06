@@ -19,7 +19,7 @@ type SearchResult = {
   risk_score: number
   trade: string | null
   entry_count: number
-  has_verified_report?: boolean
+  has_profile_complete?: boolean
 }
 
 export default function SearchPage() {
@@ -52,7 +52,7 @@ export default function SearchPage() {
       // Public search — use API route with service role
       const res = await fetch(`/api/public-search?q=${encodeURIComponent(query.trim())}`)
       const { data } = await res.json()
-      setResults((data ?? []).map((r: any) => ({ ...r, has_verified_report: false })))
+      setResults((data ?? []).map((r: any) => ({ ...r, has_profile_complete: false })))
       setLoading(false)
       return
     }
@@ -62,13 +62,13 @@ export default function SearchPage() {
 
     let customersQuery = supabase
       .from('customers')
-      .select('id, display_name, city, state, flag_count, risk_score, entries(submitter_verified)')
+      .select('id, display_name, city, state, flag_count, risk_score, entries(submitter_profile_complete)')
       .order('flag_count', { ascending: false })
       .limit(50)
 
     let workersQuery = supabase
       .from('workers')
-      .select('id, display_name, city, state, flag_count, risk_score, trade_specialty, worker_entries(submitter_verified)')
+      .select('id, display_name, city, state, flag_count, risk_score, trade_specialty, worker_entries(submitter_profile_complete)')
       .order('flag_count', { ascending: false })
       .limit(50)
 
@@ -94,7 +94,7 @@ export default function SearchPage() {
         risk_score: Number(c.risk_score) || 0,
         trade: null,
         entry_count: Array.isArray(entries) ? entries.length : 0,
-        has_verified_report: Array.isArray(entries) && entries.some((e) => e.submitter_verified === true),
+        has_profile_complete: Array.isArray(entries) && entries.some((e) => e.submitter_profile_complete === true),
       }
     })
 
@@ -110,7 +110,7 @@ export default function SearchPage() {
         risk_score: Number(w.risk_score) || 0,
         trade: (w.trade_specialty as string) || null,
         entry_count: Array.isArray(wEntries) ? wEntries.length : 0,
-        has_verified_report: Array.isArray(wEntries) && wEntries.some((e) => e.submitter_verified === true),
+        has_profile_complete: Array.isArray(wEntries) && wEntries.some((e) => e.submitter_profile_complete === true),
       }
     })
 
@@ -288,13 +288,9 @@ export default function SearchPage() {
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="font-semibold text-[#111111]">{result.display_name}</span>
-                        {result.has_verified_report && (
-                          <span title="Reported by a verified contractor">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
-                              <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
-                              <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-                              <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
+                        {result.has_profile_complete && (
+                          <span title="This contractor has completed their business profile.">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-blue-500"><path d="M3 8l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                           </span>
                         )}
                       </div>

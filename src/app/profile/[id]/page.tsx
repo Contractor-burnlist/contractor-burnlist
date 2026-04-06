@@ -86,7 +86,7 @@ async function renderCustomerProfile(
 
   const { data: entries } = await supabase
     .from('entries')
-    .select('id, customer_id, category_tags, description, amount_owed, incident_date, is_verified_submission, submitter_verified, created_at')
+    .select('id, customer_id, category_tags, description, amount_owed, incident_date, submitter_profile_complete, created_at')
     .eq('customer_id', id)
     .order('created_at', { ascending: false })
 
@@ -220,7 +220,7 @@ async function renderCustomerProfile(
       {entryList.length > 0 ? (
         <div className="space-y-4">
           {entryList.map((entry) => (
-            <div key={entry.id} className={`rounded-lg border bg-white p-5 ${(entry.is_verified_submission || entry.submitter_verified) ? 'border-l-4 border-l-green-500 border-[#e5e7eb]' : 'border-[#e5e7eb]'}`}>
+            <div key={entry.id} className={`rounded-lg border bg-white p-5 ${entry.submitter_profile_complete ? 'border-l-4 border-l-blue-400 border-[#e5e7eb]' : 'border-[#e5e7eb]'}`}>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap gap-2">
                   {entry.category_tags?.map((tag: string) => (
@@ -231,14 +231,10 @@ async function renderCustomerProfile(
                       {tag}
                     </span>
                   ))}
-                  {(entry.is_verified_submission || entry.submitter_verified) && (
-                    <span className="inline-flex items-center gap-1 rounded border border-green-300 bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-600">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-green-600">
-                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
-                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-                        <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      GBP Linked
+                  {entry.submitter_profile_complete && (
+                    <span className="inline-flex items-center gap-1 rounded border border-blue-300 bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-600" title="This contractor has completed their business profile.">
+                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      Profile Complete
                     </span>
                   )}
                 </div>
@@ -313,7 +309,7 @@ async function renderWorkerProfile(
 
   const { data: entries } = await supabase
     .from('worker_entries')
-    .select('id, worker_id, category_tags, description, incident_date, is_verified_submission, submitter_verified, created_at')
+    .select('id, worker_id, category_tags, description, incident_date, submitter_profile_complete, created_at')
     .eq('worker_id', id)
     .order('created_at', { ascending: false })
 
@@ -432,7 +428,7 @@ async function renderWorkerProfile(
       {entryList.length > 0 ? (
         <div className="space-y-4">
           {entryList.map((entry) => (
-            <div key={entry.id} className={`rounded-lg border bg-white p-5 ${(entry.is_verified_submission || entry.submitter_verified) ? 'border-l-4 border-l-green-500 border-[#e5e7eb]' : 'border-[#e5e7eb]'}`}>
+            <div key={entry.id} className={`rounded-lg border bg-white p-5 ${entry.submitter_profile_complete ? 'border-l-4 border-l-blue-400 border-[#e5e7eb]' : 'border-[#e5e7eb]'}`}>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap gap-2">
                   {entry.category_tags?.map((tag: string) => (
@@ -443,14 +439,10 @@ async function renderWorkerProfile(
                       {tag}
                     </span>
                   ))}
-                  {(entry.is_verified_submission || entry.submitter_verified) && (
-                    <span className="inline-flex items-center gap-1 rounded border border-green-300 bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-600">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-green-600">
-                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
-                        <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-                        <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      GBP Linked
+                  {entry.submitter_profile_complete && (
+                    <span className="inline-flex items-center gap-1 rounded border border-blue-300 bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-600" title="This contractor has completed their business profile.">
+                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      Profile Complete
                     </span>
                   )}
                 </div>

@@ -122,7 +122,7 @@ export default function VerifyPage() {
             </svg>
           </div>
           <h2 className="mb-2 text-2xl font-black text-[#111111]">Your Business is Verified!</h2>
-          <p className="mb-4 text-[#6b7280]">Your feedback displays a GBP Linked badge, giving them extra credibility in the database.</p>
+          <p className="mb-4 text-[#6b7280]">Your feedback displays a Profile Complete badge, giving them extra credibility in the database.</p>
           {profile.business_name && <p className="text-sm font-semibold text-[#111111]">{profile.business_name}</p>}
           {profile.trade && <p className="text-sm text-[#6b7280]">{profile.trade}</p>}
           <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -161,7 +161,7 @@ export default function VerifyPage() {
               <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
               <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            GBP Linked
+            Profile Complete
           </span>
           <p className="mt-4 text-sm text-[#6b7280]">badge, giving them extra credibility in the database.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -201,7 +201,7 @@ export default function VerifyPage() {
       {/* Benefits */}
       <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
         {[
-          { icon: '🛡️', text: 'GBP Linked badge on all your submissions' },
+          { icon: '🛡️', text: 'Profile Complete badge on all your submissions' },
           { icon: '📈', text: 'Higher trust score' },
           { icon: '⭐', text: 'Stand out in the database' },
         ].map((b) => (
