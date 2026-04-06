@@ -79,11 +79,11 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
     const supabase = createClient()
     if (upvotedPosts.has(post.id)) {
       setUpvotedPosts(new Set())
-      setPostVoteCount((c) => Math.max(c - 1, 0))
+      setPostVoteCount((c: number) => Math.max(c - 1, 0))
       await supabase.from('forum_upvotes').delete().eq('user_id', userId).eq('post_id', post.id)
     } else {
       setUpvotedPosts(new Set([post.id]))
-      setPostVoteCount((c) => c + 1)
+      setPostVoteCount((c: number) => c + 1)
       await supabase.from('forum_upvotes').insert({ user_id: userId, post_id: post.id })
     }
   }
