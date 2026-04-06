@@ -25,9 +25,9 @@ export function calculateTrustScore(profile: TrustProfile, hasSubmissions: boole
 
   // 3. First report submitted
   if (hasSubmissions) {
-    completedSteps.push('Submit your first report')
+    completedSteps.push('Submit your first feedback')
   } else {
-    incompleteSteps.push({ label: 'Submit your first report', action: 'Submit a Report', href: '/submit' })
+    incompleteSteps.push({ label: 'Submit your first feedback', action: 'Submit Feedback', href: '/submit' })
   }
 
   // 4. GBP verified

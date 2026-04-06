@@ -71,7 +71,7 @@ export default function Navbar() {
               href="/submit"
               className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
             >
-              Submit Report
+              Submit Feedback
             </Link>
             <Link
               href="/dashboard"
@@ -151,7 +151,7 @@ export default function Navbar() {
         <div className="border-t border-[#e5e7eb] bg-white px-4 py-4 md:hidden">
           <div className="flex flex-col gap-4">
             <Link href="/search" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Search Database</Link>
-            <Link href="/submit" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Submit Report</Link>
+            <Link href="/submit" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Submit Feedback</Link>
             <Link href="/dashboard" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Dashboard</Link>
             <Link href="/my-profile" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>My Profile</Link>
             {user && ADMIN_EMAILS.includes(user.email ?? '') && (

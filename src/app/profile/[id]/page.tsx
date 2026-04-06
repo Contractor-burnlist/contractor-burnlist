@@ -55,8 +55,8 @@ export default async function ProfilePage({
         <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 lg:px-8">
           <div className="rounded-lg border border-[#e5e7eb] bg-white p-10">
             <div className="mb-4 text-4xl">🔒</div>
-            <h2 className="mb-2 text-2xl font-black text-[#111111]">Worker Database — Fortress Only</h2>
-            <p className="mb-6 text-[#6b7280]">Worker and laborer reports are available exclusively to Fortress subscribers.</p>
+            <h2 className="mb-2 text-2xl font-black text-[#111111]">Worker Feedback — Fortress Only</h2>
+            <p className="mb-6 text-[#6b7280]">Worker and laborer feedback is available exclusively to Fortress subscribers.</p>
             <Link href="/pricing" className="inline-block rounded bg-[#DC2626] px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700">Upgrade to Fortress</Link>
           </div>
         </div>
@@ -214,7 +214,7 @@ async function renderCustomerProfile(
 
       {/* Entries */}
       <h2 className="mb-4 text-lg font-bold text-[#111111]">
-        Reports from Contractors ({entryList.length})
+        Contractor Feedback ({entryList.length})
       </h2>
 
       {entryList.length > 0 ? (
@@ -238,7 +238,7 @@ async function renderCustomerProfile(
                         <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
                         <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                      Verified Report
+                      GBP Linked
                     </span>
                   )}
                 </div>
@@ -267,19 +267,19 @@ async function renderCustomerProfile(
         </div>
       ) : (
         <div className="rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-8 py-12 text-center">
-          <p className="text-[#6b7280]">No reports have been submitted yet.</p>
+          <p className="text-[#6b7280]">No feedback has been submitted yet.</p>
         </div>
       )}
 
       {/* CTA */}
       <div className="mt-10 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] p-6 text-center">
         <p className="mb-1 text-sm font-semibold text-[#111111]">Had an experience with this customer?</p>
-        <p className="mb-4 text-xs text-[#6b7280]">Help other contractors by sharing your report.</p>
+        <p className="mb-4 text-xs text-[#6b7280]">Help other contractors by sharing your experience.</p>
         <Link
           href="/submit"
           className="inline-block rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700"
         >
-          Submit a Report
+          Submit Feedback
         </Link>
       </div>
 
@@ -289,7 +289,7 @@ async function renderCustomerProfile(
 
       <p className="mt-4 text-[10px] leading-relaxed text-[#9ca3af]">
         The information on this page was submitted by individual contractors and represents their personal experiences and opinions.
-        Contractor Burnlist does not verify the accuracy of reports. If you believe information about you is false or inaccurate,
+        Contractor Burnlist does not verify the accuracy of any feedback. All content reflects the subjective opinions and personal experiences of individual contractors. This platform is not intended to be used for employment, insurance, or housing decisions. If you believe information about you is false or inaccurate,
         you may submit a dispute using the banner above. See our <Link href="/terms" className="underline hover:text-[#6b7280]">Terms &amp; Conditions</Link> and <Link href="/privacy" className="underline hover:text-[#6b7280]">Privacy Policy</Link> for more information.
       </p>
     </div>
@@ -426,7 +426,7 @@ async function renderWorkerProfile(
 
       {/* Entries */}
       <h2 className="mb-4 text-lg font-bold text-[#111111]">
-        Reports from Contractors ({entryList.length})
+        Contractor Feedback ({entryList.length})
       </h2>
 
       {entryList.length > 0 ? (
@@ -450,7 +450,7 @@ async function renderWorkerProfile(
                         <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
                         <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                      Verified Report
+                      GBP Linked
                     </span>
                   )}
                 </div>
@@ -470,19 +470,19 @@ async function renderWorkerProfile(
         </div>
       ) : (
         <div className="rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-8 py-12 text-center">
-          <p className="text-[#6b7280]">No reports have been submitted yet.</p>
+          <p className="text-[#6b7280]">No feedback has been submitted yet.</p>
         </div>
       )}
 
       {/* CTA */}
       <div className="mt-10 rounded-lg border border-[#e5e7eb] bg-[#f9fafb] p-6 text-center">
         <p className="mb-1 text-sm font-semibold text-[#111111]">Had an experience with this worker?</p>
-        <p className="mb-4 text-xs text-[#6b7280]">Help other contractors by sharing your report.</p>
+        <p className="mb-4 text-xs text-[#6b7280]">Help other contractors by sharing your experience.</p>
         <Link
           href="/submit"
           className="inline-block rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700"
         >
-          Submit a Report
+          Submit Feedback
         </Link>
       </div>
 
@@ -492,7 +492,7 @@ async function renderWorkerProfile(
 
       <p className="mt-4 text-[10px] leading-relaxed text-[#9ca3af]">
         The information on this page was submitted by individual contractors and represents their personal experiences and opinions.
-        Contractor Burnlist does not verify the accuracy of reports. If you believe information about you is false or inaccurate,
+        Contractor Burnlist does not verify the accuracy of any feedback. All content reflects the subjective opinions and personal experiences of individual contractors. This platform is not intended to be used for employment, insurance, or housing decisions. If you believe information about you is false or inaccurate,
         you may submit a dispute using the banner above. See our <Link href="/terms" className="underline hover:text-[#6b7280]">Terms &amp; Conditions</Link> and <Link href="/privacy" className="underline hover:text-[#6b7280]">Privacy Policy</Link> for more information.
       </p>
     </div>

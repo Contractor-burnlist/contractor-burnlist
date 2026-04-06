@@ -67,6 +67,7 @@ export default function PrivacyPage() {
           </div>
           <p className="mt-3 text-xs text-[#6b7280]">Stripe receives payment card information directly during checkout; we never receive or store payment card data.</p>
           <p className="mt-3 rounded border border-[#DC2626]/20 bg-[#DC2626]/5 px-4 py-3 text-xs font-semibold text-[#DC2626]">WE DO NOT SELL OR SHARE PERSONAL INFORMATION FOR CROSS-CONTEXT BEHAVIORAL ADVERTISING AS DEFINED BY THE CALIFORNIA CONSUMER PRIVACY ACT.</p>
+          <p className="mt-3 rounded border border-[#DC2626]/20 bg-[#DC2626]/5 px-4 py-3 text-xs font-semibold text-[#DC2626]">Information on this platform is not intended for and may not be used for employment, insurance, housing, credit, or any other decisions governed by the Fair Credit Reporting Act (FCRA) or the Investigative Consumer Reporting Agencies Act (ICRAA).</p>
         </section>
 
         <section>

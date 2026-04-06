@@ -10,10 +10,10 @@ const plans = [
     priceId: process.env.NEXT_PUBLIC_SHIELD_PRICE_ID || '',
     tagline: 'Your first line of defense',
     features: [
-      'Unlimited report submissions',
+      'Unlimited feedback submissions',
       'Search the customer database',
       'View initials, city & flag count',
-      'View full report descriptions',
+      'View full feedback descriptions',
       'Participate in community discussions',
       'Email alerts for your area (coming soon)',
     ],
@@ -27,7 +27,7 @@ const plans = [
     tagline: 'Total protection for your business',
     features: [
       'Everything in Shield, plus:',
-      'Full address & phone number on reports',
+      'Full address &amp; phone number on feedback',
       'Worker & laborer database access',
       'Advanced search filters',
       'Export search results (CSV)',

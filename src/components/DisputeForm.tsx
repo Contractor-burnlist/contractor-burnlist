@@ -6,8 +6,8 @@ import { createClient } from '@/lib/supabase/client'
 
 const DISPUTE_REASONS = [
   { value: 'false_information', label: 'This report contains false information' },
-  { value: 'identity_dispute', label: 'I am not the person described in this report' },
-  { value: 'harassment', label: 'This report is harassment or retaliation' },
+  { value: 'identity_dispute', label: 'I am not the person described in this feedback' },
+  { value: 'harassment', label: 'This feedback is harassment or retaliation' },
   { value: 'inaccurate', label: 'The details are inaccurate or exaggerated' },
   { value: 'other', label: 'Other' },
 ]
@@ -128,7 +128,7 @@ export default function DisputeForm({ contentType, contentId, variant = 'link' }
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
             <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
           </svg>
-          <span className="text-sm font-semibold text-amber-800">Is this about you? Dispute this report →</span>
+          <span className="text-sm font-semibold text-amber-800">Is this about you? Dispute this feedback →</span>
         </button>
       )
     }
@@ -137,7 +137,7 @@ export default function DisputeForm({ contentType, contentId, variant = 'link' }
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
         </svg>
-        Is this about you? Dispute this report
+        Is this about you? Dispute this feedback
       </button>
     )
   }
@@ -146,12 +146,12 @@ export default function DisputeForm({ contentType, contentId, variant = 'link' }
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4" onClick={(e) => { if (e.target === e.currentTarget) setOpen(false) }}>
       <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-2xl">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-[#111111]">Dispute This Report</h2>
+          <h2 className="text-lg font-bold text-[#111111]">Dispute This Feedback</h2>
           <button onClick={() => setOpen(false)} className="text-[#9ca3af] hover:text-[#111111]">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/></svg>
           </button>
         </div>
-        <p className="mb-5 text-xs text-[#6b7280]">If you believe this report is about you and contains false or inaccurate information, you can submit a dispute for review.</p>
+        <p className="mb-5 text-xs text-[#6b7280]">If you believe this feedback is about you and contains false or inaccurate information, you can submit a dispute for review.</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -176,7 +176,7 @@ export default function DisputeForm({ contentType, contentId, variant = 'link' }
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-[#6b7280]">Detailed Explanation <span className="text-[#DC2626]">*</span> <span className="font-normal text-[#9ca3af]">(min 50 characters)</span></label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} required minLength={50} rows={4} placeholder="Please explain why this report is inaccurate and provide any supporting details..." className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]" />
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} required minLength={50} rows={4} placeholder="Please explain why this feedback is inaccurate and provide any supporting details..." className="w-full rounded border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2.5 text-sm text-[#111111] outline-none focus:border-[#DC2626]" />
             <div className="mt-1 text-right text-xs text-[#9ca3af]">{description.length}/50 min</div>
           </div>
 

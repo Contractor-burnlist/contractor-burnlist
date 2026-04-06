@@ -43,7 +43,7 @@ export default async function DashboardPage() {
           href="/submit"
           className="rounded bg-[#DC2626] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
         >
-          + Submit Report
+          + Submit Feedback
         </Link>
       </div>
 
@@ -129,7 +129,7 @@ export default async function DashboardPage() {
 
       {/* My Entries */}
       <div>
-        <h2 className="mb-4 text-lg font-bold text-[#111111]">My Submitted Reports</h2>
+        <h2 className="mb-4 text-lg font-bold text-[#111111]">My Submitted Feedback</h2>
         {entries && entries.length > 0 ? (
           <div className="space-y-3">
             {entries.map((entry: any) => (
@@ -162,12 +162,12 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div className="rounded-lg border border-[#e5e7eb] bg-[#f9fafb] px-8 py-12 text-center">
-            <p className="text-[#6b7280]">No reports submitted yet.</p>
+            <p className="text-[#6b7280]">No feedback submitted yet.</p>
             <Link
               href="/submit"
               className="mt-4 inline-block text-sm font-semibold text-[#DC2626] hover:underline"
             >
-              Submit your first report →
+              Submit your first feedback →
             </Link>
           </div>
         )}

@@ -168,7 +168,7 @@ export default function SubmitPage() {
       return
     }
     if (!certified) {
-      setError('You must certify that this report is truthful.')
+      setError('You must certify that this feedback is truthful.')
       return
     }
 
@@ -282,13 +282,13 @@ export default function SubmitPage() {
       <div className="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6 lg:px-8">
         <div className="rounded-lg border border-green-200 bg-green-50 p-10">
           <div className="mb-4 text-5xl">✅</div>
-          <h2 className="mb-2 text-2xl font-black text-[#111111]">Report Submitted Successfully</h2>
-          <p className="text-[#6b7280]">Thank you for protecting the community.</p>
+          <h2 className="mb-2 text-2xl font-black text-[#111111]">Feedback Submitted Successfully</h2>
+          <p className="text-[#6b7280]">Thank you for sharing your experience with the community.</p>
           <button
             onClick={resetAll}
             className="mt-6 rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700"
           >
-            Submit Another Report
+            Submit More Feedback
           </button>
         </div>
       </div>
@@ -298,9 +298,9 @@ export default function SubmitPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10">
-        <h1 className="mb-2 text-3xl font-black text-[#111111]">Submit a Report</h1>
+        <h1 className="mb-2 text-3xl font-black text-[#111111]">Share Your Experience</h1>
         <p className="text-[#6b7280]">
-          Choose who you are reporting, then fill out the details below.
+          Choose who you are providing feedback on, then fill out the details below. Your submission represents your personal experience and opinion as a contractor.
         </p>
       </div>
 
@@ -315,7 +315,7 @@ export default function SubmitPage() {
             <h3 className="text-sm font-bold text-blue-900">Your identity is completely anonymous</h3>
             <p className="mt-0.5 text-xs leading-relaxed text-blue-800">
               The customer or worker you report will never see your name, business name, or any identifying information.
-              Only your trust score badge appears on the report.
+              Only your trust score badge appears on your submission.
             </p>
           </div>
         </div>
@@ -459,7 +459,7 @@ export default function SubmitPage() {
             <label className="flex cursor-pointer items-start gap-3">
               <input type="checkbox" checked={certified} onChange={(e) => setCertified(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#d1d5db] accent-[#DC2626]" />
               <span className="text-sm leading-relaxed text-[#6b7280]">
-                I confirm that this report is truthful and based on my direct, firsthand experience. I understand that I am solely responsible for the content I submit and that submitting knowingly false information may expose me to legal liability, including defamation claims. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
+                I confirm that this feedback reflects my personal opinion and direct, firsthand experience. I understand that I am solely responsible for the content I submit and that submitting knowingly false information may expose me to legal liability. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
                 <span className="text-[#DC2626]"> *</span>
               </span>
             </label>
@@ -471,7 +471,7 @@ export default function SubmitPage() {
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                 Submitting...
               </span>
-            ) : 'Submit Report'}
+            ) : 'Submit Feedback'}
           </button>
         </form>
       )}
@@ -539,7 +539,7 @@ export default function SubmitPage() {
             <label className="flex cursor-pointer items-start gap-3">
               <input type="checkbox" checked={certified} onChange={(e) => setCertified(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#d1d5db] accent-[#DC2626]" />
               <span className="text-sm leading-relaxed text-[#6b7280]">
-                I confirm that this report is truthful and based on my direct, firsthand experience. I understand that I am solely responsible for the content I submit and that submitting knowingly false information may expose me to legal liability, including defamation claims. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
+                I confirm that this feedback reflects my personal opinion and direct, firsthand experience. I understand that I am solely responsible for the content I submit and that submitting knowingly false information may expose me to legal liability. I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#DC2626] underline">Terms &amp; Conditions</a>.
                 <span className="text-[#DC2626]"> *</span>
               </span>
             </label>
@@ -551,7 +551,7 @@ export default function SubmitPage() {
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                 Submitting...
               </span>
-            ) : 'Submit Report'}
+            ) : 'Submit Feedback'}
           </button>
         </form>
       )}

@@ -26,7 +26,7 @@ export default async function AdminPage() {
 
   const stats = [
     { label: 'Users', value: userCount ?? 0 },
-    { label: 'Reports', value: (entryCount ?? 0) + (workerEntryCount ?? 0) },
+    { label: 'Feedback', value: (entryCount ?? 0) + (workerEntryCount ?? 0) },
     { label: 'Customers Flagged', value: customerCount ?? 0 },
     { label: 'Workers Flagged', value: workerCount ?? 0 },
     { label: 'Comments', value: commentCount ?? 0 },
@@ -66,7 +66,7 @@ export default async function AdminPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div>
-          <h2 className="mb-3 text-sm font-bold text-[#111111]">Recent Reports</h2>
+          <h2 className="mb-3 text-sm font-bold text-[#111111]">Recent Feedback</h2>
           <div className="space-y-2">
             {(recentEntries ?? []).map((e: any) => (
               <div key={e.id} className="rounded border border-[#e5e7eb] bg-white px-4 py-3">
@@ -75,7 +75,7 @@ export default async function AdminPage() {
                 <div className="mt-1 text-[10px] text-[#9ca3af]">{new Date(e.created_at).toLocaleString()}</div>
               </div>
             ))}
-            {(!recentEntries || recentEntries.length === 0) && <p className="text-xs text-[#9ca3af]">No reports yet.</p>}
+            {(!recentEntries || recentEntries.length === 0) && <p className="text-xs text-[#9ca3af]">No feedback yet.</p>}
           </div>
         </div>
         <div>

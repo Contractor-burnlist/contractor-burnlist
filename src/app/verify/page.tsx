@@ -122,7 +122,7 @@ export default function VerifyPage() {
             </svg>
           </div>
           <h2 className="mb-2 text-2xl font-black text-[#111111]">Your Business is Verified!</h2>
-          <p className="mb-4 text-[#6b7280]">Your reports display a Verified badge, giving them extra credibility in the database.</p>
+          <p className="mb-4 text-[#6b7280]">Your feedback displays a GBP Linked badge, giving them extra credibility in the database.</p>
           {profile.business_name && <p className="text-sm font-semibold text-[#111111]">{profile.business_name}</p>}
           {profile.trade && <p className="text-sm text-[#6b7280]">{profile.trade}</p>}
           <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -130,7 +130,7 @@ export default function VerifyPage() {
               Back to My Profile
             </Link>
             <Link href="/submit" className="rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700">
-              Submit a Report
+              Submit Feedback
             </Link>
             <Link href="/dashboard" className="rounded border border-[#e5e7eb] px-6 py-2.5 text-sm font-semibold text-[#6b7280] transition-colors hover:border-[#d1d5db] hover:text-[#111111]">
               Dashboard
@@ -154,14 +154,14 @@ export default function VerifyPage() {
             </svg>
           </div>
           <h2 className="mb-2 text-2xl font-black text-green-800">You&apos;re Verified!</h2>
-          <p className="mb-1 text-[#6b7280]">All your future reports will carry the</p>
+          <p className="mb-1 text-[#6b7280]">All your future feedback will carry the</p>
           <span className="inline-flex items-center gap-1 rounded border border-green-300 bg-green-50 px-3 py-1 text-sm font-semibold text-green-600">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-green-600">
               <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.15"/>
               <path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
               <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            Verified Report
+            GBP Linked
           </span>
           <p className="mt-4 text-sm text-[#6b7280]">badge, giving them extra credibility in the database.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -169,7 +169,7 @@ export default function VerifyPage() {
               Back to My Profile
             </Link>
             <Link href="/submit" className="rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700">
-              Submit a Report
+              Submit Feedback
             </Link>
             <Link href="/dashboard" className="rounded border border-[#e5e7eb] px-6 py-2.5 text-sm font-semibold text-[#6b7280] transition-colors hover:border-[#d1d5db] hover:text-[#111111]">
               Dashboard
@@ -193,15 +193,15 @@ export default function VerifyPage() {
         </div>
         <h1 className="mb-2 text-3xl font-black text-[#111111]">Get the Verified Badge</h1>
         <p className="text-[#6b7280]">
-          Link your Google Business Profile to earn a verified badge on all your reports.
-          Verified reports carry more weight in the database and show other contractors you&apos;re legit.
+          Link your Google Business Profile to earn a verified badge on all your feedback.
+          Verified feedback carries more weight in the database and show other contractors you&apos;re legit.
         </p>
       </div>
 
       {/* Benefits */}
       <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
         {[
-          { icon: '🛡️', text: 'Verified badge on all your submissions' },
+          { icon: '🛡️', text: 'GBP Linked badge on all your submissions' },
           { icon: '📈', text: 'Higher trust score' },
           { icon: '⭐', text: 'Stand out in the database' },
         ].map((b) => (

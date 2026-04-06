@@ -155,9 +155,10 @@ export default function SearchPage() {
         </button>
       </form>
 
-      <div className="mb-6">
+      <div className="mb-4">
         <PlatformDisclaimer variant="compact" />
       </div>
+      <p className="mb-6 text-[10px] italic text-[#9ca3af]">All feedback reflects individual contractor opinions and personal experiences, not verified facts. This platform is not intended to be used for employment, insurance, or housing decisions.</p>
 
       {/* Filter toggles */}
       {searched && !loading && results.length > 0 && (
@@ -229,7 +230,7 @@ export default function SearchPage() {
                     <div className="mt-1.5 h-3 w-1/2 rounded bg-[#e5e7eb]" />
                   </div>
                   <div className="absolute inset-0 flex items-center">
-                    <p className="text-xs text-[#9ca3af]">Sign up free to view report details</p>
+                    <p className="text-xs text-[#9ca3af]">Sign up free to view feedback details</p>
                   </div>
                 </div>
               </div>
@@ -239,7 +240,7 @@ export default function SearchPage() {
             {isLoggedIn === false && filteredResults.length > 0 && (
               <div className="rounded-lg border-2 border-dashed border-[#DC2626]/30 bg-[#DC2626]/5 p-6 text-center">
                 <p className="mb-1 text-sm font-bold text-[#111111]">Sign up free to search the full database</p>
-                <p className="mb-4 text-xs text-[#6b7280]">Create your free account to view report details, submit your own reports, and join the community.</p>
+                <p className="mb-4 text-xs text-[#6b7280]">Create your free account to view feedback details, submit your own experiences, and join the community.</p>
                 <Link href="/auth/login?next=/search" className="inline-block rounded bg-[#DC2626] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700">
                   Sign Up Free
                 </Link>
@@ -310,7 +311,7 @@ export default function SearchPage() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <div className="text-xs text-[#6b7280]">Reports</div>
+                      <div className="text-xs text-[#6b7280]">Feedback</div>
                       <div className="text-sm font-bold text-[#111111]">{result.entry_count}</div>
                     </div>
                     <div className="flex items-center gap-1.5">

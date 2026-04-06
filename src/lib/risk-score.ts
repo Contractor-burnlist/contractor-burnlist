@@ -104,7 +104,7 @@ function getSeverityPoints(entries: Entry[], sevMap: Record<string, number>, hig
 }
 
 function scoreToTier(score: number): { label: string; color: string; bg: string } {
-  if (score === 0) return { label: 'No Reports', color: 'text-[#9ca3af]', bg: 'bg-gray-100' }
+  if (score === 0) return { label: 'No Feedback', color: 'text-[#9ca3af]', bg: 'bg-gray-100' }
   if (score <= 2) return { label: 'Low Risk', color: 'text-green-600', bg: 'bg-green-50' }
   if (score <= 4) return { label: 'Moderate Risk', color: 'text-yellow-600', bg: 'bg-yellow-50' }
   if (score <= 6) return { label: 'Elevated Risk', color: 'text-orange-500', bg: 'bg-orange-50' }
@@ -113,12 +113,12 @@ function scoreToTier(score: number): { label: string; color: string; bg: string 
 }
 
 export function calculateCustomerRisk(entries: Entry[]): RiskResult {
-  if (entries.length === 0) return { score: 0, label: 'No Reports', color: 'text-[#9ca3af]', bg: 'bg-gray-100', factors: [] }
+  if (entries.length === 0) return { score: 0, label: 'No Feedback', color: 'text-[#9ca3af]', bg: 'bg-gray-100', factors: [] }
   return calculate(entries, CUSTOMER_SEVERITY, CUSTOMER_HIGH_SEV)
 }
 
 export function calculateWorkerRisk(entries: Entry[]): RiskResult {
-  if (entries.length === 0) return { score: 0, label: 'No Reports', color: 'text-[#9ca3af]', bg: 'bg-gray-100', factors: [] }
+  if (entries.length === 0) return { score: 0, label: 'No Feedback', color: 'text-[#9ca3af]', bg: 'bg-gray-100', factors: [] }
   return calculate(entries, WORKER_SEVERITY, WORKER_HIGH_SEV)
 }
 
@@ -142,12 +142,12 @@ function calculate(entries: Entry[], sevMap: Record<string, number>, highSevSet:
   const raw = f1 + f2 + f3 + f4 + f5 + f6
   const score = Math.min(Math.round(raw) / 10, 10)
 
-  factors.push(`${entries.length} report${entries.length > 1 ? 's' : ''} from ${uniqueSubmitters.size} contractor${uniqueSubmitters.size !== 1 ? 's' : ''}`)
+  factors.push(`${entries.length} feedback entr${entries.length > 1 ? 'ies' : 'y'} from ${uniqueSubmitters.size} contractor${uniqueSubmitters.size !== 1 ? 's' : ''}`)
   if (totalOwed > 0) factors.push(`Total amount owed: $${totalOwed.toLocaleString()}`)
   if (categories.length > 0) factors.push(`Categories: ${categories.slice(0, 3).join(', ')}`)
   if (mostRecent) {
     const days = Math.round((Date.now() - new Date(mostRecent).getTime()) / (1000 * 60 * 60 * 24))
-    factors.push(`Most recent report: ${days <= 1 ? 'today' : days + ' days ago'}`)
+    factors.push(`Most recent feedback: ${days <= 1 ? 'today' : days + ' days ago'}`)
   }
   if (verifiedCount > 0) factors.push(`${Math.round(verifiedCount / entries.length * 100)}% from verified contractors`)
 

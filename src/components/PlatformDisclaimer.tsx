@@ -9,13 +9,16 @@ export default function PlatformDisclaimer({ variant = 'compact' }: { variant?: 
             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
             <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
-          <p className="text-xs leading-relaxed text-[#6b7280]">
-            <strong className="text-[#9ca3af]">Disclaimer:</strong> Contractor Burnlist is a neutral peer-to-peer platform where contractors share their experiences with customers and workers.
-            All content is user-generated and reflects individual opinions and experiences. Contractor Burnlist does not verify, endorse, or take responsibility for the accuracy of any reports.
-            This platform is protected under Section 230 of the Communications Decency Act as a neutral forum provider.
-            Use of information on this platform is at your own risk.
-            See our full <Link href="/terms" className="font-semibold underline hover:text-[#111111]">Terms &amp; Conditions</Link>.
-          </p>
+          <div className="text-xs leading-relaxed text-[#6b7280]">
+            <p>
+              <strong className="text-[#9ca3af]">Disclaimer:</strong> Contractor Burnlist is a neutral peer-to-peer platform where contractors share their subjective opinions and personal experiences with customers and workers.
+              All content is user-generated and reflects individual opinions and experiences, not verified facts. Contractor Burnlist does not verify, endorse, or take responsibility for the accuracy of any feedback.
+              This platform is protected under Section 230 of the Communications Decency Act as a neutral forum provider.
+              Use of information on this platform is at your own risk.
+              See our full <Link href="/terms" className="font-semibold underline hover:text-[#111111]">Terms &amp; Conditions</Link>.
+            </p>
+            <p className="mt-2 font-semibold text-[#9ca3af]">This platform is not intended to be used for employment, insurance, or housing decisions.</p>
+          </div>
         </div>
       </div>
     )
@@ -29,7 +32,7 @@ export default function PlatformDisclaimer({ variant = 'compact' }: { variant?: 
           <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         </svg>
         <p className="text-xs text-[#9ca3af]">
-          Contractor Burnlist is a peer-to-peer forum. All reports reflect individual contractor experiences and opinions, not verified facts.
+          All feedback reflects individual contractor opinions and personal experiences, not verified facts. Not intended for employment, insurance, or housing decisions.
           By using this platform, you agree to our <Link href="/terms" className="font-semibold underline hover:text-[#6b7280]">Terms &amp; Conditions</Link>.
         </p>
       </div>

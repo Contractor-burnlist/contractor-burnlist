@@ -41,7 +41,7 @@ const stepIcons = [
 const steps = [
   { title: 'Sign Up Free', description: 'Create your account with Google in seconds. No credit card required.' },
   { title: 'Search Before You Commit', description: 'Check any customer or worker against the database before you take the job.' },
-  { title: 'Report Bad Actors', description: 'Submit reports on non-payers, fraudsters, and problem workers.' },
+  { title: 'Share Your Experience', description: 'Submit feedback on non-payers, fraudsters, and problem workers to protect fellow contractors.' },
   { title: 'Build Your Reputation', description: 'Earn trust badges and become a valued voice in the community.' },
 ]
 
@@ -57,7 +57,7 @@ export default async function HomePage() {
           <div className="flex-1 text-center lg:text-left">
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#DC2626]/30 bg-[#DC2626]/10 px-4 py-1.5">
               <span className="h-2 w-2 animate-pulse rounded-full bg-[#DC2626]" />
-              <span className="text-xs font-medium text-[#DC2626]">Contractor-Verified Reports</span>
+              <span className="text-xs font-medium text-[#DC2626]">Contractor Experiences &amp; Opinions</span>
             </div>
             <h1 className="mb-6 font-[var(--font-display)] text-5xl font-black uppercase leading-none tracking-tight text-white sm:text-6xl lg:text-7xl">
               Bad Customers Don&apos;t Warn You.{' '}
@@ -155,7 +155,7 @@ export default async function HomePage() {
                 Search the Database
               </Link>
               <Link href="/submit" className="w-full rounded-lg border border-white/20 px-8 py-3.5 text-center text-sm font-semibold text-[#a0a0a0] transition-all hover:border-white/50 hover:text-white sm:w-auto">
-                Submit a Report
+                Submit Feedback
               </Link>
             </div>
           </div>
@@ -206,7 +206,7 @@ export default async function HomePage() {
               <h3 className="mb-3 font-[var(--font-display)] text-2xl font-bold uppercase">Customer Database</h3>
               <ul className="space-y-2.5 text-sm text-white/80">
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Search customers before you take the job</li>
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>See flag count and reports from other contractors</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>See flag count and feedback from other contractors</li>
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Know who doesn&apos;t pay, who commits fraud</li>
               </ul>
             </div>
@@ -241,7 +241,7 @@ export default async function HomePage() {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
               </div>
               <h3 className="mb-1 text-sm font-bold text-white">Discussions</h3>
-              <p className="text-xs text-[#8a8a9a]">Comment on reports, share insights, and help the community make better decisions</p>
+              <p className="text-xs text-[#8a8a9a]">Comment on feedback, share insights, and help the community make better decisions</p>
             </div>
             <div className="rounded-xl border border-[#1a1a2e] bg-[#111122] p-6 text-center">
               <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-400">
@@ -294,10 +294,10 @@ export default async function HomePage() {
               <h3 className="font-[var(--font-display)] text-2xl font-bold uppercase text-[#111111]">Shield</h3>
               <div className="mt-2 mb-6"><span className="font-[var(--font-display)] text-5xl font-black text-[#111111]">$19</span><span className="text-[#6b7280]">/mo</span></div>
               <ul className="space-y-3 text-sm text-[#6b7280]">
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Unlimited report submissions</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Unlimited feedback submissions</li>
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Search the customer database</li>
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>View initials, city &amp; flag count</li>
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>View full report descriptions</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>View full feedback descriptions</li>
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Community discussions</li>
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Email alerts (coming soon)</li>
               </ul>
@@ -308,7 +308,7 @@ export default async function HomePage() {
               <div className="mt-2 mb-6"><span className="font-[var(--font-display)] text-5xl font-black text-[#111111]">$39</span><span className="text-[#6b7280]">/mo</span></div>
               <ul className="space-y-3 text-sm text-[#6b7280]">
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Everything in Shield, plus:</li>
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Full address &amp; phone on reports</li>
+                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Full address &amp; phone on feedback</li>
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Worker &amp; laborer database access</li>
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Advanced search filters</li>
                 <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Export results (CSV)</li>

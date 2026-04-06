@@ -19,7 +19,7 @@ export default function AdminReportsPage() {
   useEffect(() => { load() }, [type, page])
 
   async function handleDelete(id: string, reportType: string, deleteParent: boolean, parentId?: string) {
-    const msg = deleteParent ? 'Delete this record AND all its reports? This cannot be undone.' : 'Delete this report? This cannot be undone.'
+    const msg = deleteParent ? 'Delete this record AND all its feedback? This cannot be undone.' : 'Delete this feedback entry? This cannot be undone.'
     if (!confirm(msg)) return
     await fetch('/api/admin/reports', {
       method: 'DELETE',
@@ -44,7 +44,7 @@ export default function AdminReportsPage() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="h-6 w-6 animate-spin rounded-full border-2 border-[#e5e7eb] border-t-[#DC2626]" /></div>
       ) : reports.length === 0 ? (
-        <p className="py-8 text-center text-sm text-[#9ca3af]">No reports found.</p>
+        <p className="py-8 text-center text-sm text-[#9ca3af]">No feedback found.</p>
       ) : (
         <div className="space-y-3">
           {reports.map((r: any) => {
@@ -72,7 +72,7 @@ export default function AdminReportsPage() {
                     </div>
                   </div>
                   <div className="flex shrink-0 gap-1">
-                    <button onClick={() => handleDelete(r.id, r.report_type, false)} className="rounded border border-[#e5e7eb] px-2 py-1 text-[10px] text-[#DC2626] hover:bg-red-50">Delete Report</button>
+                    <button onClick={() => handleDelete(r.id, r.report_type, false)} className="rounded border border-[#e5e7eb] px-2 py-1 text-[10px] text-[#DC2626] hover:bg-red-50">Delete Feedback</button>
                     <button onClick={() => handleDelete(r.id, r.report_type, true, parentId)} className="rounded border border-[#DC2626] px-2 py-1 text-[10px] text-[#DC2626] hover:bg-red-50">Delete Record</button>
                   </div>
                 </div>
