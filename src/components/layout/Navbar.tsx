@@ -74,6 +74,12 @@ export default function Navbar() {
               Submit Feedback
             </Link>
             <Link
+              href="/community"
+              className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
+            >
+              Community
+            </Link>
+            <Link
               href="/dashboard"
               className="text-sm font-medium text-[#6b7280] transition-colors hover:text-[#111111]"
             >
@@ -152,6 +158,7 @@ export default function Navbar() {
           <div className="flex flex-col gap-4">
             <Link href="/search" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Search Database</Link>
             <Link href="/submit" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Submit Feedback</Link>
+            <Link href="/community" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Community</Link>
             <Link href="/dashboard" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>Dashboard</Link>
             <Link href="/my-profile" className="text-sm text-[#6b7280] hover:text-[#111111]" onClick={() => setMobileOpen(false)}>My Profile</Link>
             {user && ADMIN_EMAILS.includes(user.email ?? '') && (

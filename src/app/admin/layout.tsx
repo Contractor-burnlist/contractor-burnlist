@@ -9,6 +9,7 @@ const navItems = [
   { href: '/admin/comments', label: 'Comments' },
   { href: '/admin/users', label: 'Users' },
   { href: '/admin/flagged', label: 'Flagged' },
+  { href: '/admin/forum', label: 'Forum' },
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
