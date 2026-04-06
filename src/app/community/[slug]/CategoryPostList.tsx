@@ -16,6 +16,7 @@ function timeAgo(d: string) {
 export default function CategoryPostList({ posts, slug }: { posts: any[]; slug: string }) {
   const [userId, setUserId] = useState<string | null>(null)
   const [upvoted, setUpvoted] = useState<Set<string>>(new Set())
+  const [voteCounts, setVoteCounts] = useState<Map<string, number>>(new Map(posts.map((p) => [p.id, p.upvote_count ?? 0])))
 
   useEffect(() => {
     const supabase = createClient()
@@ -35,11 +36,13 @@ export default function CategoryPostList({ posts, slug }: { posts: any[]; slug: 
     if (!userId) return
     const supabase = createClient()
     if (upvoted.has(postId)) {
-      await supabase.from('forum_upvotes').delete().eq('user_id', userId).eq('post_id', postId)
       setUpvoted((prev) => { const n = new Set(prev); n.delete(postId); return n })
+      setVoteCounts((prev) => { const n = new Map(prev); n.set(postId, Math.max((n.get(postId) ?? 0) - 1, 0)); return n })
+      await supabase.from('forum_upvotes').delete().eq('user_id', userId).eq('post_id', postId)
     } else {
-      await supabase.from('forum_upvotes').insert({ user_id: userId, post_id: postId })
       setUpvoted((prev) => new Set(prev).add(postId))
+      setVoteCounts((prev) => { const n = new Map(prev); n.set(postId, (n.get(postId) ?? 0) + 1); return n })
+      await supabase.from('forum_upvotes').insert({ user_id: userId, post_id: postId })
     }
   }
 
@@ -64,7 +67,7 @@ export default function CategoryPostList({ posts, slug }: { posts: any[]; slug: 
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill={isUpvoted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 2l5 5H2z"/></svg>
               </button>
-              <span className={`text-xs font-bold ${isUpvoted ? 'text-[#DC2626]' : 'text-gray-500'}`}>{post.upvote_count}</span>
+              <span className={`text-xs font-bold ${isUpvoted ? 'text-[#DC2626]' : 'text-gray-500'}`}>{voteCounts.get(post.id) ?? post.upvote_count ?? 0}</span>
             </div>
             <div className="min-w-0 flex-1">
               <Link href={`/community/${slug}/${post.id}`} className="block">

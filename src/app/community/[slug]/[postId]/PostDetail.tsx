@@ -50,6 +50,8 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
   const [posting, setPosting] = useState(false)
   const [upvotedPosts, setUpvotedPosts] = useState<Set<string>>(new Set())
   const [upvotedReplies, setUpvotedReplies] = useState<Set<string>>(new Set())
+  const [postVoteCount, setPostVoteCount] = useState(post.upvote_count ?? 0)
+  const [replyVoteCounts, setReplyVoteCounts] = useState<Map<string, number>>(new Map(initialReplies.map((r: any) => [r.id, r.upvote_count ?? 0])))
   const [myUsername, setMyUsername] = useState<string | null>(null)
   const [myRepPoints, setMyRepPoints] = useState(0)
 
@@ -76,11 +78,13 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
     if (!userId || userId === post.user_id) return
     const supabase = createClient()
     if (upvotedPosts.has(post.id)) {
-      await supabase.from('forum_upvotes').delete().eq('user_id', userId).eq('post_id', post.id)
       setUpvotedPosts(new Set())
+      setPostVoteCount((c) => Math.max(c - 1, 0))
+      await supabase.from('forum_upvotes').delete().eq('user_id', userId).eq('post_id', post.id)
     } else {
-      await supabase.from('forum_upvotes').insert({ user_id: userId, post_id: post.id })
       setUpvotedPosts(new Set([post.id]))
+      setPostVoteCount((c) => c + 1)
+      await supabase.from('forum_upvotes').insert({ user_id: userId, post_id: post.id })
     }
   }
 
@@ -88,11 +92,13 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
     if (!userId || userId === authorId) return
     const supabase = createClient()
     if (upvotedReplies.has(replyId)) {
-      await supabase.from('forum_upvotes').delete().eq('user_id', userId).eq('reply_id', replyId)
       setUpvotedReplies((prev) => { const n = new Set(prev); n.delete(replyId); return n })
+      setReplyVoteCounts((prev) => { const n = new Map(prev); n.set(replyId, Math.max((n.get(replyId) ?? 0) - 1, 0)); return n })
+      await supabase.from('forum_upvotes').delete().eq('user_id', userId).eq('reply_id', replyId)
     } else {
-      await supabase.from('forum_upvotes').insert({ user_id: userId, reply_id: replyId })
       setUpvotedReplies((prev) => new Set(prev).add(replyId))
+      setReplyVoteCounts((prev) => { const n = new Map(prev); n.set(replyId, (n.get(replyId) ?? 0) + 1); return n })
+      await supabase.from('forum_upvotes').insert({ user_id: userId, reply_id: replyId })
     }
   }
 
@@ -140,7 +146,7 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
             <p className="py-2 text-sm italic text-gray-400">[This reply has been removed]</p>
           ) : (
             <div className="flex gap-3">
-              <UpvoteBtn active={isReplyUpvoted} count={r.upvote_count} onClick={() => toggleReplyUpvote(r.id, r.user_id)} disabled={isReplyAuthor || !userId} />
+              <UpvoteBtn active={isReplyUpvoted} count={replyVoteCounts.get(r.id) ?? r.upvote_count ?? 0} onClick={() => toggleReplyUpvote(r.id, r.user_id)} disabled={isReplyAuthor || !userId} />
               <div className="min-w-0 flex-1">
                 <AuthorLine prof={prof} createdAt={r.created_at} edited={r.updated_at !== r.created_at} />
                 <p className="mt-2 text-sm leading-relaxed text-gray-700">{nl2br(r.content)}</p>
@@ -180,7 +186,7 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
         <div className="p-6 sm:p-8">
           <div className="flex gap-5">
             <div className="hidden sm:block">
-              <UpvoteBtn active={upvotedPosts.has(post.id)} count={post.upvote_count} onClick={togglePostUpvote} disabled={userId === post.user_id || !userId} size="lg" />
+              <UpvoteBtn active={upvotedPosts.has(post.id)} count={postVoteCount} onClick={togglePostUpvote} disabled={userId === post.user_id || !userId} size="lg" />
             </div>
             <div className="min-w-0 flex-1">
               <AuthorLine prof={post.profiles as any} createdAt={post.created_at} edited={post.updated_at !== post.created_at} />
@@ -188,7 +194,7 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
               <div className="mt-5 text-base leading-7 text-gray-700">{nl2br(post.content)}</div>
               {/* Mobile upvote */}
               <div className="mt-4 flex items-center gap-3 sm:hidden">
-                <UpvoteBtn active={upvotedPosts.has(post.id)} count={post.upvote_count} onClick={togglePostUpvote} disabled={userId === post.user_id || !userId} />
+                <UpvoteBtn active={upvotedPosts.has(post.id)} count={postVoteCount} onClick={togglePostUpvote} disabled={userId === post.user_id || !userId} />
                 <span className="text-xs text-gray-400">{activeReplyCount} replies</span>
               </div>
             </div>
