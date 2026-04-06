@@ -68,7 +68,7 @@ export default function CategoryPostList({ posts, slug }: { posts: any[]; slug: 
             </div>
             <div className="min-w-0 flex-1">
               <Link href={`/community/${slug}/${post.id}`} className="block">
-                <h3 className="text-base font-bold text-[#111111] transition-colors hover:text-[#DC2626]">
+                <h3 className="text-base font-extrabold text-[#0a0a0a] transition-colors hover:text-[#DC2626]">
                   {post.is_pinned && <span className="mr-1.5 text-[#9ca3af]">📌</span>}
                   {post.title}
                 </h3>

@@ -47,7 +47,7 @@ export default async function CommunityPage() {
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-[#111111]">Contractor Community</h1>
+          <h1 className="text-3xl font-extrabold text-[#0a0a0a]">Contractor Community</h1>
           <p className="mt-1 text-[#6b7280]">Talk shop, share stories, and learn from contractors who get it.</p>
         </div>
         <Link href="/community/new" className="rounded-lg bg-[#DC2626] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700">
@@ -83,7 +83,7 @@ export default async function CommunityPage() {
             <div className="space-y-2">
               {(trending ?? []).map((p: any) => (
                 <Link key={p.id} href={`/community/${(p.forum_categories as any)?.slug}/${p.id}`} className="block rounded-lg border border-[#e5e7eb] bg-white p-3 transition-colors hover:border-[#d1d5db]">
-                  <p className="text-xs font-semibold text-[#111111] line-clamp-2">{p.title}</p>
+                  <p className="text-sm font-bold text-[#0a0a0a] line-clamp-2">{p.title}</p>
                   <div className="mt-1.5 flex items-center gap-2 text-[10px] text-[#9ca3af]">
                     <span>{(p.forum_categories as any)?.emoji}</span>
                     <span>↑{p.upvote_count}</span>

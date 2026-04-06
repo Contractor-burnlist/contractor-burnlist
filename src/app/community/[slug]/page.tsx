@@ -25,7 +25,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#111111]">{category.emoji} {category.name}</h1>
+          <h1 className="text-2xl font-extrabold text-[#0a0a0a]">{category.emoji} {category.name}</h1>
           <p className="mt-1 text-sm text-[#6b7280]">{category.description}</p>
           {slug === 'legal-contracts' && (
             <p className="mt-2 text-xs italic text-amber-700">Discussion here is for informational purposes only and does not constitute legal advice.</p>

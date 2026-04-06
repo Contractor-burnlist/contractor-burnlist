@@ -184,7 +184,7 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
             </div>
             <div className="min-w-0 flex-1">
               <AuthorLine prof={post.profiles as any} createdAt={post.created_at} edited={post.updated_at !== post.created_at} />
-              <h1 className="mt-3 text-2xl font-black leading-tight text-[#111111] sm:text-3xl">{post.title}</h1>
+              <h1 className="mt-3 text-2xl font-extrabold leading-tight text-[#0a0a0a] sm:text-3xl">{post.title}</h1>
               <div className="mt-5 text-base leading-7 text-[#374151]">{nl2br(post.content)}</div>
               {/* Mobile upvote */}
               <div className="mt-4 flex items-center gap-3 sm:hidden">
