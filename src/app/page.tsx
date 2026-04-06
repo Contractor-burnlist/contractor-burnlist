@@ -102,51 +102,50 @@ export default async function HomePage() {
       <RiskCalculator />
 
       {/* STATS — THE NUMBERS DON'T LIE */}
-      <section className="border-b border-[#1a1a2e] bg-[#0d0d1a] px-4 py-24 sm:px-6 lg:px-8">
+      <section className="border-b border-gray-200 bg-white px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-16 text-center">
-            <h2 className="font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-white sm:text-5xl">The Numbers Don&apos;t Lie</h2>
-            <p className="mt-3 text-[#8a8a9a]">The home services industry has a problem no one talks about.</p>
+            <h2 className="font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-gray-900 sm:text-5xl">The Numbers Don&apos;t Lie</h2>
+            <p className="mt-3 text-gray-600">The home services industry has a problem no one talks about.</p>
           </div>
 
           <h3 className="mb-8 text-center text-xs font-bold uppercase tracking-[0.2em] text-[#DC2626]">The Cost of Bad Customers</h3>
 
-          {/* Hero stat */}
-          <div className="mb-6 rounded-xl border-l-4 border-l-[#DC2626] border border-[#1a1a2e] bg-[#111122] p-8 text-center sm:p-10">
+          <div className="mb-6 rounded-xl border-l-4 border-l-[#DC2626] border border-gray-200 bg-white p-8 text-center shadow-sm sm:p-10">
             <div className="font-[var(--font-display)] text-6xl font-black text-[#DC2626] sm:text-7xl lg:text-8xl">
               <AnimatedStat value={customerStats[0].value} prefix={customerStats[0].prefix} suffix={customerStats[0].suffix} />
             </div>
-            <p className="mt-3 text-base text-[#a0a0a0]">{customerStats[0].label}</p>
-            <p className="mt-1 text-[10px] italic text-[#4b5563]">Source: {customerStats[0].source}</p>
+            <p className="mt-3 text-base text-gray-700">{customerStats[0].label}</p>
+            <p className="mt-1 text-[10px] italic text-gray-400">Source: {customerStats[0].source}</p>
           </div>
 
           <div className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {customerStats.slice(1).map((s, i) => (
-              <div key={s.label} className={`rounded-xl border border-[#1a1a2e] p-6 ${i % 2 === 0 ? 'bg-[#111122]' : 'bg-[#0f0f1e]'}`}>
+            {customerStats.slice(1).map((s) => (
+              <div key={s.label} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="font-[var(--font-display)] text-3xl font-black text-[#DC2626] sm:text-4xl">
                   <AnimatedStat value={s.value} prefix={s.prefix} suffix={s.suffix} />
                 </div>
-                <p className="mt-2 text-xs leading-relaxed text-[#8a8a9a]">{s.label}</p>
-                <p className="mt-2 text-[10px] italic text-[#4b5563]">Source: {s.source}</p>
+                <p className="mt-2 text-xs leading-relaxed text-gray-700">{s.label}</p>
+                <p className="mt-2 text-[10px] italic text-gray-400">Source: {s.source}</p>
               </div>
             ))}
           </div>
 
           <h3 className="mb-8 text-center text-xs font-bold uppercase tracking-[0.2em] text-orange-500">The Cost of Bad Workers &amp; Laborers</h3>
           <div className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {workerStats.map((s, i) => (
-              <div key={s.label} className={`rounded-xl border border-[#1a1a2e] p-6 ${i % 2 === 0 ? 'bg-[#111122]' : 'bg-[#0f0f1e]'}`}>
+            {workerStats.map((s) => (
+              <div key={s.label} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="font-[var(--font-display)] text-3xl font-black text-orange-500 sm:text-4xl">
                   <AnimatedStat value={s.value} prefix={s.prefix} suffix={s.suffix} />
                 </div>
-                <p className="mt-2 text-xs leading-relaxed text-[#8a8a9a]">{s.label}</p>
-                <p className="mt-2 text-[10px] italic text-[#4b5563]">Source: {s.source}</p>
+                <p className="mt-2 text-xs leading-relaxed text-gray-700">{s.label}</p>
+                <p className="mt-2 text-[10px] italic text-gray-400">Source: {s.source}</p>
               </div>
             ))}
           </div>
 
           <div className="text-center">
-            <p className="mb-8 font-[var(--font-display)] text-xl font-bold uppercase tracking-tight text-white sm:text-2xl">
+            <p className="mb-8 font-[var(--font-display)] text-xl font-bold uppercase tracking-tight text-gray-900 sm:text-2xl">
               One bad customer can cost you thousands. One dishonest worker can sink your business.{' '}
               <span className="text-[#DC2626]">Knowledge is protection.</span>
             </p>
@@ -154,7 +153,7 @@ export default async function HomePage() {
               <Link href="/search" className="w-full rounded-lg bg-[#DC2626] px-8 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-[#DC2626]/20 transition-all hover:scale-105 hover:bg-red-600 sm:w-auto">
                 Search the Database
               </Link>
-              <Link href="/submit" className="w-full rounded-lg border border-white/20 px-8 py-3.5 text-center text-sm font-semibold text-[#a0a0a0] transition-all hover:border-white/50 hover:text-white sm:w-auto">
+              <Link href="/submit" className="w-full rounded-lg border border-gray-300 px-8 py-3.5 text-center text-sm font-semibold text-gray-700 transition-all hover:border-gray-400 hover:text-gray-900 sm:w-auto">
                 Submit Feedback
               </Link>
             </div>
@@ -197,30 +196,30 @@ export default async function HomePage() {
             <p className="mt-3 text-[#6b7280]">Vet the people you work for — and the people who work for you</p>
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div className="rounded-2xl bg-gradient-to-br from-[#7f1d1d] to-[#991b1b] p-8 text-white shadow-xl transition-transform hover:-translate-y-1">
-              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-white/15">
+            <div className="rounded-2xl border border-gray-200 border-l-4 border-l-[#DC2626] bg-white p-8 shadow-sm transition-transform hover:-translate-y-1">
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-red-50 text-[#DC2626]">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><line x1="4" y1="4" x2="20" y2="20"/>
                 </svg>
               </div>
-              <h3 className="mb-3 font-[var(--font-display)] text-2xl font-bold uppercase">Customer Database</h3>
-              <ul className="space-y-2.5 text-sm text-white/80">
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Search customers before you take the job</li>
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>See flag count and feedback from other contractors</li>
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Know who doesn&apos;t pay, who commits fraud</li>
+              <h3 className="mb-3 font-[var(--font-display)] text-2xl font-bold uppercase text-gray-900">Customer Database</h3>
+              <ul className="space-y-2.5 text-sm text-gray-700">
+                <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />Search customers before you take the job</li>
+                <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />See flag count and feedback from other contractors</li>
+                <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />Know who doesn&apos;t pay, who commits fraud</li>
               </ul>
             </div>
-            <div className="rounded-2xl bg-gradient-to-br from-[#78350f] to-[#92400e] p-8 text-white shadow-xl transition-transform hover:-translate-y-1">
-              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-white/15">
+            <div className="rounded-2xl border border-gray-200 border-l-4 border-l-amber-500 bg-white p-8 shadow-sm transition-transform hover:-translate-y-1">
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M2 18v1a1 1 0 001 1h18a1 1 0 001-1v-1"/><path d="M2 18l3-9h14l3 9"/><path d="M9 9V5a1 1 0 011-1h4a1 1 0 011 1v4"/>
                 </svg>
               </div>
-              <h3 className="mb-3 font-[var(--font-display)] text-2xl font-bold uppercase">Worker Database</h3>
-              <ul className="space-y-2.5 text-sm text-white/80">
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Vet workers and laborers before you hire</li>
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>See reports on theft, no-shows, poor workmanship</li>
-                <li className="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0"><path d="M3 8l3 3 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>Protect your business from the inside out</li>
+              <h3 className="mb-3 font-[var(--font-display)] text-2xl font-bold uppercase text-gray-900">Worker Database</h3>
+              <ul className="space-y-2.5 text-sm text-gray-700">
+                <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />Vet workers and laborers before you hire</li>
+                <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />See feedback on theft, no-shows, poor workmanship</li>
+                <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />Protect your business from the inside out</li>
               </ul>
             </div>
           </div>
@@ -228,46 +227,46 @@ export default async function HomePage() {
       </section>
 
       {/* COMMUNITY */}
-      <section className="border-b border-[#1a1a2e] bg-[#0d0d1a] px-4 py-24 sm:px-6 lg:px-8">
+      <section className="border-b border-gray-200 bg-gray-50 px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
           <div className="mb-16 text-center">
-            <h2 className="font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-white">Join the Community</h2>
-            <p className="mt-3 text-[#8a8a9a]">More than a database — it&apos;s a community of contractors watching each other&apos;s backs.</p>
+            <h2 className="font-[var(--font-display)] text-4xl font-black uppercase tracking-tight text-gray-900">Join the Community</h2>
+            <p className="mt-3 text-gray-600">More than a database — it&apos;s a community of contractors watching each other&apos;s backs.</p>
           </div>
 
           <div className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            <div className="rounded-xl border border-[#1a1a2e] bg-[#111122] p-6 text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
               </div>
-              <h3 className="mb-1 text-sm font-bold text-white">Discussions</h3>
-              <p className="text-xs text-[#8a8a9a]">Comment on feedback, share insights, and help the community make better decisions</p>
+              <h3 className="mb-1 text-sm font-bold text-gray-900">Discussions</h3>
+              <p className="text-xs text-gray-600">Comment on feedback, share insights, and help the community make better decisions</p>
             </div>
-            <div className="rounded-xl border border-[#1a1a2e] bg-[#111122] p-6 text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-400">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 text-amber-600">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
               </div>
-              <h3 className="mb-1 text-sm font-bold text-white">Reputation Ranks</h3>
-              <p className="text-xs text-[#8a8a9a]">Earn points for contributing. Rise from Rookie to Legend and stand out</p>
+              <h3 className="mb-1 text-sm font-bold text-gray-900">Reputation Ranks</h3>
+              <p className="text-xs text-gray-600">Earn points for contributing. Rise from Rookie to Legend and stand out</p>
             </div>
-            <div className="rounded-xl border border-[#1a1a2e] bg-[#111122] p-6 text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-400">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"><path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4" strokeLinecap="round"/></svg>
               </div>
-              <h3 className="mb-1 text-sm font-bold text-white">Verified Badges</h3>
-              <p className="text-xs text-[#8a8a9a]">Link your Google Business Profile to earn a verified badge and boost trust</p>
+              <h3 className="mb-1 text-sm font-bold text-gray-900">Verified Badges</h3>
+              <p className="text-xs text-gray-600">Link your Google Business Profile to earn a verified badge and boost trust</p>
             </div>
           </div>
 
           {/* Mock discussion preview */}
-          <div className="mx-auto mb-12 max-w-lg rounded-xl border border-[#1a1a2e] bg-[#111122] p-5">
-            <div className="flex items-center gap-2 text-xs text-[#8a8a9a]">
-              <span className="font-semibold text-white">PipeKing_SD</span>
-              <span className="rounded-full border border-amber-700 bg-amber-900/30 px-1.5 py-0.5 text-[10px] font-semibold text-amber-400">Veteran</span>
+          <div className="mx-auto mb-12 max-w-lg rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <span className="font-semibold text-gray-900">PipeKing_SD</span>
+              <span className="rounded-full border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">Veteran</span>
               <span>2h ago</span>
             </div>
-            <p className="mt-2 text-sm text-[#a0a0a0]">Dealt with this customer last year. Same exact pattern — agreed to the quote, then disputed everything after the work was done. Glad someone finally reported them.</p>
-            <div className="mt-3 flex items-center gap-4 text-xs text-[#6b7280]">
+            <p className="mt-2 text-sm text-gray-700">Dealt with this customer last year. Same exact pattern — agreed to the quote, then disputed everything after the work was done. Glad someone finally reported them.</p>
+            <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">
               <span className="flex items-center gap-1 text-[#DC2626]">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                 12
