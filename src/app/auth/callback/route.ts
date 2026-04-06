@@ -1,5 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
-import { createServiceClient } from '@/lib/supabase/server'
+import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { sendEmail } from '@/lib/email'
 import { welcomeEmail } from '@/lib/email-templates'
 import { NextResponse } from 'next/server'
@@ -15,16 +14,29 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
-      // Check if this is a new user and send welcome email (fire-and-forget)
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user?.email) {
-        const admin = await createServiceClient()
-        const { data: profile } = await admin.from('profiles').select('welcome_email_sent').eq('id', user.id).single()
-        if (profile && !profile.welcome_email_sent) {
-          const email = welcomeEmail()
-          sendEmail({ to: user.email, subject: email.subject, html: email.html }).catch(() => {})
-          admin.from('profiles').update({ welcome_email_sent: true }).eq('id', user.id).then(() => {})
+      // Send welcome email on first login (non-blocking)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user?.email) {
+          const admin = await createServiceClient()
+          const { data: profile, error: profileErr } = await admin
+            .from('profiles')
+            .select('welcome_email_sent')
+            .eq('id', user.id)
+            .single()
+
+          if (profileErr) {
+            console.error('[welcome-email] Profile lookup failed:', profileErr.message)
+          } else if (profile && !profile.welcome_email_sent) {
+            console.error('[welcome-email] Sending to:', user.email)
+            const email = welcomeEmail()
+            await sendEmail({ to: user.email, subject: email.subject, html: email.html })
+            await admin.from('profiles').update({ welcome_email_sent: true }).eq('id', user.id)
+            console.error('[welcome-email] Sent and marked')
+          }
         }
+      } catch (err: any) {
+        console.error('[welcome-email] Error:', err.message)
       }
 
       return NextResponse.redirect(`${origin}${next}`)

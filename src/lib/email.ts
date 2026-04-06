@@ -21,12 +21,17 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
   }
 
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: 'Contractor Burnlist <noreply@contractorburnlist.com>',
       to,
       subject,
       html,
     })
+    if (error) {
+      console.error('[email] Resend API error:', JSON.stringify(error))
+    } else {
+      console.error('[email] Sent successfully to:', to)
+    }
   } catch (err: any) {
     console.error('[email] Send failed:', err.message)
   }
