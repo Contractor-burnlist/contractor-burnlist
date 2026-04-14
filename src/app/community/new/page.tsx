@@ -71,19 +71,19 @@ function NewPostForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="mb-1 block text-xs font-medium text-gray-500">Category <span className="text-red-600">*</span></label>
-          <select value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)} required className="w-full rounded border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none focus:border-red-500">
+          <select value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)} required className="w-full rounded border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
             <option value="">Select a category</option>
             {categories.map((c) => <option key={c.slug} value={c.slug}>{c.emoji} {c.name}</option>)}
           </select>
         </div>
         <div>
           <label className="mb-1 block text-xs font-medium text-gray-500">Title <span className="text-red-600">*</span> <span className="font-normal text-gray-400">(5-200)</span></label>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={200} placeholder="What's on your mind?" className="w-full rounded border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none focus:border-red-500" />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={200} placeholder="What's on your mind?" className="w-full rounded border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500" />
           <div className="mt-1 text-right text-xs text-gray-400">{title.length}/200</div>
         </div>
         <div>
           <label className="mb-1 block text-xs font-medium text-gray-500">Content <span className="text-red-600">*</span> <span className="font-normal text-gray-400">(10-10,000)</span></label>
-          <textarea value={content} onChange={(e) => setContent(e.target.value)} maxLength={10000} rows={8} placeholder="Share your thoughts, experience, or question..." className="w-full rounded border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none focus:border-red-500" />
+          <textarea value={content} onChange={(e) => setContent(e.target.value)} maxLength={10000} rows={8} placeholder="Share your thoughts, experience, or question..." className="w-full rounded border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500" />
           <div className="mt-1 text-right text-xs text-gray-400">{content.length}/10,000</div>
         </div>
         <button type="submit" disabled={posting} className="w-full rounded bg-red-600 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50">

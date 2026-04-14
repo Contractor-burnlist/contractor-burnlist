@@ -166,7 +166,7 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
 
         {replyingTo === r.id && (
           <div className="ml-6 mt-2 border-l-2 border-[#DC2626]/15 pl-5 sm:ml-10">
-            <textarea value={replyToText} onChange={(e) => setReplyToText(e.target.value)} rows={2} maxLength={5000} placeholder="Write a reply..." className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-red-500" />
+            <textarea value={replyToText} onChange={(e) => setReplyToText(e.target.value)} rows={2} maxLength={5000} placeholder="Write a reply..." className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500" />
             <div className="mt-2 flex items-center gap-2">
               <button onClick={() => submitReply(r.id)} disabled={!replyToText.trim() || posting} className="rounded-lg bg-[#DC2626] px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50">Reply</button>
               <button onClick={() => setReplyingTo(null)} className="text-xs text-gray-500 hover:text-gray-900">Cancel</button>
@@ -213,7 +213,7 @@ export default function PostDetail({ post, replies: initialReplies, slug }: { po
               <span className="font-semibold text-gray-900">{myUsername ?? 'Anonymous'}</span>
               <ReputationBadge points={myRepPoints} />
             </div>
-            <textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} rows={4} maxLength={5000} placeholder="Share your thoughts..." className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm leading-relaxed outline-none transition-colors focus:border-red-500" />
+            <textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} rows={4} maxLength={5000} placeholder="Share your thoughts..." className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm leading-relaxed text-gray-900 placeholder:text-gray-400 outline-none transition-colors focus:ring-2 focus:ring-red-500 focus:border-red-500" />
             <div className="mt-2 flex items-center justify-between">
               <span className="text-xs text-gray-400">{replyText.length}/5,000</span>
               <button onClick={() => submitReply()} disabled={!replyText.trim() || posting} className="rounded-lg bg-[#DC2626] px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50">

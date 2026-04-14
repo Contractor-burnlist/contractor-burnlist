@@ -34,7 +34,7 @@ export default function AdminUsersPage() {
       <h1 className="mb-4 text-2xl font-black text-[#111111]">Users</h1>
 
       <form onSubmit={(e) => { e.preventDefault(); setPage(1); load() }} className="mb-4 flex gap-2">
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search email, username, business..." className="flex-1 rounded border border-[#e5e7eb] bg-white px-3 py-2 text-sm outline-none focus:border-[#DC2626]" />
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search email, username, business..." className="flex-1 rounded border border-[#e5e7eb] bg-white px-3 py-2 text-sm text-[#111111] placeholder-[#9ca3af] outline-none focus:border-[#DC2626]" />
         <button type="submit" className="rounded bg-[#DC2626] px-4 py-2 text-xs font-semibold text-white">Search</button>
       </form>
 
